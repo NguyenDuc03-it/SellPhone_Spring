@@ -1,0 +1,405 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>TĐ Mobile - Quản lý sản phẩm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png" href="../../static/assets/images/icon/favicon.ico">
+    <link rel="stylesheet" href="../../static/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../static/assets/css/themify-icons.css">
+    <link rel="stylesheet" href="../../static/assets/css/metisMenu.css">
+    <link rel="stylesheet" href="../../static/assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="../../static/assets/css/slicknav.min.css">
+    <!-- amchart css -->
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+    <!-- others css -->
+    <link rel="stylesheet" href="../../static/assets/css/typography.css">
+    <link rel="stylesheet" href="../../static/assets/css/default-css.css">
+    <link rel="stylesheet" href="../../static/assets/css/styles.css">
+    <link rel="stylesheet" href="../../static/assets/css/responsive.css">
+    <!-- modernizr css -->
+    <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js"></script>
+</head>
+
+<body>
+    <!-- preloader area start -->
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+    <!-- preloader area end -->
+    <!-- page container area start -->
+    <div class="page-container">
+        <!-- sidebar menu area start -->
+        <div class="sidebar-menu">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <a href="dashboard.html"><img src="../../static/assets/images/icon/logo.png" alt="logo"></a>
+                </div>
+            </div>
+            <div class="main-menu">
+                <div class="menu-inner">
+                    <nav>
+                        <ul class="metismenu" id="menu">
+                            <li>
+                                <a href="javascript:void(0)" aria-expanded="true"><i class="ti-dashboard"></i><span>dashboard</span></a>
+                                <ul class="collapse">
+                                    <li><a href="dashboard.html">ICO dashboard</a></li>
+                                    <li><a href="dashboard2.html">Ecommerce dashboard</a></li>
+                                    <li><a href="dashboard3.html">SEO dashboard</a></li>
+                                </ul>
+                            </li>
+                            <!-- Quản lý nhân viên -->
+                            <li>
+                                <a href="quanLyNhanVien.html" aria-expanded="true"><i class="fa fa-users"></i><span>Quản lý nhân viên</span></a>
+                            </li>
+                            <!-- Quản lý khách hàng -->
+                            <li>
+                                <a href="quanLyKhachHang.html" aria-expanded="true"><i class="fa fa-user"></i><span>Quản lý khách hàng</span></a>
+                            </li>
+                            <!-- Quản lý sản phẩm -->
+                            <li class="active">
+                                <a href="quanLySanPham.html" aria-expanded="true"><i class="fa fa-mobile"></i><span>Quản lý sản phẩm</span></a>
+                            </li>
+                            <!-- Quản lý đơn hàng -->
+                            <li>
+                                <a href="quanLyDonHang.html" aria-expanded="true"><i class="fa fa-shopping-cart"></i><span>Quản lý đơn hàng</span></a>
+                            </li>
+                            <!-- Quản lý danh mục -->
+                            <li>
+                                <a href="quanLyDanhMuc.html" aria-expanded="true"><i class="fa fa-list"></i><span>Quản lý danh mục</span></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- sidebar menu area end -->
+
+        <!-- main content area start -->
+        <div class="main-content">
+            <!-- header area start -->
+            <div class="header-area">
+                <div class="row align-items-center">
+                    <!-- nav and search button -->
+                    <div class="col-md-6 col-sm-8 clearfix">
+                        <div class="nav-btn pull-left">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <div class="search-box pull-left">
+                            <form action="#">
+                                <input type="text" name="search" placeholder="Search..." required>
+                                <i class="ti-search"></i>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- header area end -->
+
+            <!-- page title area start -->
+            <div class="page-title-area">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <div class="breadcrumbs-area clearfix">
+                            <h4 class="page-title pull-left">Quản lý sản phẩm</h4>
+                            <ul class="breadcrumbs pull-left">
+                                <li><a href="dashboard.html">Trang chủ</a></li>
+                                <li><span>Quản lý sản phẩm</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 clearfix">
+                        <div class="user-profile pull-right">
+                            <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png" alt="avatar">
+                            <h4 class="user-name dropdown-toggle" data-toggle="dropdown">Kumkum Rai <i class="fa fa-angle-down"></i></h4>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Message</a>
+                                <a class="dropdown-item" href="#">Settings</a>
+                                <a class="dropdown-item" href="#">Log Out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- page title area end -->
+
+            <div class="main-content-inner">
+                <div class="container mt-4">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <a href="themSanPham.html">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">
+                                    <i class="fa fa-plus"></i> Thêm sản phẩm mới
+                                </button>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Tìm kiếm danh mục...">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button">
+                                        <i class="fa fa-search"></i> Tìm kiếm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Thêm div với class table-responsive -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover text-center" style="min-width: 1000px;">
+                                        <thead class="bg-primary text-white">
+                                            <tr>
+                                                <th>Mã SP</th>
+                                                <th>Hình ảnh</th>
+                                                <th>Tên sản phẩm</th>
+                                                <th>Danh mục</th>
+                                                <th>Màu sắc</th>
+                                                <th>Giá nhập</th>
+                                                <th>Giá bán</th>
+                                                <th>Số lượng</th>
+                                                <th>Trạng thái</th>
+                                                <th>Thông số kỹ thuật</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>SP001</td>
+                                                <td><img src="../../static/assets/images/products/iphone13.jpg" alt="iPhone 13" width="50"></td>
+                                                <td>iPhone 13 Pro Max 256GB</td>
+                                                <td>Apple</td>
+                                                <td>Đỏ</td>
+                                                <td>25.000.000đ</td>
+                                                <td>28.990.000đ</td>
+                                                <td>15</td>
+                                                <td><span class="badge badge-success">Còn hàng</span></td>
+                                                <td>
+                                                    <button class="btn btn-info btn-sm" data-toggle="tooltip" title="Xem chi tiết">
+                                                        <i class="fa fa-info-circle"></i>
+                                                    </button>
+                                                </td>
+                                                <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-primary btn-sm mr-2" title="Sửa">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteProductModal">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>SP002</td>
+                                    <td><img src="../../static/assets/images/products/samsung-s21.jpg" alt="Samsung S21" width="50"></td>
+                                    <td>Samsung Galaxy S21 Ultra 5G</td>
+                                    <td>Samsung</td>
+                                    <td>Đỏ</td>
+                                    <td>22.000.000đ</td>
+                                    <td>25.990.000đ</td>
+                                    <td>8</td>
+                                                <td><span class="badge badge-success">Còn hàng</span></td>
+                                                <td>
+                                                    <button class="btn btn-info btn-sm" data-toggle="tooltip" title="Xem chi tiết">
+                                                        <i class="fa fa-info-circle"></i>
+                                                    </button>
+                                                </td>
+                                                <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-primary btn-sm mr-2" title="Sửa">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteProductModal">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>SP003</td>
+                                    <td><img src="../../static/assets/images/products/xiaomi12.jpg" alt="Xiaomi 12" width="50"></td>
+                                    <td>Xiaomi 12 Pro 5G</td>
+                                    <td>Xiaomi</td>
+                                    <td>Đỏ</td>
+                                    <td>16.000.000đ</td>
+                                    <td>18.990.000đ</td>
+                                    <td>0</td>
+                                    <td><span class="badge badge-danger">Hết hàng</span></td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm" data-toggle="tooltip" title="Xem chi tiết">
+                                            <i class="fa fa-info-circle"></i>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-primary btn-sm mr-2" title="Sửa">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteProductModal">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>SP004</td>
+                                    <td><img src="../../static/assets/images/products/oppo-reno7.jpg" alt="OPPO Reno7" width="50"></td>
+                                    <td>OPPO Reno7 Pro 5G</td>
+                                    <td>OPPO</td>
+                                    <td>Đỏ</td>
+                                    <td>14.000.000đ</td>
+                                    <td>16.990.000đ</td>
+                                    <td>12</td>
+                                    <td><span class="badge badge-success">Còn hàng</span></td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm" data-toggle="tooltip" title="Xem chi tiết">
+                                            <i class="fa fa-info-circle"></i>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-primary btn-sm mr-2" title="Sửa">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteProductModal">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Phân trang -->
+                            <nav class="mt-3">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">Trước</a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Sau</a>
+                                    </li>
+                                </ul>
+                            </nav>
+    </div>
+                    </div>
+
+                </div>
+        <!-- main content area end -->
+        <!-- footer area start-->
+        <footer>
+            <div class="footer-area">
+                <p>© Copyright 2025.</p>
+            </div>
+        </footer>
+        <!-- footer area end-->
+    </div>
+    <!-- page container area end -->
+    <!-- offset area start -->
+    <div class="offset-area">
+        <div class="offset-close"><i class="ti-close"></i></div>
+        <ul class="nav offset-menu-tab">
+            <li><a class="active" data-toggle="tab" href="#activity">Activity</a></li>
+            <li><a data-toggle="tab" href="#settings">Settings</a></li>
+        </ul>
+    </div>
+    <!-- offset area end -->
+    <!-- jquery latest version -->
+    <script src="../../static/assets/js/vendor/jquery-2.2.4.min.js"></script>
+    <!-- bootstrap 4 js -->
+    <script src="../../static/assets/js/popper.min.js"></script>
+    <script src="../../static/assets/js/bootstrap.min.js"></script>
+    <script src="../../static/assets/js/owl.carousel.min.js"></script>
+    <script src="../../static/assets/js/metisMenu.min.js"></script>
+    <script src="../../static/assets/js/jquery.slimscroll.min.js"></script>
+    <script src="../../static/assets/js/jquery.slicknav.min.js"></script>
+
+    <!-- others plugins -->
+    <script src="../../static/assets/js/plugins.js"></script>
+    <script src="../../static/assets/js/scripts.js"></script>
+
+    <!-- Modal Xác nhận xóa -->
+    <div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Xác nhận xóa sản phẩm</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fa fa-exclamation-triangle text-danger" style="font-size: 50px;"></i>
+                    </div>
+                    <p class="text-center">Bạn có chắc chắn muốn xóa sản phẩm này?</p>
+                    <p class="text-center text-danger"><strong>Lưu ý:</strong> Hành động này không thể hoàn tác!</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fa fa-times"></i> Hủy
+                    </button>
+                    <button type="button" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> Xóa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Style chỉ áp dụng cho modal -->
+    <style>
+        #deleteProductModal .modal-content {
+            border-radius: 8px;
+            border: none;
+        }
+
+        #deleteProductModal .modal-header {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            padding: 1rem 1.5rem;
+        }
+
+        #deleteProductModal .modal-header .close {
+            color: white;
+            opacity: 1;
+            text-shadow: none;
+        }
+
+        #deleteProductModal .modal-body {
+            padding: 2rem;
+        }
+
+        #deleteProductModal .modal-footer {
+            border-top: 1px solid #dee2e6;
+            padding: 1rem;
+        }
+
+        #deleteProductModal .modal-footer .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+        }
+
+        #deleteProductModal .modal-footer .btn i {
+            margin-right: 5px;
+        }
+
+        #deleteProductModal .fa-exclamation-triangle {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TĐ Mobile - Cửa hàng điện thoại chính hãng</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+    /* Header styles */
+    .top-header {
+        background-color: #f8f9fa;
+        padding: 10px 0;
+        font-size: 14px;
+    }
+
+    .main-header {
+        padding: 20px 0;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .search-form {
+        position: relative;
+    }
+
+    .search-form input {
+        padding-right: 40px;
+    }
+
+    .search-form button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        background: none;
+        border: none;
+        padding: 0 15px;
+    }
+
+    /* Navigation styles */
+    .main-nav {
+        background-color: #2874f0;
+        padding: 10px 0;
+    }
+
+    .main-nav .nav-link {
+        color: #fff;
+        padding: 8px 15px;
+    }
+
+    .main-nav .nav-link:hover {
+        background-color: rgba(255,255,255,0.1);
+        border-radius: 4px;
+    }
+
+    /* Banner styles */
+    .banner-section {
+        padding: 20px 0;
+    }
+
+    .carousel-item img {
+        height: 400px;
+        object-fit: cover;
+    }
+
+    /* Product styles */
+    .product-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .product-image {
+        height: 200px;
+        object-fit: contain;
+        padding: 15px;
+    }
+
+    .product-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin: 10px 0;
+        height: 40px;
+        overflow: hidden;
+    }
+
+    .product-price {
+        color: #e60012;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .product-price-old {
+        color: #999;
+        text-decoration: line-through;
+        font-size: 14px;
+    }
+
+    /* Footer styles */
+    .footer {
+        background-color: #2874f0;
+        color: #fff;
+        padding: 40px 0 20px;
+    }
+
+    .footer h5 {
+        color: #fff;
+        margin-bottom: 20px;
+    }
+
+    .footer ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer ul li {
+        margin-bottom: 10px;
+    }
+
+    .footer ul li a {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .footer ul li a:hover {
+        text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<!-- Top Header -->
+<div class="top-header">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <span><i class="fas fa-phone-alt"></i> Hotline: 1900 xxxx</span>
+        <span class="ms-3"><i class="fas fa-envelope"></i> Email: contact@tdmobile.com</span>
+      </div>
+      <div class="col-md-6 text-end">
+        <a href="/login" class="text-dark me-3"><i class="fas fa-user"></i> Đăng nhập</a>
+        <a href="/register" class="text-dark"><i class="fas fa-user-plus"></i> Đăng ký</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Header -->
+<header class="main-header">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-3">
+        <a href="index.html" class="logo">
+          <img src="assets/images/logo.png" alt="TĐ Mobile" height="50">
+        </a>
+      </div>
+      <div class="col-md-6">
+        <form class="search-form">
+          <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm...">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+      <div class="col-md-3 text-end">
+        <a href="#" class="btn btn-outline-primary me-2">
+          <i class="fas fa-shopping-cart"></i> Giỏ hàng (0)
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Navigation -->
+<nav class="main-nav">
+  <div class="container">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Trang chủ</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">iPhone</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Samsung</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Oppo</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Xiaomi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Tin tức</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Liên hệ</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Banner Section -->
+<section class="banner-section">
+  <div class="container">
+    <div id="mainBanner" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#mainBanner" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#mainBanner" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#mainBanner" data-bs-slide-to="2"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="assets/images/banner1.jpg" class="d-block w-100" alt="Banner 1">
+        </div>
+        <div class="carousel-item">
+          <img src="assets/images/banner2.jpg" class="d-block w-100" alt="Banner 2">
+        </div>
+        <div class="carousel-item">
+          <img src="assets/images/banner3.jpg" class="d-block w-100" alt="Banner 3">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#mainBanner" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#mainBanner" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products -->
+<section class="featured-products py-5">
+  <div class="container">
+    <h2 class="text-center mb-4">Sản phẩm nổi bật</h2>
+    <div class="row">
+      <!-- Product Card -->
+      <div class="col-md-3 mb-4">
+        <div class="product-card">
+          <img src="assets/images/products/iphone-13.jpg" class="product-image w-100" alt="iPhone 13">
+          <div class="p-3">
+            <h3 class="product-title">iPhone 13 Pro Max 256GB</h3>
+            <div class="product-price mb-2">28.990.000đ</div>
+            <div class="product-price-old mb-2">32.990.000đ</div>
+            <button class="btn btn-primary w-100">Thêm vào giỏ</button>
+          </div>
+        </div>
+      </div>
+      <!-- Thêm các product card khác tương tự -->
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <h5>Về TĐ Mobile</h5>
+        <ul>
+          <li><a href="#">Giới thiệu</a></li>
+          <li><a href="#">Tuyển dụng</a></li>
+          <li><a href="#">Tin tức</a></li>
+          <li><a href="#">Liên hệ</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h5>Hỗ trợ khách hàng</h5>
+        <ul>
+          <li><a href="#">Hướng dẫn mua hàng</a></li>
+          <li><a href="#">Chính sách bảo hành</a></li>
+          <li><a href="#">Chính sách đổi trả</a></li>
+          <li><a href="#">Thanh toán & Vận chuyển</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h5>Thông tin liên hệ</h5>
+        <ul>
+          <li>Hotline: 1900 xxxx</li>
+          <li>Email: contact@tdmobile.com</li>
+          <li>Địa chỉ: 123 Đường ABC, Quận 1, TP.HCM</li>
+          <li>Giờ làm việc: 8:00 - 21:00</li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h5>Kết nối với chúng tôi</h5>
+        <div class="social-links mb-3">
+          <a href="#" class="me-2"><i class="fab fa-facebook fa-2x"></i></a>
+          <a href="#" class="me-2"><i class="fab fa-youtube fa-2x"></i></a>
+          <a href="#" class="me-2"><i class="fab fa-instagram fa-2x"></i></a>
+          <a href="#"><i class="fab fa-tiktok fa-2x"></i></a>
+        </div>
+        <h5>Phương thức thanh toán</h5>
+        <div class="payment-methods">
+          <img src="assets/images/payment-methods.png" alt="Phương thức thanh toán" class="img-fluid">
+        </div>
+      </div>
+    </div>
+    <hr class="mt-4 mb-4 bg-light">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <p class="mb-0">© 2025 TĐ Mobile.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Quick View Modal -->
+<div class="modal fade" id="quickViewModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Chi tiết sản phẩm</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <img src="" class="img-fluid" id="quickViewImage" alt="Product Image">
+          </div>
+          <div class="col-md-6">
+            <h3 id="quickViewTitle"></h3>
+            <div class="price-box mb-3">
+              <span class="product-price" id="quickViewPrice"></span>
+              <span class="product-price-old" id="quickViewOldPrice"></span>
+            </div>
+            <div class="product-description mb-3">
+              <h5>Thông số kỹ thuật:</h5>
+              <ul class="list-unstyled" id="quickViewSpecs">
+              </ul>
+            </div>
+            <div class="quantity mb-3">
+              <label>Số lượng:</label>
+              <div class="input-group" style="width: 130px;">
+                <button class="btn btn-outline-secondary" type="button" id="decreaseQuantity">-</button>
+                <input type="number" class="form-control text-center" value="1" min="1" id="productQuantity">
+                <button class="btn btn-outline-secondary" type="button" id="increaseQuantity">+</button>
+              </div>
+            </div>
+            <button class="btn btn-primary w-100">Thêm vào giỏ hàng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Back to Top Button -->
+<button id="backToTop" class="btn btn-primary btn-lg back-to-top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- Additional Styles -->
+<style>
+  .social-links a {
+      color: #fff;
+      text-decoration: none;
+  }
+
+  .social-links a:hover {
+      opacity: 0.8;
+  }
+
+  .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: none;
+      z-index: 999;
+  }
+
+  .quantity .form-control {
+      border-left: none;
+      border-right: none;
+  }
+
+  .quantity .btn {
+      z-index: 0;
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+      .top-header {
+          display: none;
+      }
+
+      .carousel-item img {
+          height: 200px;
+      }
+
+      .product-card {
+          margin-bottom: 20px;
+      }
+  }
+</style>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Back to Top Button
+  window.onscroll = function() {
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+          document.getElementById("backToTop").style.display = "block";
+      } else {
+          document.getElementById("backToTop").style.display = "none";
+      }
+  };
+
+  document.getElementById("backToTop").onclick = function() {
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+  };
+
+  // Quantity Controls
+  document.getElementById("decreaseQuantity").onclick = function() {
+      var input = document.getElementById("productQuantity");
+      var value = parseInt(input.value);
+      if (value > 1) {
+          input.value = value - 1;
+      }
+  };
+
+  document.getElementById("increaseQuantity").onclick = function() {
+      var input = document.getElementById("productQuantity");
+      var value = parseInt(input.value);
+      input.value = value + 1;
+  };
+
+  // Quick View Modal
+  function quickView(productId) {
+      // Fetch product details and update modal
+      // This is just a sample implementation
+      const product = {
+          id: productId,
+          name: "iPhone 13 Pro Max 256GB",
+          price: "28.990.000đ",
+          oldPrice: "32.990.000đ",
+          image: "assets/images/products/iphone-13.jpg",
+          specs: [
+              "Màn hình: 6.7 inch Super Retina XDR OLED",
+              "CPU: Apple A15 Bionic",
+              "RAM: 6GB",
+              "Bộ nhớ trong: 256GB",
+              "Camera sau: 12MP + 12MP + 12MP",
+              "Camera trước: 12MP"
+          ]
+      };
+
+      document.getElementById("quickViewTitle").textContent = product.name;
+      document.getElementById("quickViewPrice").textContent = product.price;
+      document.getElementById("quickViewOldPrice").textContent = product.oldPrice;
+      document.getElementById("quickViewImage").src = product.image;
+
+      const specsList = document.getElementById("quickViewSpecs");
+      specsList.innerHTML = "";
+      product.specs.forEach(spec => {
+          const li = document.createElement("li");
+          li.textContent = spec;
+          specsList.appendChild(li);
+      });
+
+      var modal = new bootstrap.Modal(document.getElementById('quickViewModal'));
+      modal.show();
+  }
+</script>
+</body>
+</html>
