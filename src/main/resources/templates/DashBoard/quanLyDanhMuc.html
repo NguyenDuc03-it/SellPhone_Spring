@@ -1,23 +1,23 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>TĐ Mobile - Quản lý danh mục</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/png" href="../../static/assets/images/icon/favicon.ico">
-    <link rel="stylesheet" href="../../static/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../static/assets/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../../static/assets/css/themify-icons.css">
-    <link rel="stylesheet" href="../../static/assets/css/metisMenu.css">
-    <link rel="stylesheet" href="../../static/assets/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="../../static/assets/css/slicknav.min.css">
+    <link rel="shortcut icon" type="image/png" href="../../static/assets/images/icon/favicon.ico" th:href="@{/assets/images/icon/favicon.ico}">
+    <link rel="stylesheet" href="../../static/assets/css/bootstrap.min.css" th:href="@{/assets/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/font-awesome.min.css" th:href="@{/assets/css/font-awesome.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/themify-icons.css" th:href="@{/assets/css/themify-icons.css}">
+    <link rel="stylesheet" href="../../static/assets/css/metisMenu.css" th:href="@{/assets/css/metisMenu.css}">
+    <link rel="stylesheet" href="../../static/assets/css/owl.carousel.min.css" th:href="@{/assets/css/owl.carousel.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/slicknav.min.css" th:href="@{/assets/css/slicknav.min.css}">
     <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="../../static/assets/css/typography.css">
-    <link rel="stylesheet" href="../../static/assets/css/default-css.css">
-    <link rel="stylesheet" href="../../static/assets/css/styles.css">
-    <link rel="stylesheet" href="../../static/assets/css/responsive.css">
-    <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js"></script>
+    <link rel="stylesheet" href="../../static/assets/css/typography.css" th:href="@{/assets/css/typography.css}">
+    <link rel="stylesheet" href="../../static/assets/css/default-css.css" th:href="@{/assets/css/default-css.css}">
+    <link rel="stylesheet" href="../../static/assets/css/styles.css" th:href="@{/assets/css/styles.css}">
+    <link rel="stylesheet" href="../../static/assets/css/responsive.css" th:href="@{/assets/css/responsive.css}">
+    <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
 </head>
 
 <body>
@@ -77,7 +77,7 @@
                     </div>
                     <div class="col-sm-6 clearfix">
                         <div class="user-profile pull-right">
-                            <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png" alt="avatar">
+                            <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png" th:src="@{/assets/images/author/avatar.png}" alt="avatar">
                             <h4 class="user-name dropdown-toggle" data-toggle="dropdown">Admin <i class="fa fa-angle-down"></i></h4>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#">Đăng xuất</a>
@@ -119,7 +119,6 @@
                                             <th>Tên danh mục</th>
                                             <th>Mô tả</th>
                                             <th>Trạng thái</th>
-                                            <th>Ngày tạo</th>
                                             <th>Thao tác</th>
                                         </tr>
                                     </thead>
@@ -129,7 +128,6 @@
                                             <td>Apple</td>
                                             <td>Các sản phẩm của Apple</td>
                                             <td><span class="badge badge-success">Hoạt động</span></td>
-                                            <td>01/03/2024</td>
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
                                                     <button class="btn btn-primary btn-sm mr-2" title="Sửa" data-toggle="modal" data-target="#updateCategoryModal">
@@ -146,7 +144,6 @@
                                             <td>Samsung</td>
                                             <td>Các sản phẩm của Samsung</td>
                                             <td><span class="badge badge-success">Hoạt động</span></td>
-                                            <td>01/03/2024</td>
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
                                                     <button class="btn btn-primary btn-sm mr-2" title="Sửa" data-toggle="modal" data-target="#updateCategoryModal">
@@ -289,15 +286,15 @@
     </div>
 
     <!-- Scripts -->
-    <script src="../../static/assets/js/vendor/jquery-2.2.4.min.js"></script>
-    <script src="../../static/assets/js/popper.min.js"></script>
-    <script src="../../static/assets/js/bootstrap.min.js"></script>
-    <script src="../../static/assets/js/owl.carousel.min.js"></script>
-    <script src="../../static/assets/js/metisMenu.min.js"></script>
-    <script src="../../static/assets/js/jquery.slimscroll.min.js"></script>
-    <script src="../../static/assets/js/jquery.slicknav.min.js"></script>
-    <script src="../../static/assets/js/plugins.js"></script>
-    <script src="../../static/assets/js/scripts.js"></script>
+    <script src="../../static/assets/js/vendor/jquery-2.2.4.min.js" th:src="@{/assets/js/vendor/jquery-2.2.4.min.js}"></script>
+    <script src="../../static/assets/js/popper.min.js" th:src="@{/assets/js/popper.min.js}"></script>
+    <script src="../../static/assets/js/bootstrap.min.js" th:src="@{/assets/js/bootstrap.min.js}"></script>
+    <script src="../../static/assets/js/owl.carousel.min.js" th:src="@{/assets/js/owl.carousel.min.js}"></script>
+    <script src="../../static/assets/js/metisMenu.min.js" th:src="@{/assets/js/metisMenu.min.js}"></script>
+    <script src="../../static/assets/js/jquery.slimscroll.min.js" th:src="@{/assets/js/jquery.slimscroll.min.js}"></script>
+    <script src="../../static/assets/js/jquery.slicknav.min.js" th:src="@{/assets/js/jquery.slicknav.min.js}"></script>
+    <script src="../../static/assets/js/plugins.js" th:src="@{/assets/js/plugins.js}"></script>
+    <script src="../../static/assets/js/scripts.js" th:src="@{/assets/js/scripts.js}"></script>
 
     
 

@@ -2,9 +2,17 @@ package com.example.SellPhone.Model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +28,9 @@ public class User {
     @Column(name = "phone")
     private String phone;
 
+    @Column(name = "password")
+    private String password;
+
     @Column(name = "CCCD")
     private String CCCD;
 
@@ -32,9 +43,23 @@ public class User {
     @Column(name = "dob")
     private String dob;
 
-    @Column(name = "sex")
-    private String sex;
+    @Column(name = "gender")
+    private String gender;
 
     @Column(name = "status")
     private String status;
+
+    public String getRoleWithPrefix(){
+        String position = "";
+        if(role.equals("Admin")){
+            position = "ROLE_ADMIN";
+        }
+        else if(role.equals("Khách hàng")){
+            position = "ROLE_CUSTOMER";
+        }
+        else if(role.equals("Nhân viên")){
+            position = "ROLE_STAFF";
+        }
+        return position;
+    }
 }

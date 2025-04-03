@@ -1,6 +1,5 @@
-package com.example.SellPhone.DTO.Request;
+package com.example.SellPhone.DTO.Request.User;
 
-import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -15,11 +15,11 @@ public class AccountController {
     public String index(Model model){ return "Sell/index";}
 
     // Mở trang đăng nhập
-    @GetMapping("login")
+    @GetMapping("/login")
     public String login_(Model model){ return "AboutAccount/login";}
 
     // Mở trang đăng ký
-    @GetMapping("register")
+    @GetMapping("/register")
     public String register_(Model model){ return "AboutAccount/register";}
 
 }
