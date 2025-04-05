@@ -30,7 +30,7 @@ public class UserCreationRequest {
     private String password;
 
     @NotBlank(message = "Địa chỉ không được để trống")
-    @Pattern(regexp = "^[\\w\\s,.-]+$", message = "Địa chỉ không hợp lệ")
+    @Pattern(regexp = "^[\\p{L}\\s,\\.\\-0-9]+$", message = "Địa chỉ không hợp lệ")
     private String address;
 
 //    @NotBlank(message = "Vai trò không được để trống")

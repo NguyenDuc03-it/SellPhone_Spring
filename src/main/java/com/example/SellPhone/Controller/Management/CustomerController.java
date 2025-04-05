@@ -1,6 +1,7 @@
 package com.example.SellPhone.Controller.Management;
 
 import com.example.SellPhone.DTO.Request.User.UserCreationRequest;
+import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
 import com.example.SellPhone.Model.User;
 import com.example.SellPhone.Service.CustomerService;
 import com.example.SellPhone.Service.UserService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,6 +41,7 @@ public class CustomerController {
     @PostMapping("/op_update")
     String opUpdateCustomer(@RequestParam Long userId, Model model){
         User user = customerService.getCustomerById(userId);
+
         // Chuyển đổi ngày sinh từ định dạng dd/MM/yyyy sang yyyy-MM-dd
         String dob = user.getDob(); // Lấy ngày sinh dạng dd/MM/yyyy
         String formattedDob = null;
@@ -61,7 +64,7 @@ public class CustomerController {
 
     // Chức năng thêm khách hàng
     @PostMapping("/add")
-    String addCustomer(@Valid @ModelAttribute("customer") UserCreationRequest request, BindingResult bindingResult, Model model){
+    String addCustomer(@Valid @ModelAttribute("customer") UserCreationRequest request, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
         if (bindingResult.hasErrors()) {
             // Xử lý lỗi
             model.addAttribute("customer", request);
@@ -88,6 +91,36 @@ public class CustomerController {
         }
 
         User user = customerService.createCustomer(request);
+        // Thêm thông báo thành công vào FlashAttributes
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm khách hàng thành công!");
+        return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
+    }
+
+    // Chức năng sửa thông tin khách hàng
+    @PostMapping("/update")
+    String updateCustomer(@Valid @ModelAttribute("customer") UserUpdateRequest request, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()) {
+            // Xử lý lỗi
+            model.addAttribute("customer", request);
+            return "DashBoard/suaKhachHang"; // Trả về một thông báo lỗi
+        }
+
+        // Kiểm tra ngày sinh có phải trong tương lai không
+        if (isDobInFuture(request.getDob())) {
+            bindingResult.rejectValue("dob", "error.dob", "Ngày sinh không thể là ngày trong tương lai");
+            model.addAttribute("customer", request);
+            return "DashBoard/suaKhachHang"; // Trả về thông báo lỗi nếu ngày sinh không hợp lệ
+        }
+
+
+
+        if(customerService.doesCustomerExistByCCCD(request.getCCCD())){
+            bindingResult.rejectValue("CCCD", "error.CCCD", "CCCD đã tồn tại");
+            model.addAttribute("customer", request);
+            return "DashBoard/suaKhachHang"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
+        }
+
+        User user = customerService.updateCustomer(request.getUserId(), request);
         return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
     }
 

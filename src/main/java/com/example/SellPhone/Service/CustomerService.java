@@ -54,14 +54,20 @@ public class CustomerService {
     public User updateCustomer(Long userId, UserUpdateRequest request){
         User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("Không tìm thấy người dùng"));
 
-        user.setPassword(request.getPassword());
         user.setFullname(request.getFullname());
         user.setPhone(request.getPhone());
         user.setCCCD(request.getCCCD());
         user.setAddress(request.getAddress());
-        user.setDob(request.getDob());
         user.setGender(request.getGender());
         user.setStatus(request.getStatus());
+        user.setRole(request.getRole());
+
+        // Chuyển đổi ngày sinh từ yyyy-MM-dd thành dd/MM/yyyy
+        String formattedDob = convertDateFormat(request.getDob());
+        user.setDob(formattedDob);
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        user.setPassword(encodedPassword);
 
         return userRepository.save(user);
     }
