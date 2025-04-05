@@ -22,4 +22,7 @@ public class AccountController {
     @GetMapping("/register")
     public String register_(Model model){ return "AboutAccount/register";}
 
+    // Mở trang quên mật khẩu
+    @GetMapping("/forgot-password")
+    public String forgotPassword_(Model model){ return "AboutAccount/forgot-password";}
 }

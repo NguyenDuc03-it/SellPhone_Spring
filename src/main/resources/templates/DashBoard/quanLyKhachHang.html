@@ -57,7 +57,7 @@
                         </li>
                         <!-- Quản lý khách hàng -->
                         <li class="active">
-                            <a href="quanLyKhachHang.html" aria-expanded="true"><i class="fa fa-user"></i><span>Quản lý khách hàng</span></a>
+                            <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-user"></i><span>Quản lý khách hàng</span></a>
                         </li>
                         <!-- Quản lý sản phẩm -->
                         <li>
@@ -115,12 +115,12 @@
                 </div>
                 <div class="col-sm-6 clearfix">
                     <div class="user-profile pull-right">
-                        <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png"  th:src="@{assets/images/author/avatar.png}" alt="avatar">
-                        <h4 class="user-name dropdown-toggle" data-toggle="dropdown">Kumkum Rai <i class="fa fa-angle-down"></i></h4>
+                        <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png"  th:src="@{/assets/images/author/avatar.png}" alt="avatar">
+                        <h4 class="user-name dropdown-toggle" data-toggle="dropdown" th:text="${username}"><i class="fa fa-angle-down"></i></h4>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#">Message</a>
                             <a class="dropdown-item" href="#">Settings</a>
-                            <a class="dropdown-item" href="#">Log Out</a>
+                            <a class="dropdown-item" href="/logout">Log Out</a>
                         </div>
                     </div>
                 </div>
@@ -132,7 +132,7 @@
             <div class="container mt-4">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <a href="themKhachHang.html">
+                        <a href="themKhachHang.html" th:href="@{/management/customers/op_add}">
                             <button class="btn btn-primary" data-toggle="modal" data-target="#addCustomerModal">
                                 <i class="fa fa-plus"></i> Thêm khách hàng mới
                             </button>
@@ -176,12 +176,17 @@
                             <td th:text="${cs.address}"></td>
                             <td th:text="${cs.dob}"></td>
                             <td th:text="${cs.gender}"></td>
-                            <td><span class="badge badge-success" th:text="${cs.status}"></span></td>
+                            <td>
+                                <span class="badge" th:classappend="${cs.status == 'Hoạt động' ? 'badge-success' : 'badge-danger'}" th:text="${cs.status}"></span>
+                            </td>
                             <td>
                                 <div class="d-flex justify-content-center gap-2">
-                                    <a href="suaKhachHang.html" class="btn btn-primary btn-sm mr-2" title="Sửa">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
+                                    <form action="#" th:action="@{/management/customers/op_update}" method="POST">
+                                        <input type="hidden" name="userId" th:value="${cs.user_id}" />
+                                        <button type="submit" class="btn btn-primary btn-sm mr-2" title="Sửa">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                    </form>
                                     <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteCustomerModal">
                                         <i class="fa fa-trash"></i>
                                     </button>
@@ -197,15 +202,15 @@
                 <nav class="mt-3">
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:classappend="${customers.hasPrevious()} ? '' : 'disabled'">
-                            <a class="page-link" href="?page=0"  th:href="@{/customers(page=${customers.number - 1})}" tabindex="-1">Trước</a>
+                            <a class="page-link" href="?page=0"  th:href="@{/management/customers(page=${customers.number - 1})}" tabindex="-1">Trước</a>
                         </li>
                         <!-- Lặp qua các trang -->
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, customers.totalPages - 1)}"
                             th:classappend="${i == customers.number ? 'active' : ''}">
-                            <a class="page-link" th:href="@{/customers(page=${i})}">[[${i + 1}]]</a>
+                            <a class="page-link" th:href="@{/management/customers(page=${i})}">[[${i + 1}]]</a>
                         </li>
                         <li class="page-item" th:classappend="${customers.hasNext()} ? '' : 'disabled'">
-                            <a class="page-link" th:href="@{/customers(page=${customers.number + 1})}" >Sau</a>
+                            <a class="page-link" th:href="@{/management/customers(page=${customers.number + 1})}" >Sau</a>
                         </li>
                     </ul>
                 </nav>

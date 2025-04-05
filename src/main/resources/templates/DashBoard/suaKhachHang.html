@@ -111,10 +111,10 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title">Sửa thông tin khách hàng</h4>
-                        <span class="badge badge-primary">Mã KH: KH001</span>
+                        <span class="badge badge-primary" th:text="'Mã KH: ' + ${customer.user_id}"></span>
                     </div>
                     <div class="card-body p-4">
-                        <form id="editEmployeeForm">
+                        <form id="editEmployeeForm" th:action="@{/management/customers/update}" method="post" th:object="${customer}">
                             <!-- Thông tin cá nhân -->
                             <div class="form-section">
                                 <h5 class="form-section-title">Thông tin cá nhân</h5>
@@ -122,28 +122,28 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Mã khách hàng</label>
-                                            <input type="text" class="form-control" value="KH001" readonly>
+                                            <input type="text" class="form-control" th:value="${customer.user_id}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Họ và tên</label>
-                                            <input type="text" class="form-control" value="Nguyễn Văn A">
+                                            <input type="text" class="form-control" th:field="*{fullname}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Ngày sinh</label>
-                                            <input type="date" class="form-control" value="2025-01-01">
+                                            <input type="date" class="form-control" th:field="*{dob}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Giới tính</label>
-                                            <select class="form-control">
-                                                <option value="nam" selected>Nam</option>
-                                                <option value="nu">Nữ</option>
-                                                <option value="khac">Khác</option>
+                                            <select class="form-control" th:field="*{gender}">
+                                                <option value="nam" th:selected="${customer.gender == 'nam'}">Nam</option>
+                                                <option value="nu" th:selected="${customer.gender == 'nu'}">Nữ</option>
+                                                <option value="khac" th:selected="${customer.gender == 'khac'}">Khác</option>
                                             </select>
                                         </div>
                                     </div>
@@ -157,25 +157,31 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Email</label>
-                                            <input type="email" class="form-control" value="nguyenvana@example.com">
+                                            <input type="email" class="form-control" th:field="*{email}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">Mật khẩu</label>
+                                            <input type="text" class="form-control" placeholder="Nhập mật khẩu" th:field="*{password}" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Số điện thoại</label>
-                                            <input type="tel" class="form-control" value="0987654321">
+                                            <input type="tel" class="form-control" th:field="*{phone}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">CCCD</label>
-                                            <input type="text" class="form-control" value="123456789012">
+                                            <input type="text" class="form-control" th:field="*{CCCD}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Địa chỉ</label>
-                                            <textarea class="form-control" rows="3">123 Đường ABC, Quận 1, TP.HCM</textarea>
+                                            <textarea class="form-control" rows="3" th:field="*{address}"></textarea>
                                         </div>
                                     </div>
                                 </div>

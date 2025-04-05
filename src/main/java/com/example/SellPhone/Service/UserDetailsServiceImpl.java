@@ -1,5 +1,6 @@
 package com.example.SellPhone.Service;
 
+import com.example.SellPhone.Config.CustomUserDetails;
 import com.example.SellPhone.Model.User;
 import com.example.SellPhone.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +29,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Người dùng không tồn tại"));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                getAuthorities(user)
-        );
+        if("Hoạt động".equals(user.getStatus())){
+            return new CustomUserDetails(
+                    user.getEmail(),
+                    user.getPassword(),
+                    user.getFullname(),
+                    getAuthorities(user)
+            );
+        }
+        else{
+            System.out.println("Tài khoản đã bị khóa");
+            throw new UsernameNotFoundException("Tài khoản đã bị khóa");
+
+        }
+
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(User user) {

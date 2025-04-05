@@ -26,10 +26,10 @@ public class UserService {
         user.setPhone(request.getPhone());
         user.setCCCD(request.getCCCD());
         user.setAddress(request.getAddress());
-        user.setRole(request.getRole());
+        // user.setRole(request.getRole());
         user.setDob(request.getDob());
         user.setGender(request.getGender());
-        user.setStatus(request.getStatus());
+        // user.setStatus(request.getStatus());
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         user.setPassword(encodedPassword);

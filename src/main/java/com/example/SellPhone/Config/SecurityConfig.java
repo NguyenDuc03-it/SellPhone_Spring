@@ -42,12 +42,16 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
+                        .failureUrl("/login?error=true")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .permitAll()
                         .successHandler(customAuthenticationSuccessHandler())
                 )
-                .logout(logout -> logout.permitAll()
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .permitAll()
                 );
         return http.build();
     }

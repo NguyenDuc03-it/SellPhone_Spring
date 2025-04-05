@@ -56,8 +56,8 @@
                         <div class="row mb-4 rmber-area">
                             <div class="col-6">
                                 <div class="custom-control custom-checkbox mr-sm-2">
-                                    <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
-                                    <label class="custom-control-label" for="customControlAutosizing">Hiện mật khẩu</label>
+                                    <input type="checkbox" class="custom-control-input" id="showPasswordCheckbox">
+                                    <label class="custom-control-label" for="showPasswordCheckbox">Hiện mật khẩu</label>
                                 </div>
                             </div>
                             <div class="col-6 text-right">
@@ -66,8 +66,8 @@
                         </div>
 
                         <!-- Hiển thị thông báo lỗi nếu có -->
-                        <div th:if="${error}" class="error-message">
-                            <p style="color: red;">[[${error}]]</p>
+                        <div th:if="${param.error}" class="error-message">
+                            <p style="color: red;">Tài khoản hoặc mật khẩu không đúng. Hoặc đã bị khóa.</p>
                         </div>
 
 
@@ -105,6 +105,18 @@
     <!-- others plugins -->
     <script src="../../static/assets/js/plugins.js" th:src="@{assets/js/plugins.js}"></script>
     <script src="../../static/assets/js/scripts.js" th:src="@{assets/js/scripts.js}"></script>
+
+    <script>
+        // Hiển thị mật khẩu khi checkbox được chọn
+        document.getElementById('showPasswordCheckbox').addEventListener('change', function () {
+            var passwordInput = document.getElementById('exampleInputPassword1');
+            if (this.checked) {
+                passwordInput.setAttribute('type', 'text');
+            } else {
+                passwordInput.setAttribute('type', 'password');
+            }
+        });
+    </script>
 </body>
 
 </html>
