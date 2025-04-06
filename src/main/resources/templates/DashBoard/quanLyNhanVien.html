@@ -108,6 +108,25 @@
                 </div>
             </div>
             <!-- header area end -->
+
+            <!-- Thông báo thành công với thanh tiến trình -->
+            <div id="successNotification" class="alert alert-success" th:if="${successMessage}">
+                <strong>Thành công!</strong><br>
+                <span th:text="${successMessage}"></span>
+                <div id="progressBar" class="progress mt-2" style="height: 5px;">
+                    <div id="progress" class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- Thông báo thất bại với thanh tiến trình -->
+            <div id="errorNotification" class="alert alert-danger" th:if="${errorMessage}">
+                <strong>Thất bại!</strong><br>
+                <span th:text="${errorMessage}"></span>
+                <div id="errorProgressBar" class="progress mt-2" style="height: 5px;">
+                    <div id="errorProgress" class="progress-bar bg-danger" role="progressbar" style="width: 100%;"></div>
+                </div>
+            </div>
+
             <!-- page title area start -->
             <div class="page-title-area">
                 <div class="row align-items-center">
@@ -122,12 +141,12 @@
                     </div>
                     <div class="col-sm-6 clearfix">
                         <div class="user-profile pull-right">
-                            <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png" alt="avatar">
-                            <h4 class="user-name dropdown-toggle" data-toggle="dropdown">Kumkum Rai <i class="fa fa-angle-down"></i></h4>
+                            <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png" th:src="@{/assets/images/author/avatar.png}" alt="avatar">
+                            <h4 class="user-name dropdown-toggle" data-toggle="dropdown" th:text="${username}"><i class="fa fa-angle-down"></i></h4>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#">Message</a>
                                 <a class="dropdown-item" href="#">Settings</a>
-                                <a class="dropdown-item" href="#">Log Out</a>
+                                <a class="dropdown-item" href="/logout">Log Out</a>
                             </div>
                         </div>
                     </div>
@@ -141,21 +160,23 @@
                  <div class="container mt-4">
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <a href="themNhanVien.html">
+                            <a href="themNhanVien.html" th:href="@{/management/staff/op_add}">
                                 <button class="btn btn-primary" data-toggle="modal" data-target="#addStaffrModal">
                                     <i class="fa fa-plus"></i> Thêm nhân viên mới
                                 </button>
                             </a>
                         </div>
                         <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm danh mục...">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button">
-                                        <i class="fa fa-search"></i> Tìm kiếm
-                                    </button>
+                            <form action="/management/staff" method="GET">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Tìm kiếm nhân viên..." name="searchQuery" th:value="${searchQuery}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fa fa-search"></i> Tìm kiếm
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                     <!-- Thêm div với class table-responsive -->
@@ -164,13 +185,12 @@
                         <table class="table table-bordered text-center" style="min-width: 1000px;">
                         <thead class="bg-primary text-white">
                             <tr>
-                                    <th>ID</th>
+                                    <th>Mã NV</th>
                                     <th>Họ Tên</th>
                                     <th>Email</th>
                                     <th>Số Điện Thoại</th>
                                     <th>CCCD</th>
                                     <th>Địa chỉ</th>
-                                    <th>Vai Trò</th>
                                     <th>Ngày sinh</th>
                                     <th>Giới tính</th>
                                     <th>Trạng thái</th>
@@ -178,109 +198,55 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>EMP-001</td>
-                                <td>Trương Văn F</td>
-                                <td>truongvanf@example.com</td>
-                                <td>0987654321</td>
-                                <td>039018401930</td>
-                                <td>ABC</td>
-                                <td>Admin</td>
-                                <td>10/01/2023</td>
-                                <td>Nam</td>
-                                <td><span class="badge badge-success">Hoạt động</span></td>
+                            <tr th:each="st : ${staff}">
+                                <td th:text="${st.userId}"></td>
+                                <td th:text="${st.fullname}"></td>
+                                <td th:text="${st.email}"></td>
+                                <td th:text="${st.phone}"></td>
+                                <td th:text="${st.CCCD}"></td>
+                                <td th:text="${st.address}"></td>
+                                <td th:text="${st.dob}"></td>
+                                <td th:text="${st.gender}"></td>
+                                <td>
+                                    <span class="badge" th:classappend="${st.status == 'Hoạt động' ? 'badge-success' : 'badge-danger'}" th:text="${st.status}"></span>
+                                </td>
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
-                                        <a href="suaNhanVien.html" class="btn btn-primary btn-sm mr-2" title="Sửa">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteEmployeeModal">
+                                        <form action="#" th:action="@{/management/staff/op_update}" method="POST">
+                                            <input type="hidden" name="userId" th:value="${st.userId}" />
+                                            <button type="submit" class="btn btn-primary btn-sm mr-2" title="Sửa">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                        </form>
+                                        <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal"
+                                                data-target="#deleteEmployeeModal" th:data-id="${st.userId}">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>EMP-002</td>
-                                <td>Lý Thị G</td>
-                                <td>lythig@example.com</td>
-                                <td>0976543210</td>
-                                <td>039018401930</td>
-                                <td>ABC</td>
-                                <td>Quản lý</td>
-                                <td>15/01/2023</td>
-                                <td>Nữ</td>
-                                <td><span class="badge badge-success">Hoạt động</span></td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <a href="suaNhanVien.html" class="btn btn-primary btn-sm mr-2" title="Sửa">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteEmployeeModal">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>EMP-003</td>
-                                <td>Phạm Văn H</td>
-                                <td>phamvanh@example.com</td>
-                                <td>0965432109</td>
-                                <td>039018401930</td>
-                                <td>ABC</td>
-                                <td>Nhân viên</td>
-                                <td>20/01/2023</td>
-                                <td>Nam</td>
-                                <td><span class="badge badge-success">Hoạt động</span></td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <a href="suaNhanVien.html" class="btn btn-primary btn-sm mr-2" title="Sửa">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteEmployeeModal">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>EMP-004</td>
-                                <td>Đỗ Thị I</td>
-                                <td>dothii@example.com</td>
-                                <td>0954321098</td>
-                                <td>039018401930</td>
-                                <td>ABC</td>
-                                <td>Nhân viên</td>
-                                <td>25/01/2023</td>
-                                <td>Nữ</td>
-                                <td><span class="badge badge-success">Hoạt động</span></td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <a href="suaNhanVien.html" class="btn btn-primary btn-sm mr-2" title="Sửa">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteEmployeeModal">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-            </div>
-                                </td>
-                            </tr>
+
                         </tbody>
                     </table>
                     </div>
-                    <nav>
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">Sau</a></li>
-        </ul>
-                    </nav>
-    </div>
+                     <!-- Phân trang -->
+                     <nav class="mt-3">
+                         <ul class="pagination justify-content-center">
+                             <li class="page-item" th:classappend="${staff.hasPrevious()} ? '' : 'disabled'">
+                                 <a class="page-link" href="?page=0"  th:href="@{/management/staff(page=${staff.number - 1}, searchQuery=${searchQuery})}" tabindex="-1">Trước</a>
+                             </li>
+                             <!-- Lặp qua các trang -->
+                             <li class="page-item" th:each="i : ${#numbers.sequence(0, staff.totalPages - 1)}"
+                                 th:classappend="${i == staff.number ? 'active' : ''}">
+                                 <a class="page-link" th:href="@{/management/staff(page=${i}, searchQuery=${searchQuery})}">[[${i + 1}]]</a>
+                             </li>
+                             <li class="page-item" th:classappend="${staff.hasNext()} ? '' : 'disabled'">
+                                 <a class="page-link" th:href="@{/management/staff(page=${staff.number + 1}, searchQuery=${searchQuery})}" >Sau</a>
+                             </li>
+                         </ul>
+                     </nav>
             </div>
                 <!-- table primary end -->
-            
             </div>
         </div>
         <!-- main content area end -->
@@ -338,9 +304,15 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">
                         <i class="fa fa-times"></i> Hủy
                     </button>
-                    <button type="button" class="btn btn-danger">
-                        <i class="fa fa-trash"></i> Xóa
-                    </button>
+
+                    <!-- Form gửi POST tới controller để xóa nhân viên -->
+                    <form id="deleteStaffForm" action="#" th:action="@{/management/staff/delete}" method="POST">
+                        <!-- Trường ẩn để chứa userId -->
+                        <input type="hidden" name="userId" id="userIdToDelete"/>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa fa-trash"></i> Xóa
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -393,6 +365,202 @@
             75% { transform: translateX(5px); }
         }
     </style>
+
+
+    <!--Style áp dụng cho thông báo thành công-->
+    <style>
+        #successNotification {
+
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+        width: 300px;
+        padding: 15px;
+        background-color: #eafaf1; /* Nền sáng hơn */
+        color: #28a745; /* Chữ xanh lá */
+        border-radius: 8px;
+        font-size: 16px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+        animation: slideIn 0.5s ease-in-out;
+        }
+
+        #successNotification strong {
+        font-weight: bold;
+        }
+
+        #successNotification span {
+        display: block;
+        margin-top: 5px;
+        word-wrap: break-word;  /* Đảm bảo chữ không vượt ra ngoài */
+        }
+
+        #progressBar {
+        height: 5px;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+        margin-top: 10px;
+        }
+
+        #progress {
+        width: 100%;
+        height: 5px;
+        background-color: #5cb85c;
+        border-radius: 3px;
+        }
+
+        /* Animation for sliding in */
+        @keyframes slideIn {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+        }
+    </style>
+
+    <!-- Style áp dụng cho thông báo thất bại-->
+    <style>
+        #errorNotification {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            width: 300px;
+            padding: 15px;
+            background-color: #f8d7da; /* Nền màu đỏ nhạt */
+            color: #dc3545; /* Chữ đỏ */
+            border-radius: 8px;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        #errorNotification strong {
+            font-weight: bold;
+        }
+
+        #errorNotification span {
+            display: block;
+            margin-top: 5px;
+            word-wrap: break-word;  /* Đảm bảo chữ không vượt ra ngoài */
+        }
+
+        #errorProgressBar {
+            height: 5px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+
+        #errorProgress {
+            width: 100%;
+            height: 5px;
+            background-color: #dc3545;
+            border-radius: 3px;
+        }
+
+        /* Animation for sliding in */
+        @keyframes slideIn {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+    </style>
+
+    <!-- Script for success notification -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var successMessage = /*[[${successMessage}]]*/ 'null';
+        if (successMessage !== 'null') {
+            var successNotification = document.getElementById('successNotification');
+            var successProgressBar = document.getElementById('progress');
+            var successProgress = 100; // Initial value of the progress bar
+
+            // Display the notification
+            successNotification.style.display = 'block';
+
+            // Progress bar decreases from 100% to 0%
+            var successInterval = setInterval(function() {
+                if (successProgress > 0) {
+                    successProgress -= 1;
+                    successProgressBar.style.width = successProgress + '%';
+                } else {
+                    clearInterval(successInterval); // Stop the progress when it reaches 0%
+                    setTimeout(function() {
+                        successNotification.style.display = 'none'; // Hide the notification after completion
+                    }, 500); // Wait 500ms for the progress bar to disappear gradually
+                }
+            }, 30); // Every 30ms, decrease the progress bar by 1%
+
+            // Hide the notification after 5 seconds (along with the progress bar)
+            setTimeout(function() {
+                if (successProgress > 0) { // If the progress bar is not yet completed
+                    clearInterval(successInterval); // Stop the progress bar
+                    successProgressBar.style.width = '0%'; // Set the progress bar to 0%
+                    successNotification.style.display = 'none'; // Hide the notification
+                }
+            }, 5000); // 5000 ms = 5 seconds
+        }
+        /*]]>*/
+    </script>
+
+    <!-- Script for error notification -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var errorMessage = /*[[${errorMessage}]]*/ 'null';
+        if (errorMessage !== 'null') {
+            var errorNotification = document.getElementById('errorNotification');
+            var errorProgressBar = document.getElementById('errorProgress');
+            var errorProgress = 100; // Initial value of the progress bar
+
+            // Display the notification
+            errorNotification.style.display = 'block';
+
+            // Progress bar decreases from 100% to 0%
+            var errorInterval = setInterval(function() {
+                if (errorProgress > 0) {
+                    errorProgress -= 1;
+                    errorProgressBar.style.width = errorProgress + '%';
+                } else {
+                    clearInterval(errorInterval); // Stop the progress when it reaches 0%
+                    setTimeout(function() {
+                        errorNotification.style.display = 'none'; // Hide the notification after completion
+                    }, 500); // Wait 500ms for the progress bar to disappear gradually
+                }
+            }, 30); // Every 30ms, decrease the progress bar by 1%
+
+            // Hide the notification after 5 seconds (along with the progress bar)
+            setTimeout(function() {
+                if (errorProgress > 0) { // If the progress bar is not yet completed
+                    clearInterval(errorInterval); // Stop the progress bar
+                    errorProgressBar.style.width = '0%'; // Set the progress bar to 0%
+                    errorNotification.style.display = 'none'; // Hide the notification
+                }
+            }, 5000); // 5000 ms = 5 seconds
+        }
+        /*]]>*/
+    </script>
+
+    <!-- Script cho chức năng xóa nhân viên -->
+    <script>
+        // Lắng nghe sự kiện khi modal được mở
+        $('#deleteEmployeeModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Lấy button đã mở modal
+            var userId = button.data('id'); // Lấy userId từ thuộc tính data-id
+            var modal = $(this);
+
+            // Cập nhật giá trị của input hidden trong form modal
+            modal.find('#userIdToDelete').val(userId);
+        });
+    </script>
+
 </body>
 
 </html>

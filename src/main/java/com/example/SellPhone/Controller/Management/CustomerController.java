@@ -21,7 +21,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 // Trang quản lý khách hàng
@@ -118,13 +120,13 @@ public class CustomerController {
 
 
 
-        if(customerService.doesCustomerExistByCCCD(request.getCCCD()) && !request.getCCCD().equals(customerService.getCustomerById(request.getUser_id()).getCCCD())){
+        if(customerService.doesCustomerExistByCCCD(request.getCCCD()) && !request.getCCCD().equals(customerService.getCustomerById(request.getUserId()).getCCCD())){
             bindingResult.rejectValue("CCCD", "error.CCCD", "CCCD đã tồn tại");
             model.addAttribute("customer", request);
             return "DashBoard/suaKhachHang"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
         }
 
-        User user = customerService.updateCustomer(request.getUser_id(), request);
+        User user = customerService.updateCustomer(request.getUserId(), request);
         // Thêm thông báo thành công vào FlashAttributes
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin khách hàng thành công!");
         return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
@@ -137,6 +139,7 @@ public class CustomerController {
 
         // Tìm kiếm khách hàng theo các trường fullname, email, hoặc CCCD
         Page<User> customers = customerService.searchCustomers(searchQuery, pageable);
+
 
         model.addAttribute("customers", customers);
         model.addAttribute("searchQuery", searchQuery); // Để giữ giá trị tìm kiếm trong form
@@ -165,11 +168,21 @@ public class CustomerController {
 
     // Hiển thị danh sách khách hàng và phân trang
     @GetMapping
-    String customerManagement(Model model, @RequestParam(defaultValue = "0") int page){
+    String customerManagement(Model model, @RequestParam(required = false) String searchQuery, @RequestParam(defaultValue = "0") int page){
         Pageable pageable = PageRequest.of(page, 10);  // 10 dòng trên mỗi trang
+        Page<User> customers;
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            // Nếu có tìm kiếm
+            customers = customerService.searchCustomers(searchQuery, pageable);
+            model.addAttribute("searchQuery", searchQuery); // Lưu giá trị tìm kiếm để giữ lại khi chuyển trang
+        } else {
+            // Nếu không có tìm kiếm
+            customers = customerService.getCustomer(pageable);
+        }
 
-        Page<User> customers =customerService.getCustomer(pageable);
+        // Truyền các URL vào model
         model.addAttribute("customers", customers);
+
         return "DashBoard/quanLyKhachHang";
     }
 

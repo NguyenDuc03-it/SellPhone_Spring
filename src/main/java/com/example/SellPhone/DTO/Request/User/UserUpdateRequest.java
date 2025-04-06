@@ -10,7 +10,7 @@ public class UserUpdateRequest {
 
     @NotNull(message = "ID người dùng không được để trống")
     @Min(value = 1, message = "ID người dùng không hợp lệ")
-    private Long user_id;
+    private Long userId;
 
     @NotBlank(message = "Họ và tên không được để trống")
     private String fullname;

@@ -95,8 +95,8 @@
                     <div class="breadcrumbs-area clearfix">
                         <h4 class="page-title pull-left">Sửa thông tin nhân viên</h4>
                         <ul class="breadcrumbs pull-left">
-                            <li><a href="dashboard.html">Trang chủ</a></li>
-                            <li><a href="quanLyNhanVien.html">Quản lý nhân viên</a></li>
+                            <li><a href="/management/dashboard">Trang chủ</a></li>
+                            <li><a href="/management/staff">Quản lý nhân viên</a></li>
                             <li><span>Sửa nhân viên</span></li>
                         </ul>
                     </div>
@@ -110,39 +110,108 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title">Sửa thông tin nhân viên</h4>
-                        <span class="badge badge-primary">Mã NV: NV001</span>
+                        <span class="badge badge-primary" th:text="'Mã KH: ' + ${staff.userId}"></span>
                     </div>
                     <div class="card-body p-4">
-                        <form id="editEmployeeForm">
+                        <form id="editEmployeeForm" th:action="@{/management/staff/update}" method="post" th:object="${staff}">
                             <!-- Thông tin cá nhân -->
                             <div class="form-section">
                                 <h5 class="form-section-title">Thông tin cá nhân</h5>
                                 <div class="row">
                                     <div class="col-md-6">
+
+                                        <!-- Thông báo lỗi -->
+                                        <div th:if="${#fields.hasErrors('userId')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('userId')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <div th:if="${#fields.hasErrors('fullname')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('fullname')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <div th:if="${#fields.hasErrors('email')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('email')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <div th:if="${#fields.hasErrors('phone')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('phone')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <div th:if="${#fields.hasErrors('CCCD')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('CCCD')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <div th:if="${#fields.hasErrors('address')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('address')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <div th:if="${#fields.hasErrors('role')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('role')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <div th:if="${#fields.hasErrors('dob')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('dob')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <div th:if="${#fields.hasErrors('gender')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('gender')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <div th:if="${#fields.hasErrors('status')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('status')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <div th:if="${#fields.hasErrors('password')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('password')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
+                                        <!--Nhập thông tin nhân viên-->
                                         <div class="form-group">
                                             <label class="required-field">Mã nhân viên</label>
-                                            <input type="text" class="form-control" value="NV001" readonly>
+                                            <input type="text" class="form-control" th:value="${staff.userId}" th:field="*{userId}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Họ và tên</label>
-                                            <input type="text" class="form-control" value="Nguyễn Văn A">
+                                            <input type="text" class="form-control" th:field="*{fullname}" placeholder="Nhập họ và tên" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Ngày sinh</label>
-                                            <input type="date" class="form-control" value="1990-01-01">
+                                            <input type="date" class="form-control" th:field="*{dob}" placeholder="Chọn ngày sinh" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Giới tính</label>
-                                            <select class="form-control">
-                                                <option value="nam" selected>Nam</option>
-                                                <option value="nu">Nữ</option>
-                                                <option value="khac">Khác</option>
+                                            <select class="form-control" th:field="*{gender}" required>
+                                                <option value="Nam" th:selected="${staff.gender == 'Nam'}">Nam</option>
+                                                <option value="Nữ" th:selected="${staff.gender == 'Nữ'}">Nữ</option>
+                                                <option value="Khác" th:selected="${staff.gender == 'Khác'}">Khác</option>
                                             </select>
                                         </div>
                                     </div>
@@ -156,25 +225,31 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Email</label>
-                                            <input type="email" class="form-control" value="nguyenvana@example.com">
+                                            <input type="email" class="form-control" th:field="*{email}" placeholder="Nhập email" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">Mật khẩu</label>
+                                            <input type="text" class="form-control" placeholder="Nhập mật khẩu" th:field="*{password}" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Số điện thoại</label>
-                                            <input type="tel" class="form-control" value="0987654321">
+                                            <input type="tel" class="form-control" th:field="*{phone}" placeholder="Nhập số điện thoại" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">CCCD</label>
-                                            <input type="text" class="form-control" value="123456789012">
+                                            <input type="text" class="form-control" th:field="*{CCCD}" placeholder="Nhập số CCCD" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Địa chỉ</label>
-                                            <textarea class="form-control" rows="3">123 Đường ABC, Quận 1, TP.HCM</textarea>
+                                            <textarea class="form-control" rows="3" th:field="*{address}" required></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -182,24 +257,24 @@
 
                             <!-- Thông tin công việc -->
                             <div class="form-section">
-                                <h5 class="form-section-title">Thông tin công việc</h5>
+                                <h5 class="form-section-title">Thông tin tài khoản</h5>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Vai trò</label>
-                                            <select class="form-control">
-                                                <option value="admin">Admin</option>
-                                                <option value="manager" selected>Quản lý</option>
-                                                <option value="staff">Nhân viên</option>
+                                            <select class="form-control" th:field="*{role}" required>
+                                                <option value="">Chọn vai trò</option>
+                                                <option value="Admin" th:selected="${staff.role == 'Admin'}">Admin</option>
+                                                <option value="Nhân viên" th:selected="${staff.role == 'Nhân viên'}">Nhân viên</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Trạng thái</label>
-                                            <select class="form-control">
-                                                <option value="active" selected>Hoạt động</option>
-                                                <option value="inactive">Không hoạt động</option>
+                                            <select class="form-control" th:field="*{status}" required>
+                                                <option value="Hoạt động" th:selected="${staff.status == 'Hoạt động'}">Hoạt động</option>
+                                                <option value="Khóa" th:selected="${staff.status == 'Khóa'}">Khóa</option>
                                             </select>
                                         </div>
                                     </div>
@@ -211,7 +286,7 @@
                                 <button type="submit" class="btn btn-primary btn-submit mr-2">
                                     <i class="fa fa-save"></i> Lưu thay đổi
                                 </button>
-                                <a href="quanLyNhanVien.html" class="btn btn-cancel">
+                                <a href="quanLyNhanVien.html" th:href="@{/management/staff}" class="btn btn-cancel text-white">
                                     <i class="fa fa-times"></i> Hủy
                                 </a>
                             </div>

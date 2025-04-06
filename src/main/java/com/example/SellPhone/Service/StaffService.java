@@ -15,22 +15,28 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
-public class CustomerService {
+public class StaffService {
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Tạo khách hàng mới
-    public User createCustomer(UserCreationRequest request){
+    // Lấy thông tin khách hàng theo ID
+    public User getStaffById(Long userId){
+        return userRepository.findById(userId).orElseThrow(()-> new RuntimeException("Không tìm thấy người dùng"));
+    }
+
+    // Tạo nhân viên mới
+    public User createStaff(UserCreationRequest request){
         User user = new User();
         user.setEmail(request.getEmail());
         user.setFullname(request.getFullname());
         user.setPhone(request.getPhone());
         user.setCCCD(request.getCCCD());
         user.setAddress(request.getAddress());
-        user.setRole("Khách hàng");
+        user.setRole("Nhân viên");
 
         // Chuyển đổi ngày sinh từ yyyy-MM-dd thành dd/MM/yyyy
         String formattedDob = convertDateFormat(request.getDob());
@@ -45,13 +51,8 @@ public class CustomerService {
         return userRepository.save(user);
     }
 
-    // Hiển thị danh sách user có role là 'Khách hàng'
-    public Page<User> getCustomer(Pageable pageable){
-        return userRepository.findByRole("Khách hàng", pageable);
-    }
-
-    // Cập nhật thông tin khách hàng
-    public User updateCustomer(Long userId, UserUpdateRequest request){
+    // Cập nhật thông tin nhân viên
+    public User updateStaff(Long userId, UserUpdateRequest request){
         User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("Không tìm thấy người dùng"));
 
         user.setFullname(request.getFullname());
@@ -68,26 +69,17 @@ public class CustomerService {
 
         // Nếu mật khẩu trong request khác với mật khẩu hiện tại, mã hóa mật khẩu mới
         if(!user.getPassword().equals(request.getPassword())){
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        user.setPassword(encodedPassword);
+            String encodedPassword = passwordEncoder.encode(request.getPassword());
+            user.setPassword(encodedPassword);
         }
 
         return userRepository.save(user);
     }
 
-    // Lấy thông tin khách hàng theo ID
-    public User getCustomerById(Long userId){
-        return userRepository.findById(userId).orElseThrow(()-> new RuntimeException("Không tìm thấy người dùng"));
-    }
-
-    // Kiểm tra email đã tồn tại hay chưa
-    public boolean doesCustomerExistByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    // Kiểm tra CCCD đã tồn tại hay chưa
-    public boolean doesCustomerExistByCCCD(String CCCD) {
-        return userRepository.existsByCCCD(CCCD);
+    // Xóa nhân viên
+    public void deleteStaff(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        userRepository.delete(user);
     }
 
     // Tìm kiếm id người dùng theo CCCD
@@ -95,8 +87,8 @@ public class CustomerService {
         return userRepository.findIdByCCCD(CCCD);
     }
 
-    // Tìm kiếm khách hàng theo các trường fullname, email hoặc CCCD
-    public Page<User> searchCustomers(String searchQuery, Pageable pageable) {
+    // Tìm kiếm nhân viên theo các trường fullname, email hoặc CCCD
+    public Page<User> searchStaff(String searchQuery, Pageable pageable) {
 
         // Kiểm tra xem searchQuery có phải là một số hợp lệ không (dành cho id, cccd, phone)
         boolean isNumeric = false;
@@ -116,21 +108,36 @@ public class CustomerService {
         // Nếu searchQuery là số, tìm kiếm theo id, cccd, phone (cả String và Long)
         if (isNumeric) {
             return userRepository.findByRoleAndUserIdOrRoleAndCCCDContainingOrRoleAndPhoneContaining(
-                    "Khách hàng", Long.parseLong(searchQuery),  // Tìm kiếm theo id
-                    "Khách hàng", searchQuery,  // Tìm kiếm theo CCCD
-                    "Khách hàng", searchQuery,  // Tìm kiếm theo phone
+                    "Nhân viên", Long.parseLong(searchQuery),  // Tìm kiếm theo id
+                    "Nhân viên", searchQuery,  // Tìm kiếm theo CCCD
+                    "Nhân viên", searchQuery,  // Tìm kiếm theo phone
                     pageable);
         } else {
             // Nếu không phải là số, tìm kiếm chỉ theo các trường khác (fullname, email, CCCD, ...)
             return userRepository.findByRoleAndFullnameContainingOrRoleAndEmailContainingOrRoleAndAddressContainingOrRoleAndDobContainingOrRoleAndGenderContainingOrRoleAndStatusContaining(
-                    "Khách hàng", searchQuery,
-                    "Khách hàng", searchQuery,
-                    "Khách hàng", searchQuery,
-                    "Khách hàng", searchQuery,
-                    "Khách hàng", searchQuery,
-                    "Khách hàng", searchQuery,
+                    "Nhân viên", searchQuery,
+                    "Nhân viên", searchQuery,
+                    "Nhân viên", searchQuery,
+                    "Nhân viên", searchQuery,
+                    "Nhân viên", searchQuery,
+                    "Nhân viên", searchQuery,
                     pageable);
         }
+    }
+
+    // Hiển thị danh sách user có role là 'Nhân viên'
+    public Page<User> getStaff(Pageable pageable){
+        return userRepository.findByRole("Nhân viên", pageable);
+    }
+
+    // Kiểm tra email đã tồn tại hay chưa
+    public boolean doesCustomerExistByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    // Kiểm tra CCCD đã tồn tại hay chưa
+    public boolean doesCustomerExistByCCCD(String CCCD) {
+        return userRepository.existsByCCCD(CCCD);
     }
 
     // Hàm chuyển đổi định dạng ngày từ yyyy-MM-dd thành dd/MM/yyyy
@@ -144,9 +151,4 @@ public class CustomerService {
         return date.format(outputFormatter);
     }
 
-    // Xóa khách hàng
-    public void deleteCustomer(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
-        userRepository.delete(user);
-    }
 }
