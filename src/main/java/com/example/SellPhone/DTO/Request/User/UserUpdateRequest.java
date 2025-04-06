@@ -1,7 +1,6 @@
 package com.example.SellPhone.DTO.Request.User;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,11 +8,16 @@ import lombok.Setter;
 @Setter
 public class UserUpdateRequest {
 
-    @NotBlank(message = "ID người dùng không được để trống")
-    private Long userId;
+    @NotNull(message = "ID người dùng không được để trống")
+    @Min(value = 1, message = "ID người dùng không hợp lệ")
+    private Long user_id;
 
     @NotBlank(message = "Họ và tên không được để trống")
     private String fullname;
+
+    @Email(message = "Email không hợp lệ")
+    @NotBlank(message = "Email không được để trống")
+    private String email;
 
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^(\\+84|0)[0-9]{9}$", message = "Số điện thoại không hợp lệ, phải bắt đầu bằng +84 hoặc 0 và có 10 chữ số")
@@ -27,7 +31,7 @@ public class UserUpdateRequest {
     private String password;
 
     @NotBlank(message = "Địa chỉ không được để trống")
-    @Pattern(regexp = "^[\\p{L}\\s,.-]+$", message = "Địa chỉ không hợp lệ")
+    @Pattern(regexp = "^[\\p{L}\\s,\\.\\-0-9]+$", message = "Địa chỉ không hợp lệ")
     private String address;
 
     @NotBlank(message = "Vai trò không được để trống")

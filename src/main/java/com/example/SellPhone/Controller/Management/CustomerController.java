@@ -4,6 +4,7 @@ import com.example.SellPhone.DTO.Request.User.UserCreationRequest;
 import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
 import com.example.SellPhone.Model.User;
 import com.example.SellPhone.Service.CustomerService;
+import com.example.SellPhone.Service.OrderService;
 import com.example.SellPhone.Service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ import java.util.Date;
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private OrderService orderService;
 
     //Mở trang thêm khách hàng
     @GetMapping("/op_add")
@@ -73,7 +77,7 @@ public class CustomerController {
 
         // Kiểm tra ngày sinh có phải trong tương lai không
         if (isDobInFuture(request.getDob())) {
-            bindingResult.rejectValue("dob", "error.dob", "Ngày sinh không thể là ngày trong tương lai");
+            bindingResult.rejectValue("dob", "error.dob", "Ngày sinh không hợp lệ hoặc nằm trong tương lai");
             model.addAttribute("customer", request);
             return "DashBoard/themKhachHang"; // Trả về thông báo lỗi nếu ngày sinh không hợp lệ
         }
@@ -98,7 +102,7 @@ public class CustomerController {
 
     // Chức năng sửa thông tin khách hàng
     @PostMapping("/update")
-    String updateCustomer(@Valid @ModelAttribute("customer") UserUpdateRequest request, BindingResult bindingResult, Model model){
+    String updateCustomer(@Valid @ModelAttribute("customer") UserUpdateRequest request, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
         if (bindingResult.hasErrors()) {
             // Xử lý lỗi
             model.addAttribute("customer", request);
@@ -114,16 +118,50 @@ public class CustomerController {
 
 
 
-        if(customerService.doesCustomerExistByCCCD(request.getCCCD())){
+        if(customerService.doesCustomerExistByCCCD(request.getCCCD()) && !request.getCCCD().equals(customerService.getCustomerById(request.getUser_id()).getCCCD())){
             bindingResult.rejectValue("CCCD", "error.CCCD", "CCCD đã tồn tại");
             model.addAttribute("customer", request);
             return "DashBoard/suaKhachHang"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
         }
 
-        User user = customerService.updateCustomer(request.getUserId(), request);
+        User user = customerService.updateCustomer(request.getUser_id(), request);
+        // Thêm thông báo thành công vào FlashAttributes
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin khách hàng thành công!");
         return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
     }
 
+    // Chức năng tìm kiếm khách hàng
+    @GetMapping("/search")
+    String searchCustomers(Model model, @RequestParam String searchQuery, @RequestParam(defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, 10);  // 10 dòng trên mỗi trang
+
+        // Tìm kiếm khách hàng theo các trường fullname, email, hoặc CCCD
+        Page<User> customers = customerService.searchCustomers(searchQuery, pageable);
+
+        model.addAttribute("customers", customers);
+        model.addAttribute("searchQuery", searchQuery); // Để giữ giá trị tìm kiếm trong form
+        return "DashBoard/quanLyKhachHang"; // Trả về trang quản lý khách hàng
+    }
+
+    // Chức năng xóa khách hàng
+    @PostMapping("/delete")
+    String deleteCustomer(@RequestParam Long userId, RedirectAttributes redirectAttributes){
+
+        // Kiểm tra xem khách hàng có đơn hàng chưa hoàn thành không
+        if (orderService.hasPendingOrders(userId)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Khách hàng có đơn hàng chưa hoàn thành, không thể xóa!");
+            return "redirect:/management/customers"; // Quay lại trang danh sách khách hàng
+        }
+
+        User user = customerService.getCustomerById(userId);
+        if (user != null) {
+            customerService.deleteCustomer(userId);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa khách hàng thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy khách hàng để xóa!");
+        }
+        return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
+    }
 
     // Hiển thị danh sách khách hàng và phân trang
     @GetMapping

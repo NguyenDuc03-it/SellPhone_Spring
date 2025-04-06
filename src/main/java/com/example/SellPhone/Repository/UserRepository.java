@@ -19,4 +19,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByCCCD(String CCCD);
 
     boolean existsByEmail(String email);
+
+    Optional<User> findIdByCCCD(String CCCD);
+
+    Page<User> findByUserId(Long userId, Pageable pageable);
+
+    Page<User> findByFullnameContainingOrEmailContainingOrCCCDContainingOrPhoneContainingOrAddressContainingOrDobContainingOrGenderContainingOrStatusContaining(
+            String fullname, String email, String CCCD, String phone, String address, String dob, String gender, String status, Pageable pageable);
 }

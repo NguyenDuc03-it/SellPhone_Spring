@@ -111,7 +111,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title">Sửa thông tin khách hàng</h4>
-                        <span class="badge badge-primary" th:text="'Mã KH: ' + ${customer.user_id}"></span>
+                        <span class="badge badge-primary" th:text="'Mã KH: ' + ${customer.userId}"></span>
                     </div>
                     <div class="card-body p-4">
                         <form id="editEmployeeForm" th:action="@{/management/customers/update}" method="post" th:object="${customer}">
@@ -122,6 +122,12 @@
                                     <div class="col-md-6">
 
                                         <!-- Thông báo lỗi -->
+                                        <div th:if="${#fields.hasErrors('userId')}" class="alert alert-danger">
+                                            <ul>
+                                                <li th:each="err : ${#fields.errors('userId')}" th:text="${err}"></li>
+                                            </ul>
+                                        </div>
+
                                         <div th:if="${#fields.hasErrors('fullname')}" class="alert alert-danger">
                                             <ul>
                                                 <li th:each="err : ${#fields.errors('fullname')}" th:text="${err}"></li>
@@ -185,7 +191,7 @@
                                         <!--Nhập thông tin khách hàng-->
                                         <div class="form-group">
                                             <label class="required-field">Mã khách hàng</label>
-                                            <input type="text" class="form-control" th:value="${customer.user_id}" readonly>
+                                            <input type="text" class="form-control" th:value="${customer.userId}" th:field="*{userId}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-6">

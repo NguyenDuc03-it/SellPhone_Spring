@@ -66,8 +66,11 @@ public class CustomerService {
         String formattedDob = convertDateFormat(request.getDob());
         user.setDob(formattedDob);
 
+        // Nếu mật khẩu trong request khác với mật khẩu hiện tại, mã hóa mật khẩu mới
+        if(!user.getPassword().equals(request.getPassword())){
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         user.setPassword(encodedPassword);
+        }
 
         return userRepository.save(user);
     }
@@ -77,14 +80,42 @@ public class CustomerService {
         return userRepository.findById(userId).orElseThrow(()-> new RuntimeException("Không tìm thấy người dùng"));
     }
 
-    // Lấy thông tin khách hàng theo email
+    // Kiểm tra email đã tồn tại hay chưa
     public boolean doesCustomerExistByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    // Lấy thông tin khách hàng theo CCCD
+    // Kiểm tra CCCD đã tồn tại hay chưa
     public boolean doesCustomerExistByCCCD(String CCCD) {
         return userRepository.existsByCCCD(CCCD);
+    }
+
+    // Tìm kiếm id người dùng theo CCCD
+    public Optional<User> findIdByCCCD(String CCCD) {
+        return userRepository.findIdByCCCD(CCCD);
+    }
+
+    // Tìm kiếm khách hàng theo các trường fullname, email hoặc CCCD
+    public Page<User> searchCustomers(String searchQuery, Pageable pageable) {
+
+        Long id = null;
+
+        // Kiểm tra nếu searchQuery có thể chuyển thành Long (user_id)
+        try {
+            id = Long.parseLong(searchQuery);
+        } catch (NumberFormatException e) {
+            // Nếu không thể chuyển đổi thành Long, thì id sẽ là null
+        }
+
+        // Tìm kiếm theo các trường fullname, email, CCCD, phone, address, dob, gender, status và user_id
+        if (id != null) {
+            // Nếu id hợp lệ, tìm kiếm theo user_id
+            return userRepository.findByUserId(id, pageable);
+        } else {
+            // Nếu không phải là số, tìm kiếm chỉ theo các trường khác (fullname, email, CCCD, ...)
+            return userRepository.findByFullnameContainingOrEmailContainingOrCCCDContainingOrPhoneContainingOrAddressContainingOrDobContainingOrGenderContainingOrStatusContaining(
+                    searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, searchQuery, pageable);
+        }
     }
 
     // Hàm chuyển đổi định dạng ngày từ yyyy-MM-dd thành dd/MM/yyyy
@@ -98,4 +129,8 @@ public class CustomerService {
         return date.format(outputFormatter);
     }
 
+    public void deleteCustomer(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        userRepository.delete(user);
+    }
 }
