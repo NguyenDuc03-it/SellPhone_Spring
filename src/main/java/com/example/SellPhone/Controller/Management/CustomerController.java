@@ -5,7 +5,6 @@ import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
 import com.example.SellPhone.Model.User;
 import com.example.SellPhone.Service.CustomerService;
 import com.example.SellPhone.Service.OrderService;
-import com.example.SellPhone.Service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,9 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 
 // Trang quản lý khách hàng
@@ -130,20 +127,6 @@ public class CustomerController {
         // Thêm thông báo thành công vào FlashAttributes
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin khách hàng thành công!");
         return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
-    }
-
-    // Chức năng tìm kiếm khách hàng
-    @GetMapping("/search")
-    String searchCustomers(Model model, @RequestParam String searchQuery, @RequestParam(defaultValue = "0") int page) {
-        Pageable pageable = PageRequest.of(page, 10);  // 10 dòng trên mỗi trang
-
-        // Tìm kiếm khách hàng theo các trường fullname, email, hoặc CCCD
-        Page<User> customers = customerService.searchCustomers(searchQuery, pageable);
-
-
-        model.addAttribute("customers", customers);
-        model.addAttribute("searchQuery", searchQuery); // Để giữ giá trị tìm kiếm trong form
-        return "DashBoard/quanLyKhachHang"; // Trả về trang quản lý khách hàng
     }
 
     // Chức năng xóa khách hàng

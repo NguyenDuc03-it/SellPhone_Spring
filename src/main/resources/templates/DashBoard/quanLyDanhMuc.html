@@ -41,7 +41,7 @@
                             <li><a href="/management/customers"><i class="fa fa-user"></i><span>Quản lý khách hàng</span></a></li>
                             <li><a href="quanLySanPham.html"><i class="fa fa-mobile"></i><span>Quản lý sản phẩm</span></a></li>
                             <li><a href="quanLyDonHang.html"><i class="fa fa-shopping-cart"></i><span>Quản lý đơn hàng</span></a></li>
-                            <li class="active"><a href="quanLyDanhMuc.html"><i class="fa fa-list"></i><span>Quản lý danh mục</span></a></li>
+                            <li class="active"><a href="/management/categories"><i class="fa fa-list"></i><span>Quản lý danh mục</span></a></li>
                         </ul>
                     </nav>
                 </div>
@@ -63,6 +63,24 @@
                 </div>
             </div>
 
+            <!-- Thông báo thành công với thanh tiến trình -->
+            <div id="successNotification" class="alert alert-success" th:if="${successMessage}">
+                <strong>Thành công!</strong><br>
+                <span th:text="${successMessage}"></span>
+                <div id="progressBar" class="progress mt-2" style="height: 5px;">
+                    <div id="progress" class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- Thông báo thất bại với thanh tiến trình -->
+            <div id="errorNotification" class="alert alert-danger" th:if="${errorMessage}">
+                <strong>Thất bại!</strong><br>
+                <span th:text="${errorMessage}"></span>
+                <div id="errorProgressBar" class="progress mt-2" style="height: 5px;">
+                    <div id="errorProgress" class="progress-bar bg-danger" role="progressbar" style="width: 100%;"></div>
+                </div>
+            </div>
+
             <!-- Page Title -->
             <div class="page-title-area">
                 <div class="row align-items-center">
@@ -70,7 +88,7 @@
                         <div class="breadcrumbs-area clearfix">
                             <h4 class="page-title pull-left">Quản lý danh mục</h4>
                             <ul class="breadcrumbs pull-left">
-                                <li><a href="dashboard.html">Trang chủ</a></li>
+                                <li><a href="/management/dashboard">Trang chủ</a></li>
                                 <li><span>Quản lý danh mục</span></li>
                             </ul>
                         </div>
@@ -78,9 +96,10 @@
                     <div class="col-sm-6 clearfix">
                         <div class="user-profile pull-right">
                             <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png" th:src="@{/assets/images/author/avatar.png}" alt="avatar">
-                            <h4 class="user-name dropdown-toggle" data-toggle="dropdown">Admin <i class="fa fa-angle-down"></i></h4>
+                            <h4 class="user-name dropdown-toggle" data-toggle="dropdown" th:text="${username}"><i class="fa fa-angle-down"></i></h4>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Đăng xuất</a>
+                                <a class="dropdown-item" href="#">Settings</a>
+                                <a class="dropdown-item" href="/logout">Đăng xuất</a>
                             </div>
                         </div>
                     </div>
@@ -97,14 +116,16 @@
                             </button>
                         </div>
                         <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm danh mục...">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button">
-                                        <i class="fa fa-search"></i> Tìm kiếm
-                                    </button>
+                            <form action="/management/categories" method="GET">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Tìm kiếm danh mục..." name="searchQuery" th:value="${searchQuery}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fa fa-search"></i> Tìm kiếm
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
 
@@ -123,33 +144,22 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>DM001</td>
-                                            <td>Apple</td>
-                                            <td>Các sản phẩm của Apple</td>
-                                            <td><span class="badge badge-success">Hoạt động</span></td>
+                                        <tr th:each="ct : ${categories}">
+                                            <td th:text="${ct.categoryId}"></td>
+                                            <td th:text="${ct.name}"></td>
+                                            <td th:text="${ct.notes}"></td>
+                                            <td><span class="badge" th:classappend="${ct.status == 'Hoạt động' ? 'badge-success' : 'badge-danger'}" th:text="${ct.status}"></span></td>
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
-                                                    <button class="btn btn-primary btn-sm mr-2" title="Sửa" data-toggle="modal" data-target="#updateCategoryModal">
+                                                    <button class="btn btn-primary btn-sm mr-2" title="Sửa" data-toggle="modal" data-target="#updateCategoryModal"
+                                                            th:data-id="${ct.categoryId}"
+                                                            th:data-name="${ct.name}"
+                                                            th:data-notes="${ct.notes}"
+                                                            th:data-status="${ct.status}">
                                                         <i class="fa fa-edit"></i>
                                                     </button>
-                                                    <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteCategoryModal">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>DM002</td>
-                                            <td>Samsung</td>
-                                            <td>Các sản phẩm của Samsung</td>
-                                            <td><span class="badge badge-success">Hoạt động</span></td>
-                                            <td>
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <button class="btn btn-primary btn-sm mr-2" title="Sửa" data-toggle="modal" data-target="#updateCategoryModal">
-                                                        <i class="fa fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteCategoryModal">
+                                                    <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal"
+                                                            data-target="#deleteCategoryModal" th:data-id="${ct.categoryId}">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 </div>
@@ -159,13 +169,20 @@
                                 </table>
                             </div>
 
-                            <!-- Pagination -->
+                            <!-- Phân trang -->
                             <nav class="mt-3">
                                 <ul class="pagination justify-content-center">
-                                    <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">Sau</a></li>
+                                    <li class="page-item" th:classappend="${categories.hasPrevious()} ? '' : 'disabled'">
+                                        <a class="page-link" href="?page=0"  th:href="@{/management/categories(page=${categories.number - 1}, searchQuery=${searchQuery})}" tabindex="-1">Trước</a>
+                                    </li>
+                                    <!-- Lặp qua các trang -->
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(0, categories.totalPages - 1)}"
+                                        th:classappend="${i == categories.number ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{/management/categories(page=${i}, searchQuery=${searchQuery})}">[[${i + 1}]]</a>
+                                    </li>
+                                    <li class="page-item" th:classappend="${categories.hasNext()} ? '' : 'disabled'">
+                                        <a class="page-link" th:href="@{/management/categories(page=${categories.number + 1}, searchQuery=${searchQuery})}" >Sau</a>
+                                    </li>
                                 </ul>
                             </nav>
                         </div>
@@ -193,28 +210,37 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="categoryForm">
+                    <form id="categoryForm" th:action="@{/management/categories/add}" method="POST" th:object="${category}">
+
+                        <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
+                            <ul>
+                                <li th:each="err : ${#fields.errors()}" th:text="${err}"></li>
+                            </ul>
+                        </div>
+                        <!--Nhập thông tin-->
                         <div class="form-group">
-                            <label>Tên danh mục</label>
-                            <input type="text" class="form-control" id="categoryName" required>
+                            <label for="categoryName">Tên danh mục</label>
+                            <input type="text" class="form-control" id="categoryName"  name="name" th:field="*{name}" required>
                         </div>
                         <div class="form-group">
                             <label>Mô tả</label>
-                            <textarea class="form-control" id="categoryDescription" rows="3"></textarea>
+                            <textarea class="form-control" id="categoryDescription" rows="3" th:field="*{notes}" required></textarea>
                         </div>
                         <div class="form-group">
                             <label>Trạng thái</label>
-                            <select class="form-control" id="categoryStatus">
-                                <option value="active">Hoạt động</option>
-                                <option value="inactive">Không hoạt động</option>
+                            <select class="form-control" id="categoryStatus" th:field="*{status}" required>
+                                <option value="">Chọn trạng thái</option>
+                                <option value="Hoạt động">Hoạt động</option>
+                                <option value="Không hoạt động">Không hoạt động</option>
                             </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Lưu</button>
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" onclick="saveCategory()">Lưu</button>
-                </div>
+
             </div>
         </div>
     </div>
@@ -230,28 +256,33 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="updateCategoryForm">
+                    <form id="updateCategoryForm" th:action="@{/management/categories/update}" method="POST" th:object="${updateCategory}">
+                        <div class="form-group">
+                            <label>Mã danh mục</label>
+                            <input type="text" class="form-control" id="updateCategoryId" th:field="*{categoryId}" required readonly>
+                        </div>
                         <div class="form-group">
                             <label>Tên danh mục</label>
-                            <input type="text" class="form-control" id="updateCategoryName" required>
+                            <input type="text" class="form-control" id="updateCategoryName" th:field="*{name}" required readonly>
                         </div>
                         <div class="form-group">
                             <label>Mô tả</label>
-                            <textarea class="form-control" id="updateCategoryDescription" rows="3"></textarea>
+                            <textarea class="form-control" id="updateCategoryDescription" rows="3" th:field="*{notes}" required></textarea>
                         </div>
                         <div class="form-group">
                             <label>Trạng thái</label>
-                            <select class="form-control" id="updateCategoryStatus">
-                                <option value="active">Hoạt động</option>
-                                <option value="inactive">Không hoạt động</option>
+                            <select class="form-control" id="updateCategoryStatus" th:field="*{status}" required>
+                                <option value="Hoạt động" th:selected="*{status == 'Hoạt động'}">Hoạt động</option>
+                                <option value="Không hoạt động" th:selected="*{status == 'Không hoạt động'}">Không hoạt động</option>
                             </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Lưu</button>
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary">Lưu</button>
-                </div>
+
             </div>
         </div>
     </div>
@@ -277,9 +308,14 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">
                         <i class="fa fa-times"></i> Hủy
                     </button>
-                    <button type="button" class="btn btn-danger">
-                        <i class="fa fa-trash"></i> Xóa
-                    </button>
+                    <!-- Form gửi POST tới controller để xóa danh mục -->
+                    <form id="deleteCategoryForm" action="#" th:action="@{/management/categories/delete}" method="POST">
+                        <!-- Trường ẩn để chứa categoryId -->
+                        <input type="hidden" name="categoryId" id="categoryIdToDelete"/>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa fa-trash"></i> Xóa
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -374,5 +410,218 @@
             75% { transform: translateX(5px); }
         }
     </style>
+
+
+    <!--Style áp dụng cho thông báo thành công-->
+    <style>
+        #successNotification {
+
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+        width: 300px;
+        padding: 15px;
+        background-color: #eafaf1; /* Nền sáng hơn */
+        color: #28a745; /* Chữ xanh lá */
+        border-radius: 8px;
+        font-size: 16px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+        animation: slideIn 0.5s ease-in-out;
+        }
+
+        #successNotification strong {
+        font-weight: bold;
+        }
+
+        #successNotification span {
+        display: block;
+        margin-top: 5px;
+        word-wrap: break-word;  /* Đảm bảo chữ không vượt ra ngoài */
+        }
+
+        #progressBar {
+        height: 5px;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+        margin-top: 10px;
+        }
+
+        #progress {
+        width: 100%;
+        height: 5px;
+        background-color: #5cb85c;
+        border-radius: 3px;
+        }
+
+        /* Animation for sliding in */
+        @keyframes slideIn {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+        }
+    </style>
+
+    <!-- Style áp dụng cho thông báo thất bại-->
+    <style>
+        #errorNotification {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            width: 300px;
+            padding: 15px;
+            background-color: #f8d7da; /* Nền màu đỏ nhạt */
+            color: #dc3545; /* Chữ đỏ */
+            border-radius: 8px;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        #errorNotification strong {
+            font-weight: bold;
+        }
+
+        #errorNotification span {
+            display: block;
+            margin-top: 5px;
+            word-wrap: break-word;  /* Đảm bảo chữ không vượt ra ngoài */
+        }
+
+        #errorProgressBar {
+            height: 5px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+
+        #errorProgress {
+            width: 100%;
+            height: 5px;
+            background-color: #dc3545;
+            border-radius: 3px;
+        }
+
+        /* Animation for sliding in */
+        @keyframes slideIn {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+    </style>
+
+    <!-- Script for success notification -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var successMessage = /*[[${successMessage}]]*/ 'null';
+        if (successMessage !== 'null') {
+            var successNotification = document.getElementById('successNotification');
+            var successProgressBar = document.getElementById('progress');
+            var successProgress = 100; // Initial value of the progress bar
+
+            // Display the notification
+            successNotification.style.display = 'block';
+
+            // Progress bar decreases from 100% to 0%
+            var successInterval = setInterval(function() {
+                if (successProgress > 0) {
+                    successProgress -= 1;
+                    successProgressBar.style.width = successProgress + '%';
+                } else {
+                    clearInterval(successInterval); // Stop the progress when it reaches 0%
+                    setTimeout(function() {
+                        successNotification.style.display = 'none'; // Hide the notification after completion
+                    }, 500); // Wait 500ms for the progress bar to disappear gradually
+                }
+            }, 30); // Every 30ms, decrease the progress bar by 1%
+
+            // Hide the notification after 5 seconds (along with the progress bar)
+            setTimeout(function() {
+                if (successProgress > 0) { // If the progress bar is not yet completed
+                    clearInterval(successInterval); // Stop the progress bar
+                    successProgressBar.style.width = '0%'; // Set the progress bar to 0%
+                    successNotification.style.display = 'none'; // Hide the notification
+                }
+            }, 5000); // 5000 ms = 5 seconds
+        }
+        /*]]>*/
+    </script>
+
+    <!-- Script for error notification -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var errorMessage = /*[[${errorMessage}]]*/ 'null';
+        if (errorMessage !== 'null') {
+            var errorNotification = document.getElementById('errorNotification');
+            var errorProgressBar = document.getElementById('errorProgress');
+            var errorProgress = 100; // Initial value of the progress bar
+
+            // Display the notification
+            errorNotification.style.display = 'block';
+
+            // Progress bar decreases from 100% to 0%
+            var errorInterval = setInterval(function() {
+                if (errorProgress > 0) {
+                    errorProgress -= 1;
+                    errorProgressBar.style.width = errorProgress + '%';
+                } else {
+                    clearInterval(errorInterval); // Stop the progress when it reaches 0%
+                    setTimeout(function() {
+                        errorNotification.style.display = 'none'; // Hide the notification after completion
+                    }, 500); // Wait 500ms for the progress bar to disappear gradually
+                }
+            }, 30); // Every 30ms, decrease the progress bar by 1%
+
+            // Hide the notification after 5 seconds (along with the progress bar)
+            setTimeout(function() {
+                if (errorProgress > 0) { // If the progress bar is not yet completed
+                    clearInterval(errorInterval); // Stop the progress bar
+                    errorProgressBar.style.width = '0%'; // Set the progress bar to 0%
+                    errorNotification.style.display = 'none'; // Hide the notification
+                }
+            }, 5000); // 5000 ms = 5 seconds
+        }
+        /*]]>*/
+    </script>
+
+    <!-- Script cho chức năng xóa danh mục -->
+    <script>
+        // Lắng nghe sự kiện khi modal được mở
+        $('#deleteCategoryModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Lấy button đã mở modal
+            var categoryId = button.data('id'); // Lấy categoryId từ thuộc tính data-id
+            var modal = $(this);
+
+            // Cập nhật giá trị của input hidden trong form modal
+            modal.find('#categoryIdToDelete').val(categoryId);
+        });
+    </script>
+
+    <!-- Script cho chức năng hiển thị thông tin lên form sửa danh mục -->
+    <script>
+        $('#updateCategoryModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget);  // Nút đã kích hoạt modal
+        var categoryId = button.data('id');
+        var categoryName = button.data('name');
+        var categoryNotes = button.data('notes');
+        var categoryStatus = button.data('status');
+
+        // Gán các giá trị vào các trường trong form của modal
+        var modal = $(this);
+        modal.find('#updateCategoryId').val(categoryId);
+        modal.find('#updateCategoryName').val(categoryName);
+        modal.find('#updateCategoryDescription').val(categoryNotes);
+        modal.find('#updateCategoryStatus').val(categoryStatus);
+        });
+    </script>
 </body>
 </html>
