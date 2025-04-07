@@ -124,7 +124,7 @@
                             <li><a href="dashboard.html"><i class="ti-dashboard"></i><span>Dashboard</span></a></li>
                             <li><a href="/management/staff"><i class="fa fa-users"></i><span>Quản lý nhân viên</span></a></li>
                             <li><a href="/management/customers"><i class="fa fa-user"></i><span>Quản lý khách hàng</span></a></li>
-                            <li class="active"><a href="quanLySanPham.html"><i class="fa fa-mobile"></i><span>Quản lý sản phẩm</span></a></li>
+                            <li class="active"><a href="/management/products"><i class="fa fa-mobile"></i><span>Quản lý sản phẩm</span></a></li>
                             <li><a href="quanLyDonHang.html"><i class="fa fa-shopping-cart"></i><span>Quản lý đơn hàng</span></a></li>
                             <li><a href="/management/categories"><i class="fa fa-list"></i><span>Quản lý danh mục</span></a></li>
                         </ul>
@@ -135,6 +135,18 @@
 
         <!-- Main Content -->
         <div class="main-content">
+            <!-- Header Area -->
+            <div class="header-area">
+                <div class="row align-items-center">
+                    <div class="col-md-6 col-sm-8 clearfix">
+                        <div class="nav-btn pull-left">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Page Title -->
             <div class="page-title-area">
                 <div class="row align-items-center">
@@ -146,6 +158,17 @@
                                 <li><a href="quanLySanPham.html">Quản lý sản phẩm</a></li>
                                 <li><span>Thêm sản phẩm</span></li>
                             </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 clearfix">
+                        <div class="user-profile pull-right">
+                            <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png"  th:src="@{/assets/images/author/avatar.png}" alt="avatar">
+                            <h4 class="user-name dropdown-toggle" data-toggle="dropdown" th:text="${username}"><i class="fa fa-angle-down"></i></h4>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Message</a>
+                                <a class="dropdown-item" href="#">Settings</a>
+                                <a class="dropdown-item" href="/logout">Log Out</a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -35,10 +35,10 @@ public class Product {
     private String color;
 
     @Column(name = "import_price")
-    private Double importPrice;
+    private Long importPrice;
 
     @Column(name = "selling_price")
-    private Double sellingPrice;
+    private Long sellingPrice;
 
     @Column(name = "quantity")
     private Integer quantity;
