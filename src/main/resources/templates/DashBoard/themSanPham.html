@@ -64,8 +64,8 @@
             color: red;
         }
         .image-preview {
-            width: 150px;
-            height: 150px;
+            width: 258px;
+            height: 258px;
             border: 2px dashed #ddd;
             border-radius: 5px;
             display: flex;
@@ -121,7 +121,7 @@
                 <div class="menu-inner">
                     <nav>
                         <ul class="metismenu" id="menu">
-                            <li><a href="dashboard.html"><i class="ti-dashboard"></i><span>Dashboard</span></a></li>
+                            <li><a href="/management/dashboard"><i class="ti-dashboard"></i><span>Dashboard</span></a></li>
                             <li><a href="/management/staff"><i class="fa fa-users"></i><span>Quản lý nhân viên</span></a></li>
                             <li><a href="/management/customers"><i class="fa fa-user"></i><span>Quản lý khách hàng</span></a></li>
                             <li class="active"><a href="/management/products"><i class="fa fa-mobile"></i><span>Quản lý sản phẩm</span></a></li>
@@ -155,7 +155,7 @@
                             <h4 class="page-title pull-left">Thêm sản phẩm mới</h4>
                             <ul class="breadcrumbs pull-left">
                                 <li><a href="/management/dashboard">Trang chủ</a></li>
-                                <li><a href="quanLySanPham.html">Quản lý sản phẩm</a></li>
+                                <li><a href="/management/products">Quản lý sản phẩm</a></li>
                                 <li><span>Thêm sản phẩm</span></li>
                             </ul>
                         </div>
@@ -182,7 +182,57 @@
                             <h4 class="card-title">Thêm sản phẩm mới</h4>
                         </div>
                         <div class="card-body p-4">
-                            <form id="addProductForm">
+                            <form id="addProductForm" th:action="@{/management/products/add}" th:object="${request}" method="post" enctype="multipart/form-data">
+
+                                <!-- Thông báo lỗi -->
+                                <div th:if="${#fields.hasErrors('name')}" class="alert alert-danger">
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+
+                                <div th:if="${#fields.hasErrors('imageUrl')}" class="alert alert-danger">
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('imageUrl')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+
+                                <div th:if="${#fields.hasErrors('categoryId')}" class="alert alert-danger">
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('category.categoryId')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+
+                                <div th:if="${#fields.hasErrors('color')}" class="alert alert-danger">
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('color')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+
+                                <div th:if="${#fields.hasErrors('importPrice')}" class="alert alert-danger">
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('importPrice')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+
+                                <div th:if="${#fields.hasErrors('sellingPrice')}" class="alert alert-danger">
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('sellingPrice')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+
+                                <div th:if="${#fields.hasErrors('quantity')}" class="alert alert-danger">
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('quantity')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+
+                                <div th:if="${#fields.hasErrors('status')}" class="alert alert-danger">
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('status')}" th:text="${err}"></li>
+                                    </ul>
+                                </div>
+
                                 <!-- Thông tin cơ bản -->
                                 <div class="form-section">
                                     <h5 class="form-section-title">Thông tin cơ bản</h5>
@@ -194,23 +244,27 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="required-field">Tên sản phẩm</label>
-                                                <input type="text" class="form-control" placeholder="Nhập tên sản phẩm">
+                                                <input type="text" class="form-control" placeholder="Nhập tên sản phẩm" th:field="*{name}" required>
                                             </div>
                                             <div class="form-group">
                                                 <label class="required-field">Danh mục</label>
-                                                <select class="form-control">
+                                                <select class="form-control" th:field="*{categoryId}" required>
                                                     <option value="">Chọn danh mục</option>
-                                                    <option value="iphone">iPhone</option>
-                                                    <option value="samsung">Samsung</option>
-                                                    <option value="oppo">OPPO</option>
-                                                    <option value="xiaomi">Xiaomi</option>
+                                                    <option th:each="cate : ${categories}"
+                                                            th:value="${cate.categoryId}"
+                                                            th:text="${cate.name}">
+                                                    </option>
                                                 </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="required-field">Mô tả sản phẩm</label>
+                                                <textarea class="form-control" placeholder="Mô tả sản phẩm" th:field="*{description}"></textarea>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Hình ảnh</label>
-                                                <input type="file" class="form-control" accept="image/*">
+                                                <input type="file" class="form-control" accept="image/*" th:field="*{imageUrl}">
                                                 <div class="image-preview">
                                                     <i class="fa fa-image fa-2x text-muted"></i>
                                                 </div>
@@ -226,33 +280,35 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="required-field">Giá nhập</label>
-                                                <input type="number" class="form-control" placeholder="Nhập giá nhập">
+                                                <input type="number" class="form-control" min="100" placeholder="Nhập giá nhập" th:field="*{importPrice}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="required-field">Giá bán</label>
-                                                <input type="number" class="form-control" placeholder="Nhập giá bán">
+                                                <input type="number" class="form-control" min="100" placeholder="Nhập giá bán" th:field="*{sellingPrice}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="required-field">Số lượng</label>
-                                                <input type="number" class="form-control" placeholder="Nhập số lượng">
+                                                <input type="number" class="form-control" min="0" placeholder="Nhập số lượng" th:field="*{quantity}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="required-field">Màu sắc</label>
-                                                <input type="text" class="form-control" placeholder="Nhập màu sắc">
+                                                <input type="text" class="form-control" placeholder="Nhập màu sắc" th:field="*{color}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="required-field">Trạng thái</label>
-                                                <select class="form-control">
-                                                    <option value="active">Còn hàng</option>
-                                                    <option value="inactive">Hết hàng</option>
+                                                <select class="form-control" th:field="*{status}" required>
+                                                    <option value="">Chọn trạng thái</option>
+                                                    <option value="Còn hàng">Còn hàng</option>
+                                                    <option value="Hết hàng">Hết hàng</option>
+                                                    <option value="Ngừng bán">Ngừng bán</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -267,33 +323,27 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Kích thước màn hình</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: 6.7 inch">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="required-field">Công nghệ màn hình</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: OLED, Super Retina XDR">
+                                                <input type="text" class="form-control" placeholder="Ví dụ: 6.7 inch" th:field="*{specification.screenSize}" required>
                                             </div>
                                         </div>
                                         <!-- Hệ điều hành -->
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Hệ điều hành</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: iOS 16, Android 13">
+                                                <input type="text" class="form-control" placeholder="Ví dụ: iOS 16, Android 13" th:field="*{specification.operatingSystem}" required>
                                             </div>
                                         </div>
                                         <!-- Camera -->
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Camera sau</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: 48MP + 12MP + 12MP">
+                                                <textarea class="form-control" placeholder="Ví dụ: 48MP + 12MP + 12MP" th:field="*{specification.rearCamera}" required></textarea>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Camera trước</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: 12MP">
+                                                <textarea class="form-control" placeholder="Ví dụ: 12MP" th:field="*{specification.frontCamera}" required></textarea>
                                             </div>
                                         </div>
 
@@ -301,7 +351,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Thẻ SIM</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: 2 SIM (Nano-SIM)">
+                                                <textarea class="form-control" placeholder="Ví dụ: 2 SIM (Nano-SIM)" th:field="*{specification.sim}" required></textarea>
                                             </div>
                                         </div>
 
@@ -309,27 +359,13 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Chipset</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: Apple A16 Bionic, Snapdragon 8 Gen 2">
+                                                <input type="text" class="form-control" placeholder="Ví dụ: Apple A16 Bionic, Snapdragon 8 Gen 2" th:field="*{specification.chipset}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">CPU</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: 6 nhân, tốc độ 3.46 GHz">
-                                            </div>
-                                        </div>
-
-                                        <!-- RAM và ROM -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="required-field">RAM</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: 8GB">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="required-field">ROM</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: 256GB">
+                                                <textarea class="form-control" placeholder="Ví dụ: 6 nhân, tốc độ 3.46 GHz" th:field="*{specification.cpu}" required></textarea>
                                             </div>
                                         </div>
 
@@ -337,9 +373,25 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Công nghệ sạc</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: Sạc nhanh 25W, sạc không dây 15W">
+                                                <textarea class="form-control" placeholder="Ví dụ: Sạc nhanh 25W, sạc không dây 15W" th:field="*{specification.charging}" required></textarea>
                                             </div>
                                         </div>
+
+                                        <!-- RAM và ROM -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="required-field">RAM</label>
+                                                <input type="text" class="form-control" placeholder="Ví dụ: 8GB" th:field="*{specification.ram}" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="required-field">ROM</label>
+                                                <input type="text" class="form-control" placeholder="Ví dụ: 256GB" th:field="*{specification.rom}" required>
+                                            </div>
+                                        </div>
+
+
                                     </div>
                                 </div>
 
@@ -348,7 +400,7 @@
                                     <button type="submit" class="btn btn-primary mr-2">
                                         <i class="fa fa-save"></i> Lưu
                                     </button>
-                                    <a href="quanLySanPham.html" class="btn btn-secondary">
+                                    <a href="quanLySanPham.html" class="btn btn-secondary" th:href="@{/management/products}">
                                         <i class="fa fa-times"></i> Hủy
                                     </a>
                                 </div>

@@ -111,4 +111,14 @@ public class CategoryService {
 
         return true;  // Tất cả sản phẩm đều hợp lệ
     }
+
+    // Lấy danh sách tất cả danh mục
+    public List<Category> findAll() {
+        return categoryRepository.findAll();
+    }
+
+    // Kiểm tra xem danh mục có tồn tại theo ID không
+    public boolean existsById(@NotNull @Min(1) Long categoryId) {
+        return categoryRepository.existsById(categoryId);
+    }
 }

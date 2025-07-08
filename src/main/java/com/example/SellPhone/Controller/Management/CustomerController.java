@@ -6,6 +6,7 @@ import com.example.SellPhone.Model.User;
 import com.example.SellPhone.Service.CustomerService;
 import com.example.SellPhone.Service.OrderService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,12 +27,11 @@ import java.util.Date;
 // Trang quản lý khách hàng
 @Controller
 @RequestMapping("/management/customers")
+@RequiredArgsConstructor
 public class CustomerController {
-    @Autowired
-    private CustomerService customerService;
 
-    @Autowired
-    private OrderService orderService;
+    private final CustomerService customerService;
+    private final OrderService orderService;
 
     //Mở trang thêm khách hàng
     @GetMapping("/op_add")

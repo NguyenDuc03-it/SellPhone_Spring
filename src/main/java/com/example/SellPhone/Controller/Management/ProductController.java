@@ -1,29 +1,27 @@
 package com.example.SellPhone.Controller.Management;
 
+import com.example.SellPhone.DTO.Request.Product.ProductCreationRequest;
 import com.example.SellPhone.Model.Product;
-import com.example.SellPhone.Model.User;
+import com.example.SellPhone.Service.CategoryService;
 import com.example.SellPhone.Service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/management/products")
+@RequiredArgsConstructor
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+    private final CategoryService categoryService;
 
     // Hiển thị danh sách sản phẩm và phân trang
     @GetMapping
@@ -48,8 +46,9 @@ public class ProductController {
     //Mở trang thêm sản phẩm
     @GetMapping("/op_add")
     String opAddProduct(Model model){
-        model.addAttribute("product", new Product());
-        return "DashBoard/themSanPham";
+        model.addAttribute("request", new ProductCreationRequest());
+        model.addAttribute("categories", categoryService.findAll()); // Trả về List<Category>
+        return  "DashBoard/themSanPham";
     }
 
     //Mở trang cập nhật thông tin sản phẩm
@@ -60,5 +59,48 @@ public class ProductController {
         model.addAttribute("product", product);
         return "DashBoard/suaSanPham";
     }
+
+    // Chức năng thêm sản phẩm
+    @PostMapping("/add")
+    String addCustomer(@Valid @ModelAttribute("request") ProductCreationRequest request, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
+
+        if (request.getImageUrl() == null || request.getImageUrl().isEmpty()) {
+            bindingResult.rejectValue("imageUrl", "error.imageUrl", "Vui lòng chọn hình ảnh");
+        }
+
+        if (bindingResult.hasErrors()) {
+            // Xử lý lỗi
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/themSanPham"; // Trả về một thông báo lỗi
+        }
+
+        if(productService.doesProductExistByNameAndColor(request.getName(), request.getColor())){
+            bindingResult.rejectValue("name", "error.name", "Sản phẩm với tên và màu này đã tồn tại");
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/themSanPham"; // Trả về thông báo lỗi nếu
+        }
+
+        if (!categoryService.existsById(request.getCategoryId())) {
+            bindingResult.rejectValue("categoryId", "error.categoryId", "Danh mục không hợp lệ");
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/themSanPham";
+        }
+
+        if(request.getSpecification() == null) {
+            bindingResult.rejectValue("specificationIds", "error.specificationIds", "Vui lòng chọn ít nhất một thông số kỹ thuật");
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/themSanPham";
+        }
+
+        Product product = productService.createProduct(request);
+        // Thêm thông báo thành công vào FlashAttributes
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm sản phẩm thành công!");
+        return "redirect:/management/products"; // Chuyển hướng về trang danh sách sản phẩm
+    }
+
 
 }

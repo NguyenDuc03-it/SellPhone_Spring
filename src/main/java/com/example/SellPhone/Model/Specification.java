@@ -1,10 +1,7 @@
 package com.example.SellPhone.Model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Specification {
 
     @Id
@@ -22,7 +20,7 @@ public class Specification {
     private Long specificationId;
 
     @Column(name = "screen_size")
-    private String screenSize;
+    private float screenSize;
 
     @Column(name = "rear_camera")
     private String rearCamera;
@@ -34,19 +32,22 @@ public class Specification {
     private String chipset;
 
     @Column(name = "ram")
-    private String ram;
+    private int ram;
 
     @Column(name = "rom")
-    private String rom;
+    private int rom;
 
     @Column(name = "sim")
     private String sim;
 
-    @Column(name = "system")
-    private String system;
+    @Column(name = "operating_system")
+    private String operatingSystem;
 
     @Column(name = "cpu")
     private String cpu;
+
+    @Column(name = "charging")
+    private String charging;
 
     @ManyToMany(mappedBy = "specifications")
     private List<Product> products;

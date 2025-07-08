@@ -1,10 +1,7 @@
 package com.example.SellPhone.Model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,8 +11,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Product {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
@@ -45,6 +43,9 @@ public class Product {
 
     @Column(name = "status")
     private String status;
+
+    @Column(name = "description")
+    private String description;
 
     @ManyToMany
     @JoinTable(

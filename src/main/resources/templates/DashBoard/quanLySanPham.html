@@ -193,8 +193,8 @@
                                                 <td th:text="${pd.name}"></td>
                                                 <td th:text="${pd.category.name}"></td>
                                                 <td th:text="${pd.color}"></td>
-                                                <td th:text="${#numbers.formatDecimal(pd.importPrice, 0, 'DOT', 'DOT')} + 'đ'"></td>
-                                                <td th:text="${#numbers.formatDecimal(pd.sellingPrice, 0, 'DOT', 'DOT')} + 'đ'"></td>
+                                                <td th:text="${#numbers.formatInteger(pd.importPrice, 0, 'POINT')} + 'đ'"></td>
+                                                <td th:text="${#numbers.formatInteger(pd.sellingPrice, 0, 'POINT')} + 'đ'"></td>
                                                 <td th:text="${pd.quantity}"></td>
                                                 <td><span class="badge" th:classappend="${pd.status == 'Còn hàng' ? 'badge-success' : 'badge-danger'}"
                                                           th:text="${pd.status}"></span></td>

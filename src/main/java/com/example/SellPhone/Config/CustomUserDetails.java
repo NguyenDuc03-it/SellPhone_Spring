@@ -1,7 +1,6 @@
 package com.example.SellPhone.Config;
 
 import lombok.Getter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.GrantedAuthority;
 
