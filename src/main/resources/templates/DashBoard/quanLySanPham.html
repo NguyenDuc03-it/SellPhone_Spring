@@ -178,9 +178,6 @@
                                                 <th>Tên sản phẩm</th>
                                                 <th>Danh mục</th>
                                                 <th>Màu sắc</th>
-                                                <th>Giá nhập</th>
-                                                <th>Giá bán</th>
-                                                <th>Số lượng</th>
                                                 <th>Trạng thái</th>
                                                 <th>Thông số kỹ thuật</th>
                                                 <th>Thao tác</th>
@@ -193,13 +190,12 @@
                                                 <td th:text="${pd.name}"></td>
                                                 <td th:text="${pd.category.name}"></td>
                                                 <td th:text="${pd.color}"></td>
-                                                <td th:text="${#numbers.formatInteger(pd.importPrice, 0, 'POINT')} + 'đ'"></td>
-                                                <td th:text="${#numbers.formatInteger(pd.sellingPrice, 0, 'POINT')} + 'đ'"></td>
-                                                <td th:text="${pd.quantity}"></td>
                                                 <td><span class="badge" th:classappend="${pd.status == 'Còn hàng' ? 'badge-success' : 'badge-danger'}"
                                                           th:text="${pd.status}"></span></td>
                                                 <td>
-                                                    <button class="btn btn-info btn-sm" data-toggle="tooltip" title="Xem chi tiết">
+                                                    <button class="btn btn-info btn-sm view-specs-btn"
+                                                            title="Xem chi tiết"
+                                                            th:onclick="'showSpecifications(' + ${pd.productId} + ')'">
                                                         <i class="fa fa-info-circle"></i>
                                                     </button>
                                                 </td>
@@ -305,6 +301,41 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Thông số kỹ thuật -->
+    <div class="modal fade" id="specificationsModal" tabindex="-1" role="dialog" aria-labelledby="specificationsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header bg-gradient-primary text-white">
+                    <h5 class="modal-title"><i class="fa fa-info-circle mr-2"></i>Thông số kỹ thuật chi tiết</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row">
+                        <!-- Left side: Hình ảnh + tên + giá -->
+                        <div class="col-md-4 text-center mb-4">
+                            <img id="productImage" src="" alt="Product Image" class="img-thumbnail shadow-sm" style="max-height: 230px; object-fit: cover; border-radius: 12px;">
+                            <h4 id="productName" class="mt-3 font-weight-semibold text-dark"></h4>
+                            <p id="productPrice" class="text-danger font-weight-bold h5 mt-1 mb-0"></p>
+                            <small class="text-muted">Giá có thể thay đổi theo từng phiên bản</small>
+                        </div>
+
+                        <!-- Right side: Tabs và nội dung -->
+                        <div class="col-md-8">
+                            <!-- Tabs -->
+                            <ul class="nav nav-tabs mb-3" id="romTabs" role="tablist"></ul>
+                            <!-- Nội dung tabs -->
+                            <div class="tab-content" id="romTabContent"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i class="fa fa-times mr-1"></i>Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Style chỉ áp dụng cho modal -->
     <style>
@@ -460,6 +491,49 @@
         }
     </style>
 
+    <!-- Style cho modal thông số kỹ thuật -->
+    <style>
+      .bg-gradient-primary {
+        background: linear-gradient(to right, #007bff, #0056b3);
+      }
+
+      .nav-tabs .nav-link {
+        border: none;
+        border-radius: 6px;
+        margin-right: 8px;
+        background-color: #f1f1f1;
+        color: #333;
+        font-weight: 500;
+        transition: 0.3s ease;
+      }
+
+      .nav-tabs .nav-link.active {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      .tab-pane {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+      }
+
+      .tab-pane.show.active {
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.3s ease-in-out, visibility 0s linear 0s;
+      }
+
+      .table-specs th {
+        width: 40%;
+        font-weight: 600;
+      }
+
+      .table-specs td {
+        color: #333;
+      }
+    </style>
+
     <!-- Script for success notification -->
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -546,5 +620,121 @@
             modal.find('#productIdToDelete').val(productId);
         });
     </script>
+
+    <!-- Script cho chức năng xem thông số kỹ thuật -->
+    <script>
+        function showSpecifications(productId) {
+           fetch('/management/products/get-detail-product/' + productId)
+               .then(res => res.json())
+               .then(data => {
+                   document.getElementById('productImage').src = data.imageUrl;
+                   document.getElementById('productName').textContent = data.name;
+                   const romTabs = document.getElementById('romTabs');
+                   const romTabContent = document.getElementById('romTabContent');
+                   const productPriceEl = document.getElementById('productPrice');
+
+                   // Xóa nội dung cũ của Tabs và Tab content
+                   romTabs.innerHTML = '';
+                   romTabContent.innerHTML = '';
+
+                   const spec = data.specifications[0];
+                   const variants = spec.variants;
+
+                   // Nếu có variants, chỉ hiển thị thông tin trong các tabs
+                   if (variants.length > 0) {
+                       // Hiển thị các tabs cho các loại ROM
+                       variants.forEach((variant, index) => {
+                           const romLabel = variant.rom + 'GB';
+
+                           // Tabs
+                           const tab = document.createElement('li');
+                           tab.classList.add('nav-item');
+                           tab.innerHTML = `
+                               <a class="nav-link ${index === 0 ? 'active' : ''}" id="rom-tab-${index}" data-toggle="tab" href="#rom-content-${index}" role="tab">${romLabel}</a>
+                           `;
+                           romTabs.appendChild(tab);
+
+                           // Tab content
+                           const content = document.createElement('div');
+                           content.classList.add('tab-pane', 'fade', 'p-3', ...(index === 0 ? ['show', 'active'] : []));
+                           content.id = `rom-content-${index}`;
+                           content.innerHTML = `
+                               <div class="row">
+                                   <div class="col-md-6 mb-2"><strong>Màn hình:</strong> ${spec.screenSize} inch</div>
+                                   <div class="col-md-6 mb-2"><strong>ROM:</strong> ${variant.rom}GB</div>
+                                   <div class="col-md-6 mb-2"><strong>Hệ điều hành:</strong> ${spec.operatingSystem}</div>
+                                   <div class="col-md-6 mb-2"><strong>Camera trước:</strong> ${spec.frontCamera}</div>
+                                   <div class="col-md-6 mb-2"><strong>Camera sau:</strong> ${spec.rearCamera}</div>
+                                   <div class="col-md-6 mb-2"><strong>Chip xử lý:</strong> ${spec.chipset}</div>
+                                   <div class="col-md-6 mb-2"><strong>CPU:</strong> ${spec.cpu}</div>
+                                   <div class="col-md-6 mb-2"><strong>SIM:</strong> ${spec.sim}</div>
+                                   <div class="col-md-6 mb-2"><strong>RAM:</strong> ${spec.ram}GB</div>
+                                   <div class="col-md-6 mb-2"><strong>Công nghệ sạc:</strong> ${spec.charging}</div>
+                                   <div class="col-md-6 mb-2"><strong>Giá nhập:</strong> ${variant.importPrice?.toLocaleString('vi-VN')} ₫</div>
+                                   <div class="col-md-6 mb-2"><strong>Giá bán:</strong> ${variant.sellingPrice?.toLocaleString('vi-VN')} ₫</div>
+                                   <div class="col-md-6 mb-2"><strong>Số lượng:</strong> ${variant.quantity}</div>
+                               </div>
+                               <div class="mt-3">
+                                   <h6 class="text-muted mb-1">Mô tả sản phẩm:</h6>
+                                   <div class="border p-2 bg-light">${data.description}</div>
+                               </div>
+                           `;
+                           romTabContent.appendChild(content);
+
+                           // Cập nhật giá của sản phẩm khi tab được chọn
+                           if (index === 0) {
+                               productPriceEl.textContent = variant.sellingPrice?.toLocaleString('vi-VN') + ' ₫';
+                           }
+                       });
+
+                       // Thêm sự kiện cho việc chuyển tab để cập nhật giá
+                       $('#romTabs a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                           const targetId = e.target.getAttribute('href'); // ví dụ: #rom-content-1
+                           const index = targetId.split('-').pop();
+                           const selectedVariant = variants[index];
+                           if (selectedVariant) {
+                               productPriceEl.textContent = selectedVariant.sellingPrice?.toLocaleString('vi-VN') + ' ₫';
+                           }
+                       });
+                   } else {
+                       // Nếu không có variants, chỉ hiển thị thông tin sản phẩm chung
+                       const specificationHTML = `
+                           <div class="row">
+                               <div class="col-md-6 mb-2"><strong>Màn hình:</strong> ${spec.screenSize} inch</div>
+                               <div class="col-md-6 mb-2"><strong>ROM:</strong> Không có thông tin!</div>
+                               <div class="col-md-6 mb-2"><strong>Hệ điều hành:</strong> ${spec.operatingSystem}</div>
+                               <div class="col-md-6 mb-2"><strong>Camera trước:</strong> ${spec.frontCamera}</div>
+                               <div class="col-md-6 mb-2"><strong>Camera sau:</strong> ${spec.rearCamera}</div>
+                               <div class="col-md-6 mb-2"><strong>Chip xử lý:</strong> ${spec.chipset}</div>
+                               <div class="col-md-6 mb-2"><strong>CPU:</strong> ${spec.cpu}</div>
+                               <div class="col-md-6 mb-2"><strong>SIM:</strong> ${spec.sim}</div>
+                               <div class="col-md-6 mb-2"><strong>RAM:</strong> ${spec.ram}GB</div>
+                               <div class="col-md-6 mb-2"><strong>Công nghệ sạc:</strong> ${spec.charging}</div>
+                           </div>
+                           <div class="mt-3">
+                               <h6 class="text-muted mb-1">Mô tả sản phẩm:</h6>
+                               <div class="border p-2 bg-light">${data.description}</div>
+                           </div>
+                       `;
+                       // Hiển thị thông số kỹ thuật sản phẩm khi không có phiên bản ROM
+                       const specificationsContent = document.createElement('div');
+                       specificationsContent.classList.add('border', 'rounded', 'p-3', 'bg-light', 'mb-3');
+                       specificationsContent.innerHTML = `
+                           <h6 class="text-muted mb-3"><i class="fa fa-list-alt mr-1"></i>Thông số kỹ thuật</h6>
+                           ${specificationHTML}
+                       `;
+                       romTabContent.appendChild(specificationsContent);
+
+                       // Hiển thị giá bán mặc định khi không có variants
+                       productPriceEl.textContent = 'Liên hệ';
+                   }
+
+                   $('#specificationsModal').modal('show');
+               })
+               .catch(error => console.error('Lỗi khi tải chi tiết sản phẩm:', error));
+       }
+
+    </script>
+
 </body>
 </html>

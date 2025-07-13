@@ -12,9 +12,9 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategory_CategoryId(Long categoryId);
 
-    Page<Product> findByProductIdOrQuantity(long productId, long quantity, Pageable pageable);
+    Page<Product> findByProductId(long quantity, Pageable pageable);
 
-    Page<Product> findByNameContainingOrColorContainingOrStatusContainingOrCategory_Name(String searchQuery, String searchQuery1, String searchQuery2, String searchQuery3, Pageable pageable);
+    Page<Product> findByNameContainingOrStatusContainingOrCategory_Name(String searchQuery1, String searchQuery2, String searchQuery3, Pageable pageable);
 
-    boolean existsByNameAndColor(String name, String color);
+//    boolean existsByNameAndColor(String name, String color);
 }

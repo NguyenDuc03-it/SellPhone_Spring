@@ -3,8 +3,6 @@ package com.example.SellPhone.Model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "products")
 @Getter
@@ -32,14 +30,14 @@ public class Product {
     @Column(name = "color")
     private String color;
 
-    @Column(name = "import_price")
-    private Long importPrice;
+//    @Column(name = "import_price")
+//    private Long importPrice;
+//
+//    @Column(name = "selling_price")
+//    private Long sellingPrice;
 
-    @Column(name = "selling_price")
-    private Long sellingPrice;
-
-    @Column(name = "quantity")
-    private Integer quantity;
+//    @Column(name = "quantity")
+//    private Integer quantity;
 
     @Column(name = "status")
     private String status;
@@ -47,11 +45,14 @@ public class Product {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany
-    @JoinTable(
-            name = "product-specification",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "specification_id")
-    )
-    private List<Specification> specifications;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "product-specification",
+//            joinColumns = @JoinColumn(name = "product_id"),
+//            inverseJoinColumns = @JoinColumn(name = "specification_id")
+//    )
+//    private List<Specification> specifications;
+    @OneToOne
+    @JoinColumn(name = "specification_id")
+    private Specification specification;
 }

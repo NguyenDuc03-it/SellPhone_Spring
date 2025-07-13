@@ -275,44 +275,31 @@
 
                                 <!-- Thông tin giá và số lượng -->
                                 <div class="form-section">
-                                    <h5 class="form-section-title">Thông tin giá và số lượng</h5>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
+                                    <h5 class="form-section-title">Thông tin ROM & giá</h5>
+                                    <div id="rom-container">
+                                        <div class="rom-row row align-items-end mb-2">
+                                            <div class="col-md-3">
+                                                <label class="required-field">ROM</label>
+                                                <input type="text" class="form-control" name="romVariants[0].rom" placeholder="Ví dụ: 128GB" required>
+                                            </div>
+                                            <div class="col-md-3">
                                                 <label class="required-field">Giá nhập</label>
-                                                <input type="number" class="form-control" min="100" placeholder="Nhập giá nhập" th:field="*{importPrice}" required>
+                                                <input type="number" class="form-control" name="romVariants[0].importPrice" placeholder="Nhập giá nhập" min="0" required>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
+                                            <div class="col-md-3">
                                                 <label class="required-field">Giá bán</label>
-                                                <input type="number" class="form-control" min="100" placeholder="Nhập giá bán" th:field="*{sellingPrice}" required>
+                                                <input type="number" class="form-control" name="romVariants[0].sellingPrice" placeholder="Nhập giá bán" min="0" required>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
+                                            <div class="col-md-2">
                                                 <label class="required-field">Số lượng</label>
-                                                <input type="number" class="form-control" min="0" placeholder="Nhập số lượng" th:field="*{quantity}" required>
+                                                <input type="number" class="form-control" name="romVariants[0].quantity" placeholder="Số lượng" min="0" required>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="required-field">Màu sắc</label>
-                                                <input type="text" class="form-control" placeholder="Nhập màu sắc" th:field="*{color}" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="required-field">Trạng thái</label>
-                                                <select class="form-control" th:field="*{status}" required>
-                                                    <option value="">Chọn trạng thái</option>
-                                                    <option value="Còn hàng">Còn hàng</option>
-                                                    <option value="Hết hàng">Hết hàng</option>
-                                                    <option value="Ngừng bán">Ngừng bán</option>
-                                                </select>
+                                            <div class="col-md-1">
+                                                <button type="button" class="btn btn-danger btn-sm remove-rom mt-4"><i class="fa fa-trash"></i></button>
                                             </div>
                                         </div>
                                     </div>
+                                    <button type="button" class="btn btn-info btn-sm" id="add-rom"><i class="fa fa-plus"></i> Thêm phiên bản ROM</button>
                                 </div>
 
                                 <!-- Thông số kỹ thuật -->
@@ -456,5 +443,44 @@
             }
         });
     </script>
+
+    <!-- Script xử lý thêm ROM -->
+    <script>
+        let romIndex = 1;
+
+        document.getElementById('add-rom').addEventListener('click', function () {
+            const container = document.getElementById('rom-container');
+
+            const row = document.createElement('div');
+            row.className = 'rom-row row align-items-end mb-2';
+            row.innerHTML = `
+                <div class="col-md-3">
+                    <input type="text" class="form-control" name="romVariants[${romIndex}].rom" placeholder="Ví dụ: 256GB" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" class="form-control" name="romVariants[${romIndex}].importPrice" placeholder="Giá nhập" min="0" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" class="form-control" name="romVariants[${romIndex}].sellingPrice" placeholder="Giá bán" min="0" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" class="form-control" name="romVariants[${romIndex}].quantity" placeholder="Số lượng" min="0" required>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-danger btn-sm remove-rom"><i class="fa fa-trash"></i></button>
+                </div>
+            `;
+            container.appendChild(row);
+            romIndex++;
+        });
+
+        document.getElementById('rom-container').addEventListener('click', function (e) {
+            if (e.target.closest('.remove-rom')) {
+                const row = e.target.closest('.rom-row');
+                row.remove();
+            }
+        });
+    </script>
+
 </body>
 </html>
