@@ -201,9 +201,11 @@
                                                 </td>
                                                 <td>
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button class="btn btn-primary btn-sm mr-2" title="Sửa">
-                                                        <i class="fa fa-edit"></i>
-                                                    </button>
+                                            <a href="suaSanPham.html" th:href="@{/management/products/op_update(productId=${pd.productId})}">
+                                                <button class="btn btn-primary btn-sm mr-2" title="Sửa">
+                                                            <i class="fa fa-edit"></i>
+                                                        </button>
+                                            </a>
                                                     <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteProductModal">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
@@ -661,14 +663,14 @@
                            content.innerHTML = `
                                <div class="row">
                                    <div class="col-md-6 mb-2"><strong>Màn hình:</strong> ${spec.screenSize} inch</div>
-                                   <div class="col-md-6 mb-2"><strong>ROM:</strong> ${variant.rom}GB</div>
                                    <div class="col-md-6 mb-2"><strong>Hệ điều hành:</strong> ${spec.operatingSystem}</div>
-                                   <div class="col-md-6 mb-2"><strong>Camera trước:</strong> ${spec.frontCamera}</div>
-                                   <div class="col-md-6 mb-2"><strong>Camera sau:</strong> ${spec.rearCamera}</div>
-                                   <div class="col-md-6 mb-2"><strong>Chip xử lý:</strong> ${spec.chipset}</div>
-                                   <div class="col-md-6 mb-2"><strong>CPU:</strong> ${spec.cpu}</div>
-                                   <div class="col-md-6 mb-2"><strong>SIM:</strong> ${spec.sim}</div>
+                                   <div class="col-md-6 mb-2"><strong>ROM:</strong> ${variant.rom}GB</div>
                                    <div class="col-md-6 mb-2"><strong>RAM:</strong> ${spec.ram}GB</div>
+                                   <div class="col-md-6 mb-2"><strong>Chip xử lý:</strong> ${spec.chipset}</div>
+                                   <div class="col-md-6 mb-2"><strong>Camera trước:</strong> ${spec.frontCamera}</div>
+                                   <div class="col-md-6 mb-2"><strong>SIM:</strong> ${spec.sim}</div>
+                                   <div class="col-md-6 mb-2"><strong>CPU:</strong> ${spec.cpu}</div>
+                                   <div class="col-md-6 mb-2"><strong>Camera sau:</strong> ${spec.rearCamera}</div>
                                    <div class="col-md-6 mb-2"><strong>Công nghệ sạc:</strong> ${spec.charging}</div>
                                    <div class="col-md-6 mb-2"><strong>Giá nhập:</strong> ${variant.importPrice?.toLocaleString('vi-VN')} ₫</div>
                                    <div class="col-md-6 mb-2"><strong>Giá bán:</strong> ${variant.sellingPrice?.toLocaleString('vi-VN')} ₫</div>

@@ -1,6 +1,5 @@
 package com.example.SellPhone.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,9 +34,6 @@ public class Specification {
     @Column(name = "ram")
     private int ram;
 
-//    @Column(name = "rom")
-//    private int rom;
-
     @Column(name = "sim")
     private String sim;
 
@@ -49,10 +45,6 @@ public class Specification {
 
     @Column(name = "charging")
     private String charging;
-
-//    @ManyToMany(mappedBy = "specifications")
-//    @JsonIgnore
-//    private List<Product> products;
 
     @OneToMany(mappedBy = "specification", cascade = CascadeType.ALL)
     private List<SpecificationVariant> variants;

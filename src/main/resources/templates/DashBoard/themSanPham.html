@@ -64,8 +64,8 @@
             color: red;
         }
         .image-preview {
-            width: 258px;
-            height: 258px;
+            width: 175px;
+            height: 175px;
             border: 2px dashed #ddd;
             border-radius: 5px;
             display: flex;
@@ -184,54 +184,13 @@
                         <div class="card-body p-4">
                             <form id="addProductForm" th:action="@{/management/products/add}" th:object="${request}" method="post" enctype="multipart/form-data">
 
-                                <!-- Thông báo lỗi -->
-                                <div th:if="${#fields.hasErrors('name')}" class="alert alert-danger">
+                                <!-- Thông báo lỗi tổng quát -->
+                                <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
                                     <ul>
-                                        <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+                                        <li th:each="err : ${#fields.errors()}" th:text="${err}"></li>
                                     </ul>
                                 </div>
 
-                                <div th:if="${#fields.hasErrors('imageUrl')}" class="alert alert-danger">
-                                    <ul>
-                                        <li th:each="err : ${#fields.errors('imageUrl')}" th:text="${err}"></li>
-                                    </ul>
-                                </div>
-
-                                <div th:if="${#fields.hasErrors('categoryId')}" class="alert alert-danger">
-                                    <ul>
-                                        <li th:each="err : ${#fields.errors('category.categoryId')}" th:text="${err}"></li>
-                                    </ul>
-                                </div>
-
-                                <div th:if="${#fields.hasErrors('color')}" class="alert alert-danger">
-                                    <ul>
-                                        <li th:each="err : ${#fields.errors('color')}" th:text="${err}"></li>
-                                    </ul>
-                                </div>
-
-                                <div th:if="${#fields.hasErrors('importPrice')}" class="alert alert-danger">
-                                    <ul>
-                                        <li th:each="err : ${#fields.errors('importPrice')}" th:text="${err}"></li>
-                                    </ul>
-                                </div>
-
-                                <div th:if="${#fields.hasErrors('sellingPrice')}" class="alert alert-danger">
-                                    <ul>
-                                        <li th:each="err : ${#fields.errors('sellingPrice')}" th:text="${err}"></li>
-                                    </ul>
-                                </div>
-
-                                <div th:if="${#fields.hasErrors('quantity')}" class="alert alert-danger">
-                                    <ul>
-                                        <li th:each="err : ${#fields.errors('quantity')}" th:text="${err}"></li>
-                                    </ul>
-                                </div>
-
-                                <div th:if="${#fields.hasErrors('status')}" class="alert alert-danger">
-                                    <ul>
-                                        <li th:each="err : ${#fields.errors('status')}" th:text="${err}"></li>
-                                    </ul>
-                                </div>
 
                                 <!-- Thông tin cơ bản -->
                                 <div class="form-section">
@@ -262,6 +221,10 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="required-field">Màu sắc</label>
+                                                <input type="text" class="form-control" placeholder="Nhập màu sản phẩm" th:field="*{color}" required>
+                                            </div>
                                             <div class="form-group">
                                                 <label class="required-field">Hình ảnh</label>
                                                 <input type="file" class="form-control" accept="image/*" th:field="*{imageUrl}">
@@ -371,14 +334,6 @@
                                                 <input type="text" class="form-control" placeholder="Ví dụ: 8GB" th:field="*{specification.ram}" required>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="required-field">ROM</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: 256GB" th:field="*{specification.rom}" required>
-                                            </div>
-                                        </div>
-
-
                                     </div>
                                 </div>
 

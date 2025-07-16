@@ -20,8 +20,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/management/products")
@@ -60,55 +60,68 @@ public class ProductController {
     }
 
     //Mở trang cập nhật thông tin sản phẩm
-    @PostMapping("/op_update")
+    @GetMapping("/op_update")
     String opUpdateProduct(@RequestParam Long productId, Model model){
         Product product = productService.getProductById(productId);
 
-        model.addAttribute("product", product);
+        if (product.getSpecification() == null) {
+            product.setSpecification(new Specification());
+        }
+        if (product.getSpecification().getVariants() == null) {
+            product.getSpecification().setVariants(new ArrayList<>());
+        }
+        model.addAttribute("request", product);
+        model.addAttribute("categories", categoryService.findAll());
         return "DashBoard/suaSanPham";
     }
 
     // Chức năng thêm sản phẩm
-//    @PostMapping("/add")
-//    String addCustomer(@Valid @ModelAttribute("request") ProductCreationRequest request, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
-//
-//        if (request.getImageUrl() == null || request.getImageUrl().isEmpty()) {
-//            bindingResult.rejectValue("imageUrl", "error.imageUrl", "Vui lòng chọn hình ảnh");
-//        }
-//
-//        if (bindingResult.hasErrors()) {
-//            // Xử lý lỗi
-//            model.addAttribute("request", request);
-//            model.addAttribute("categories", categoryService.findAll());
-//            return "DashBoard/themSanPham"; // Trả về một thông báo lỗi
-//        }
-//
-//        if(productService.doesProductExistByNameAndColor(request.getName(), request.getColor())){
-//            bindingResult.rejectValue("name", "error.name", "Sản phẩm với tên và màu này đã tồn tại");
-//            model.addAttribute("request", request);
-//            model.addAttribute("categories", categoryService.findAll());
-//            return "DashBoard/themSanPham"; // Trả về thông báo lỗi nếu
-//        }
-//
-//        if (!categoryService.existsById(request.getCategoryId())) {
-//            bindingResult.rejectValue("categoryId", "error.categoryId", "Danh mục không hợp lệ");
-//            model.addAttribute("request", request);
-//            model.addAttribute("categories", categoryService.findAll());
-//            return "DashBoard/themSanPham";
-//        }
-//
-//        if(request.getSpecification() == null) {
-//            bindingResult.rejectValue("specificationIds", "error.specificationIds", "Vui lòng chọn ít nhất một thông số kỹ thuật");
-//            model.addAttribute("request", request);
-//            model.addAttribute("categories", categoryService.findAll());
-//            return "DashBoard/themSanPham";
-//        }
-//
-//        Product product = productService.createProduct(request);
-//        // Thêm thông báo thành công vào FlashAttributes
-//        redirectAttributes.addFlashAttribute("successMessage", "Thêm sản phẩm thành công!");
-//        return "redirect:/management/products"; // Chuyển hướng về trang danh sách sản phẩm
-//    }
+    @PostMapping("/add")
+    String addProduct(@Valid @ModelAttribute("request") ProductCreationRequest request, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
+
+        if (request.getImageUrl() == null || request.getImageUrl().isEmpty()) {
+            bindingResult.rejectValue("imageUrl", "error.imageUrl", "Vui lòng chọn hình ảnh");
+        }
+
+        if (bindingResult.hasErrors()) {
+            // Xử lý lỗi
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/themSanPham"; // Trả về một thông báo lỗi
+        }
+
+        if(productService.doesProductExistByNameAndColor(request.getName(), request.getColor())){
+            bindingResult.rejectValue("name", "error.name", "Sản phẩm với tên và màu này đã tồn tại");
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/themSanPham"; // Trả về thông báo lỗi nếu
+        }
+
+        if (!categoryService.existsById(request.getCategoryId())) {
+            bindingResult.rejectValue("categoryId", "error.categoryId", "Danh mục không hợp lệ");
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/themSanPham";
+        }
+
+        if(request.getSpecification() == null) {
+            bindingResult.rejectValue("specificationIds", "error.specificationIds", "Vui lòng chọn ít nhất một thông số kỹ thuật");
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/themSanPham";
+        }
+
+        try {
+            productService.createProduct(request);
+            // Thêm thông báo thành công vào FlashAttributes
+            redirectAttributes.addFlashAttribute("successMessage", "Thêm sản phẩm thành công!");
+            return "redirect:/management/products"; // Chuyển hướng về trang danh sách sản phẩm
+        } catch (RuntimeException ex) {
+            model.addAttribute("errorMessage", "Lỗi khi lưu sản phẩm: " + ex.getMessage());
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/themSanPham";
+        }
+    }
 
     // Lấy thông tin sản phẩm để hiển thị vào modal xem thông số kỹ thuật
     @GetMapping("/get-detail-product/{productId}")
@@ -140,14 +153,12 @@ public class ProductController {
         specDTO.setCpu(spec.getCpu());
         specDTO.setCharging(spec.getCharging());
 
-        List<ProductSpecificationVariantDTO> variantDTOs = spec.getVariants().stream().map(variant -> {
-            return ProductSpecificationVariantDTO.builder()
-                    .rom(variant.getRom())
-                    .importPrice(variant.getImportPrice())
-                    .sellingPrice(variant.getSellingPrice())
-                    .quantity(variant.getQuantity())
-                    .build();
-        }).collect(Collectors.toList());
+        List<ProductSpecificationVariantDTO> variantDTOs = spec.getVariants().stream().map(variant -> ProductSpecificationVariantDTO.builder()
+                .rom(variant.getRom())
+                .importPrice(variant.getImportPrice())
+                .sellingPrice(variant.getSellingPrice())
+                .quantity(variant.getQuantity())
+                .build()).toList();
 
         specDTO.setVariants(variantDTOs);
         dto.setSpecifications(List.of(specDTO));

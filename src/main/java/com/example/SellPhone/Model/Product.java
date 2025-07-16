@@ -30,29 +30,13 @@ public class Product {
     @Column(name = "color")
     private String color;
 
-//    @Column(name = "import_price")
-//    private Long importPrice;
-//
-//    @Column(name = "selling_price")
-//    private Long sellingPrice;
-
-//    @Column(name = "quantity")
-//    private Integer quantity;
-
     @Column(name = "status")
     private String status;
 
     @Column(name = "description")
     private String description;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "product-specification",
-//            joinColumns = @JoinColumn(name = "product_id"),
-//            inverseJoinColumns = @JoinColumn(name = "specification_id")
-//    )
-//    private List<Specification> specifications;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "specification_id")
     private Specification specification;
 }

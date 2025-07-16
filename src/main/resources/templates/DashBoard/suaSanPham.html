@@ -1,0 +1,476 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>TĐ Mobile - Sửa thông tin sản phẩm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png" href="../../static/assets/images/icon/favicon.ico" th:href="@{/assets/images/icon/favicon.ico}">
+    <link rel="stylesheet" href="../../static/assets/css/bootstrap.min.css" th:href="@{/assets/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/font-awesome.min.css" th:href="@{/assets/css/font-awesome.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/themify-icons.css" th:href="@{/assets/css/themify-icons.css}">
+    <link rel="stylesheet" href="../../static/assets/css/metisMenu.css" th:href="@{/assets/css/metisMenu.css}">
+    <link rel="stylesheet" href="../../static/assets/css/owl.carousel.min.css" th:href="@{/assets/css/owl.carousel.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/slicknav.min.css" th:href="@{/assets/css/slicknav.min.css}">
+    <!-- amchart css -->
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+    <!-- others css -->
+    <link rel="stylesheet" href="../../static/assets/css/typography.css" th:href="@{/assets/css/typography.css}">
+    <link rel="stylesheet" href="../../static/assets/css/default-css.css" th:href="@{/assets/css/default-css.css}">
+    <link rel="stylesheet" href="../../static/assets/css/styles.css" th:href="@{/assets/css/styles.css}">
+    <link rel="stylesheet" href="../../static/assets/css/responsive.css" th:href="@{/assets/css/responsive.css}">
+    <!-- modernizr css -->
+    <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+    <style>
+        .card {
+            border: none;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #f0f0f0;
+            padding: 20px;
+        }
+        .card-title {
+            color: #333;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .form-section-title {
+            color: #007bff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            height: auto;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
+        }
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+        .image-preview {
+            width: 255px;
+            height: 255px;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .image-preview i {
+            color: #ddd;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+        }
+
+        .form-control:disabled, .form-control[readonly] {
+            background-color: #f8f9fa;
+            opacity: 1;
+        }
+
+        .btn {
+            padding: 8px 20px;
+        }
+
+        .btn i {
+            margin-right: 5px;
+        }
+
+        .form-section .column-header span{
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+<div id="preloader">
+    <div class="loader"></div>
+</div>
+<div class="page-container">
+    <!-- Sidebar Menu -->
+    <div class="sidebar-menu">
+        <div class="sidebar-header">
+            <div class="logo">
+                <a href="dashboard.html"><img src="assets/images/icon/logo.png" alt="logo"></a>
+            </div>
+        </div>
+        <div class="main-menu">
+            <div class="menu-inner">
+                <nav>
+                    <ul class="metismenu" id="menu">
+                        <li><a href="/management/dashboard"><i class="ti-dashboard"></i><span>Dashboard</span></a></li>
+                        <li><a href="/management/staff"><i class="fa fa-users"></i><span>Quản lý nhân viên</span></a></li>
+                        <li><a href="/management/customers"><i class="fa fa-user"></i><span>Quản lý khách hàng</span></a></li>
+                        <li class="active"><a href="/management/products"><i class="fa fa-mobile"></i><span>Quản lý sản phẩm</span></a></li>
+                        <li><a href="quanLyDonHang.html"><i class="fa fa-shopping-cart"></i><span>Quản lý đơn hàng</span></a></li>
+                        <li><a href="/management/categories"><i class="fa fa-list"></i><span>Quản lý danh mục</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header Area -->
+        <div class="header-area">
+            <div class="row align-items-center">
+                <div class="col-md-6 col-sm-8 clearfix">
+                    <div class="nav-btn pull-left">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page Title -->
+        <div class="page-title-area">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <div class="breadcrumbs-area clearfix">
+                        <h4 class="page-title pull-left">Sửa thông tin sản phẩm</h4>
+                        <ul class="breadcrumbs pull-left">
+                            <li><a href="/management/dashboard">Trang chủ</a></li>
+                            <li><a href="/management/products">Quản lý sản phẩm</a></li>
+                            <li><span>Sửa thông tin sản phẩm</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-6 clearfix">
+                    <div class="user-profile pull-right">
+                        <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png"  th:src="@{/assets/images/author/avatar.png}" alt="avatar">
+                        <h4 class="user-name dropdown-toggle" data-toggle="dropdown" th:text="${username}"><i class="fa fa-angle-down"></i></h4>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">Message</a>
+                            <a class="dropdown-item" href="#">Settings</a>
+                            <a class="dropdown-item" href="/logout">Log Out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Inner -->
+        <div class="main-content-inner">
+            <div class="container mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Sửa thông tin sản phẩm</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="editProductForm" th:action="@{/management/products/update}" th:object="${request}" method="post" enctype="multipart/form-data">
+                            <!-- Giữ id sản phẩm để gửi về -->
+                            <input type="hidden" th:field="*{productId}" />
+
+                            <!-- Thông báo lỗi -->
+                            <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
+                                <ul><li th:each="err : ${#fields.errors()}" th:text="${err}"></li></ul>
+                            </div>
+
+                            <!-- Thông tin cơ bản -->
+                            <div class="form-section">
+                                <h5 class="form-section-title">Thông tin cơ bản</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">Tên sản phẩm</label>
+                                            <input type="text" class="form-control" placeholder="Nhập tên sản phẩm" th:field="*{name}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="required-field">Danh mục</label>
+                                            <select class="form-control" th:field="*{category}" required>
+                                                <option value="">Chọn danh mục</option>
+                                                <option th:each="cate : ${categories}"
+                                                        th:value="${cate.categoryId}"
+                                                        th:text="${cate.name}"
+                                                        th:selected="${cate.categoryId == request.category.categoryId}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="required-field">Màu sắc</label>
+                                            <input type="text" class="form-control" th:field="*{color}" placeholder="Nhập màu sản phẩm" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="required-field">Mô tả sản phẩm</label>
+                                            <textarea class="form-control" th:field="*{description}" placeholder="Mô tả sản phẩm"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">Hình ảnh</label>
+                                            <input type="file" class="form-control" accept="image/*" th:field="*{imageUrl}">
+                                            <div class="image-preview">
+                                                <img th:if="${request.imageUrl}" th:src="@{${request.imageUrl}}" alt="Preview">
+                                                <i class="fa fa-image fa-2x text-muted" th:if="${request.imageUrl == null}"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ROM -->
+                            <div class="form-section">
+                                <h5 class="form-section-title">Thông tin ROM & giá</h5>
+
+                                <div class="row text-dark mb-2 column-header">
+                                    <div class="col-md-3">ROM <span>*</span></div>
+                                    <div class="col-md-3">Giá nhập <span>*</span></div>
+                                    <div class="col-md-3">Giá bán <span>*</span></div>
+                                    <div class="col-md-2">Số lượng <span>*</span></div>
+                                    <div class="col-md-1"></div>
+                                </div>
+
+                                <div id="rom-container">
+                                    <div class="rom-row row align-items-end mb-2" th:each="variant, stat : *{specification.variants}">
+                                        <div class="col-md-3">
+                                            <input type="text" class="form-control"
+                                                   th:field="*{specification.variants[__${stat.index}__].rom}"
+                                                   placeholder="Ví dụ: 128GB" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="text" class="form-control format-number"
+                                                   th:field="*{specification.variants[__${stat.index}__].importPrice}"
+                                                   min="0" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="text" class="form-control format-number"
+                                                   th:field="*{specification.variants[__${stat.index}__].sellingPrice}"
+                                                   min="0" required>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="number" class="form-control"
+                                                   th:field="*{specification.variants[__${stat.index}__].quantity}"
+                                                   min="0" required>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-danger btn-sm remove-rom"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <button type="button" class="btn btn-info btn-sm" id="add-rom"><i class="fa fa-plus"></i> Thêm phiên bản ROM</button>
+                            </div>
+
+                            <!-- Thông số kỹ thuật -->
+                            <div class="form-section">
+                                <h5 class="form-section-title">Thông số kỹ thuật</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">Kích thước màn hình</label>
+                                            <input class="form-control" th:field="*{specification.screenSize}" placeholder="Kích thước màn hình" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">Hệ điều hành</label>
+                                            <input class="form-control" th:field="*{specification.operatingSystem}" placeholder="Hệ điều hành" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">Camera sau</label>
+                                            <textarea class="form-control" th:field="*{specification.rearCamera}" placeholder="Camera sau" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">Camera trước</label>
+                                            <textarea class="form-control" th:field="*{specification.frontCamera}" placeholder="Camera trước" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">Kích thước màn hình</label>
+                                            <textarea class="form-control" th:field="*{specification.sim}" placeholder="Thẻ SIM" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">Chip</label>
+                                            <input class="form-control" th:field="*{specification.chipset}" placeholder="Chip xử lý" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">CPU</label>
+                                            <textarea class="form-control" th:field="*{specification.cpu}" placeholder="CPU" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">Công nghệ sạc</label>
+                                            <textarea class="form-control" th:field="*{specification.charging}" placeholder="Công nghệ sạc" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="required-field">RAM</label>
+                                        <input class="form-control" th:field="*{specification.ram}" placeholder="RAM" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nút -->
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Lưu thay đổi</button>
+                                <a th:href="@{/management/products}" class="btn btn-secondary"><i class="fa fa-times"></i> Hủy</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-area">
+            <p>© Copyright 2025. TĐ Mobile - Hệ thống bán điện thoại di động.</p>
+        </div>
+    </footer>
+</div>
+
+<!-- Scripts -->
+<script src="../../static/assets/js/vendor/jquery-2.2.4.min.js" th:src="@{/assets/js/vendor/jquery-2.2.4.min.js}"></script>
+<!-- bootstrap 4 js -->
+<script src="../../static/assets/js/popper.min.js" th:src="@{/assets/js/popper.min.js}"></script>
+<script src="../../static/assets/js/bootstrap.min.js" th:src="@{/assets/js/bootstrap.min.js}"></script>
+<script src="../../static/assets/js/owl.carousel.min.js" th:src="@{/assets/js/owl.carousel.min.js}"></script>
+<script src="../../static/assets/js/metisMenu.min.js" th:src="@{/assets/js/metisMenu.min.js}"></script>
+<script src="../../static/assets/js/jquery.slimscroll.min.js" th:src="@{/assets/js/jquery.slimscroll.min.js}"></script>
+<script src="../../static/assets/js/jquery.slicknav.min.js" th:src="@{/assets/js/jquery.slicknav.min.js}"></script>
+
+<!-- others plugins -->
+<script src="../../static/assets/js/plugins.js" th:src="@{/assets/js/plugins.js}"></script>
+<script src="../../static/assets/js/scripts.js" th:src="@{/assets/js/scripts.js}"></script>
+
+<!-- Script xử lý preview ảnh -->
+<script>
+    // Xử lý preview ảnh khi upload
+    document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.querySelector('.image-preview');
+        const previewImg = preview.querySelector('img') || document.createElement('img');
+        const icon = preview.querySelector('i');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                if (icon) icon.style.display = 'none';
+                if (!preview.contains(previewImg)) preview.appendChild(previewImg);
+            }
+            reader.readAsDataURL(file);
+        } else {
+            previewImg.style.display = 'none';
+            if (icon) icon.style.display = 'block';
+        }
+    });
+</script>
+
+<!-- Script xử lý thêm ROM -->
+<script>
+    let romIndex = document.querySelectorAll('.rom-row').length;
+
+    document.getElementById('add-rom').addEventListener('click', function () {
+        const container = document.getElementById('rom-container');
+
+        const row = document.createElement('div');
+        row.className = 'rom-row row align-items-end mb-2';
+        row.innerHTML = `
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="romVariants[${romIndex}].rom" placeholder="Ví dụ: 256GB" required>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control format-number" name="romVariants[${romIndex}].importPrice" placeholder="Giá nhập" min="0" required>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control format-number" name="romVariants[${romIndex}].sellingPrice" placeholder="Giá bán" min="0" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" class="form-control" name="romVariants[${romIndex}].quantity" placeholder="Số lượng" min="0" required>
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-danger btn-sm remove-rom"><i class="fa fa-trash"></i></button>
+            </div>
+        `;
+        container.appendChild(row);
+        romIndex++;
+    });
+
+    document.getElementById('rom-container').addEventListener('click', function (e) {
+        if (e.target.closest('.remove-rom')) {
+            const row = e.target.closest('.rom-row');
+            row.remove();
+        }
+    });
+</script>
+
+<!--Script xử lý định dạng số cho ô giá nhập và giá bán-->
+<script>
+    function formatNumberInput(input) {
+        const value = input.value.replace(/\D/g, '');
+        if (value === '') {
+            input.value = '';
+            return;
+        }
+        input.value = Number(value).toLocaleString('vi-VN');
+    }
+
+    // Format ngay khi người dùng nhập
+    document.addEventListener('input', function (e) {
+        if (e.target.classList.contains('format-number')) {
+            formatNumberInput(e.target);
+        }
+    });
+
+    // Format toàn bộ sau khi trang tải xong (giá trị ban đầu)
+    window.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.format-number').forEach(input => {
+            formatNumberInput(input);
+        });
+    });
+
+    // Bỏ dấu chấm khi submit form
+    document.getElementById('updateProductForm')?.addEventListener('submit', function () {
+        document.querySelectorAll('.format-number').forEach(input => {
+            input.value = input.value.replace(/\./g, '');
+        });
+    });
+</script>
+
+
+
+</body>
+</html>
