@@ -206,7 +206,7 @@
                                                             <i class="fa fa-edit"></i>
                                                         </button>
                                             </a>
-                                                    <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteProductModal">
+                                                    <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteProductModal" th:data-id="${pd.productId}">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                         </div>
@@ -615,7 +615,7 @@
         // Lắng nghe sự kiện khi modal được mở
         $('#deleteProductModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget); // Lấy button đã mở modal
-            var productId = button.data('id'); // Lấy userId từ thuộc tính data-id
+            var productId = button.data('id'); // Lấy productId từ thuộc tính data-id
             var modal = $(this);
 
             // Cập nhật giá trị của input hidden trong form modal

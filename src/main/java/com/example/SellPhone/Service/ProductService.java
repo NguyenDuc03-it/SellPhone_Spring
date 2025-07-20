@@ -1,6 +1,7 @@
 package com.example.SellPhone.Service;
 
 import com.example.SellPhone.DTO.Request.Product.ProductCreationRequest;
+import com.example.SellPhone.DTO.Request.Product.ProductUpdateRequest;
 import com.example.SellPhone.DTO.Request.Specification.SpecificationCreationRequest;
 import com.example.SellPhone.Model.Category;
 import com.example.SellPhone.Model.Product;
@@ -9,7 +10,11 @@ import com.example.SellPhone.Model.SpecificationVariant;
 import com.example.SellPhone.Repository.CategoryRepository;
 import com.example.SellPhone.Repository.ProductRepository;
 import com.example.SellPhone.Repository.SpecificationRepository;
+import com.example.SellPhone.Repository.SpecificationVariantRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -37,6 +43,11 @@ public class ProductService {
 
      CategoryRepository categoryRepository;
 
+     SpecificationVariantRepository specificationVariantRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
     // Tìm kiếm sản phẩm theo searchQuery
     public Page<Product> searchProduct(String searchQuery, Pageable pageable) {
 
@@ -48,13 +59,13 @@ public class ProductService {
                 return productRepository.findByProductId(Long.parseLong(searchQuery), pageable);  // Tìm kiếm theo id
             } catch (NumberFormatException e) {
                 // Nếu không thể chuyển đổi thành Long, tìm kiếm theo tên, status hoặc category
-                return productRepository.findByNameContainingOrStatusContainingOrCategory_Name(
-                        searchQuery, searchQuery, searchQuery, pageable);
+                return productRepository.findByNameContainingOrStatusContainingOrColorContainingOrCategory_Name(
+                        searchQuery, searchQuery, searchQuery, searchQuery, pageable);
             }
         } else {
             // Nếu searchQuery rỗng hoặc null, tìm kiếm theo các trường khác
-            return productRepository.findByNameContainingOrStatusContainingOrCategory_Name(
-                    searchQuery, searchQuery, searchQuery, pageable);
+            return productRepository.findByNameContainingOrStatusContainingOrColorContainingOrCategory_Name(
+                    searchQuery, searchQuery, searchQuery, searchQuery, pageable);
         }
     }
 
@@ -73,8 +84,13 @@ public class ProductService {
         return productRepository.existsByNameAndColor(name, color);
     }
 
+    // Kiểm tra xem sản phẩm có tồn tại theo tên và màu sắc và ID hay không
+    public boolean doesProductExistByNameAndColorAndID(String name, String color, Long id) {
+        return productRepository.existsByNameAndColorAndProductIdNot(name, color, id);
+    }
+
     // Luu sản phẩm mới
-    public Product createProduct(ProductCreationRequest request) {
+    public void createProduct(ProductCreationRequest request) {
 
         // Lấy danh mục
         Category category = categoryRepository.findById(request.getCategoryId())
@@ -124,7 +140,7 @@ public class ProductService {
                 .specification(specification)
                 .build();
 
-        return productRepository.save(product);
+        productRepository.save(product);
     }
 
     // Method giúp kiểm tra extension (đuôi file) là gì
@@ -179,4 +195,92 @@ public class ProductService {
         }
     }
 
+    // Cập nhật sản phẩm
+    @Transactional
+    public void updateProduct(@Valid ProductUpdateRequest request) {
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không tồn tại"));
+        // Lấy danh mục
+        Category category = categoryRepository.findById(request.getCategory().getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Danh mục không tồn tại"));
+
+        SpecificationCreationRequest specReq = request.getSpecification();
+
+        // Cập nhật thông số kỹ thuật
+        Specification spec = product.getSpecification();
+        spec.setScreenSize(specReq.getScreenSize());
+        spec.setRearCamera(specReq.getRearCamera());
+        spec.setFrontCamera(specReq.getFrontCamera());
+        spec.setChipset(specReq.getChipset());
+        spec.setRam(specReq.getRam());
+        spec.setSim(specReq.getSim());
+        spec.setOperatingSystem(specReq.getOperatingSystem());
+        spec.setCpu(specReq.getCpu());
+        spec.setCharging(specReq.getCharging());
+
+        List<SpecificationVariant> currentVariants = spec.getVariants();
+
+        // Cập nhật các phiên bản ROM
+        List<SpecificationVariant> newVariants = request.getRomVariants().stream()
+                .map(variantReq -> SpecificationVariant.builder()
+                        .rom(variantReq.getRom())
+                        .importPrice(variantReq.getImportPrice())
+                        .sellingPrice(variantReq.getSellingPrice())
+                        .quantity(variantReq.getQuantity())
+                        .specification(spec)
+                        .build()
+                ).collect(Collectors.toList());
+        currentVariants.clear(); // Xóa toàn bộ variant cũ
+        entityManager.flush(); // Bắt Hibernate flush delete xuống DB ngay lập tức
+        currentVariants.addAll(newVariants);
+
+        // Cập nhật thông tin sản phẩm
+        product.setName(request.getName());
+        product.setColor(request.getColor());
+        product.setDescription(request.getDescription());
+        product.setCategory(category);
+
+        // Cập nhật ảnh nếu có
+        if (request.getImageUrl() != null && !request.getImageUrl().isEmpty()) {
+            // Xóa ảnh cũ nếu có
+            if (product.getImageUrl() != null && !product.getImageUrl().isBlank()) {
+                String oldImagePath = "." + product.getImageUrl();
+                try {
+                    Files.deleteIfExists(Paths.get(oldImagePath));
+                } catch (IOException e) {
+                    System.out.println("Không thể xóa ảnh cũ: " + oldImagePath);
+                    e.printStackTrace();
+                }
+            }
+
+            // Lưu ảnh mới
+            String imagePath = saveImageToDisk(request.getImageUrl());
+            product.setImageUrl(imagePath);
+        }
+
+        boolean hasQuantity = newVariants.stream()
+                .anyMatch(v -> v.getQuantity() != null && v.getQuantity() > 0);
+        product.setStatus(hasQuantity ? "Còn hàng" : "Hết hàng");
+
+        productRepository.save(product);
+
+    }
+
+    // Xóa sản phẩm
+    @Transactional
+    public void deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+
+        // Xóa ảnh sản phẩm trong thư mục của dự án và xóa sản phẩm
+        if (product.getImageUrl() != null && !product.getImageUrl().isBlank()) {
+            String oldImagePath = "." + product.getImageUrl();
+            try {
+                Files.deleteIfExists(Paths.get(oldImagePath));
+                productRepository.delete(product);
+            } catch (IOException e) {
+                System.out.println("LỖI: KHÔNG THỂ XÓA ẢNH: " + oldImagePath);
+                e.printStackTrace();
+            }
+        } else System.out.println("LỖI: KHÔNG TÌM  THẤY ẢNH CẦN XÓA");
+    }
 }

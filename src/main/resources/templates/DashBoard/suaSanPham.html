@@ -229,8 +229,8 @@
                                             <label class="required-field">Hình ảnh</label>
                                             <input type="file" class="form-control" accept="image/*" th:field="*{imageUrl}">
                                             <div class="image-preview">
-                                                <img th:if="${request.imageUrl}" th:src="@{${request.imageUrl}}" alt="Preview">
-                                                <i class="fa fa-image fa-2x text-muted" th:if="${request.imageUrl == null}"></i>
+                                                <img th:if="${request.existingImageUrl}" th:src="@{${request.existingImageUrl}}" alt="Preview">
+                                                <i class="fa fa-image fa-2x text-muted" th:if="${request.existingImageUrl == null}"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -250,32 +250,35 @@
                                 </div>
 
                                 <div id="rom-container">
-                                    <div class="rom-row row align-items-end mb-2" th:each="variant, stat : *{specification.variants}">
+                                    <div th:if="${not #lists.isEmpty(request.romVariants)}">
+                                        <div class="rom-row row align-items-end mb-2" th:each="variant, stat : *{romVariants}">
                                         <div class="col-md-3">
-                                            <input type="text" class="form-control"
-                                                   th:field="*{specification.variants[__${stat.index}__].rom}"
+                                            <input type="text" class="form-control" onkeydown="return isNumberKey(event)"
+                                                   th:field="*{romVariants[__${stat.index}__].rom}"
                                                    placeholder="Ví dụ: 128GB" required>
                                         </div>
                                         <div class="col-md-3">
                                             <input type="text" class="form-control format-number"
-                                                   th:field="*{specification.variants[__${stat.index}__].importPrice}"
-                                                   min="0" required>
+                                                   th:field="*{romVariants[__${stat.index}__].importPrice}"
+                                                   placeholder="Giá nhập" required>
                                         </div>
                                         <div class="col-md-3">
                                             <input type="text" class="form-control format-number"
-                                                   th:field="*{specification.variants[__${stat.index}__].sellingPrice}"
-                                                   min="0" required>
+                                                   th:field="*{romVariants[__${stat.index}__].sellingPrice}"
+                                                   placeholder="Giá bán" required>
                                         </div>
                                         <div class="col-md-2">
-                                            <input type="number" class="form-control"
-                                                   th:field="*{specification.variants[__${stat.index}__].quantity}"
-                                                   min="0" required>
+                                            <input type="text" class="form-control" onkeydown="return isNumberKey(event)"
+                                                   th:field="*{romVariants[__${stat.index}__].quantity}"
+                                                   placeholder="Số lượng" required>
                                         </div>
                                         <div class="col-md-1">
-                                            <button type="button" class="btn btn-danger btn-sm remove-rom"><i class="fa fa-trash"></i></button>
+                                            <button type="button" class="btn btn-danger btn-sm remove-rom">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
                                         </div>
                                     </div>
-
+                                    </div>
                                 </div>
                                 <button type="button" class="btn btn-info btn-sm" id="add-rom"><i class="fa fa-plus"></i> Thêm phiên bản ROM</button>
                             </div>
@@ -287,7 +290,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Kích thước màn hình</label>
-                                            <input class="form-control" th:field="*{specification.screenSize}" placeholder="Kích thước màn hình" required>
+                                            <input class="form-control" th:field="*{specification.screenSizeInput}" placeholder="Kích thước màn hình" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -335,7 +338,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">RAM</label>
-                                        <input class="form-control" th:field="*{specification.ram}" placeholder="RAM" required>
+                                        <input type="text" class="form-control" onkeydown="return isNumberKey(event)" th:field="*{specification.ram}" placeholder="RAM" required>
                                         </div>
                                     </div>
                                 </div>
@@ -401,6 +404,22 @@
 
 <!-- Script xử lý thêm ROM -->
 <script>
+    function updateRomFieldsIndex() {
+        const rows = document.querySelectorAll("#rom-container .rom-row");
+        rows.forEach((row, index) => {
+            row.querySelectorAll("input").forEach(input => {
+                let name = input.getAttribute("name");
+                if (name) {
+                    name = name.replace(/romVariants\[\d+]/, `romVariants[${index}]`);
+                    input.setAttribute("name", name);
+                }
+            });
+        });
+
+        // Cập nhật lại biến romIndex để lần thêm tiếp theo không bị lệch
+        romIndex = rows.length;
+    }
+
     let romIndex = document.querySelectorAll('.rom-row').length;
 
     document.getElementById('add-rom').addEventListener('click', function () {
@@ -410,7 +429,7 @@
         row.className = 'rom-row row align-items-end mb-2';
         row.innerHTML = `
             <div class="col-md-3">
-                <input type="text" class="form-control" name="romVariants[${romIndex}].rom" placeholder="Ví dụ: 256GB" required>
+                <input type="text" class="form-control" onkeydown="return isNumberKey(event)" name="romVariants[${romIndex}].rom" placeholder="Ví dụ: 256GB" required>
             </div>
             <div class="col-md-3">
                 <input type="text" class="form-control format-number" name="romVariants[${romIndex}].importPrice" placeholder="Giá nhập" min="0" required>
@@ -419,7 +438,7 @@
                 <input type="text" class="form-control format-number" name="romVariants[${romIndex}].sellingPrice" placeholder="Giá bán" min="0" required>
             </div>
             <div class="col-md-2">
-                <input type="number" class="form-control" name="romVariants[${romIndex}].quantity" placeholder="Số lượng" min="0" required>
+                <input type="text" class="form-control" onkeydown="return isNumberKey(event)" name="romVariants[${romIndex}].quantity" placeholder="Số lượng" min="0" required>
             </div>
             <div class="col-md-1">
                 <button type="button" class="btn btn-danger btn-sm remove-rom"><i class="fa fa-trash"></i></button>
@@ -431,11 +450,16 @@
 
     document.getElementById('rom-container').addEventListener('click', function (e) {
         if (e.target.closest('.remove-rom')) {
+            e.preventDefault();
             const row = e.target.closest('.rom-row');
-            row.remove();
+            if (row) {
+                row.remove();
+                updateRomFieldsIndex(); // 👈 Cập nhật lại index sau khi xoá
+            }
         }
     });
 </script>
+
 
 <!--Script xử lý định dạng số cho ô giá nhập và giá bán-->
 <script>
@@ -463,14 +487,25 @@
     });
 
     // Bỏ dấu chấm khi submit form
-    document.getElementById('updateProductForm')?.addEventListener('submit', function () {
+    document.getElementById('editProductForm')?.addEventListener('submit', function () {
         document.querySelectorAll('.format-number').forEach(input => {
             input.value = input.value.replace(/\./g, '');
         });
     });
 </script>
 
-
+<!-- Script kiểm tra nhập số (chỉ cho phép nhập số) -->
+<script>
+    function isNumberKey(evt) {
+        let charCode = evt.which ? evt.which : evt.keyCode;
+        // Chỉ cho phép các phím số (0-9), nút backsapace và delete
+        if ((charCode < 48 && !charCode == 8 && !charCode == 46) || charCode > 57) {
+            evt.preventDefault();
+            return false;
+        }
+        return true;
+    }
+</script>
 
 </body>
 </html>

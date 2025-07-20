@@ -14,7 +14,6 @@ public class SpecificationCreationRequest {
     @Pattern(regexp = "^\\d+(\\.\\d+)?$", message = "Kích thước màn hình phải là số dương hợp lệ")
     private String screenSizeInput;
 
-    @NotNull(message = "Kích thước màn hình không được để trống")
     @Positive(message = "Kích thước màn hình phải lớn hơn 0")
     private Float screenSize;     // Kích thước màn hình
 
@@ -46,11 +45,6 @@ public class SpecificationCreationRequest {
     @Min(value = 1, message = "RAM phải lớn hơn 0")
     @Max(value = 999, message = "RAM không vượt quá 999 GB")
     private Integer ram;              // RAM
-
-//    @NotNull(message = "Thông tin rom không được để trống")
-//    @Min(value = 1, message = "ROM phải lớn hơn 0")
-//    @Max(value = 20480, message = "ROM không vượt quá 20480 GB")
-//    private Integer rom;              // ROM
 
     @NotBlank(message = "Thông tin thẻ sim không được để trống")
     @Size(max = 255, message = "Thông tin thẻ sim không được vượt quá 255 kí tự")
@@ -85,8 +79,7 @@ public class SpecificationCreationRequest {
     private String charging;      // Công nghệ sạc
 
     // Hàm chuyển đổi String sang Float
-    public void setScreenSizeInput(String screenSizeInput) {
-        this.screenSizeInput = screenSizeInput;
+    public void normalizeScreenSize() {
         if (screenSizeInput != null && screenSizeInput.matches("^\\d+(\\.\\d+)?$")) {
             this.screenSize = Float.parseFloat(screenSizeInput);
         } else {

@@ -46,6 +46,6 @@ public class Specification {
     @Column(name = "charging")
     private String charging;
 
-    @OneToMany(mappedBy = "specification", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "specification", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<SpecificationVariant> variants;
 }

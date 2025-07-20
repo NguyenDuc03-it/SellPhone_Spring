@@ -3,9 +3,14 @@ package com.example.SellPhone.Controller.Management;
 import com.example.SellPhone.DTO.ProductSpecificationVariantDTO;
 import com.example.SellPhone.DTO.Request.Product.ProductCreationRequest;
 import com.example.SellPhone.DTO.ProductSpecificationDTO;
+import com.example.SellPhone.DTO.Request.Product.ProductUpdateRequest;
+import com.example.SellPhone.DTO.Request.Specification.SpecificationCreationRequest;
+import com.example.SellPhone.DTO.Request.SpecificationVariant.SpecificationVariantRequest;
+import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
 import com.example.SellPhone.DTO.Respone.Product.ProductSpecificationResponse;
 import com.example.SellPhone.Model.Product;
 import com.example.SellPhone.Model.Specification;
+import com.example.SellPhone.Model.User;
 import com.example.SellPhone.Service.CategoryService;
 import com.example.SellPhone.Service.ProductService;
 import jakarta.validation.Valid;
@@ -70,7 +75,8 @@ public class ProductController {
         if (product.getSpecification().getVariants() == null) {
             product.getSpecification().setVariants(new ArrayList<>());
         }
-        model.addAttribute("request", product);
+        ProductUpdateRequest request = convertToUpdateRequest(product);
+        model.addAttribute("request", request);
         model.addAttribute("categories", categoryService.findAll());
         return "DashBoard/suaSanPham";
     }
@@ -88,6 +94,11 @@ public class ProductController {
             model.addAttribute("request", request);
             model.addAttribute("categories", categoryService.findAll());
             return "DashBoard/themSanPham"; // Trả về một thông báo lỗi
+        }
+
+        // Normalize screenSize từ screenSizeInput
+        if (request.getSpecification() != null) {
+            request.getSpecification().normalizeScreenSize();
         }
 
         if(productService.doesProductExistByNameAndColor(request.getName(), request.getColor())){
@@ -121,6 +132,76 @@ public class ProductController {
             model.addAttribute("categories", categoryService.findAll());
             return "DashBoard/themSanPham";
         }
+    }
+
+    // Chức năng sửa thông tin sảm phẩm
+    @PostMapping("/update")
+    String updateProduct(@Valid @ModelAttribute("request") ProductUpdateRequest request, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
+        if (bindingResult.hasErrors()) {
+            // Giữ lại ảnh cũ
+            Product product = productService.getProductById(request.getProductId());
+            request.setExistingImageUrl(product.getImageUrl());
+
+            // Xử lý lỗi
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/suaSanPham"; // Trả về một thông báo lỗi
+        }
+
+        if(request.getSpecification() == null) {
+            Product product = productService.getProductById(request.getProductId());
+            request.setExistingImageUrl(product.getImageUrl());
+            bindingResult.rejectValue("specificationIds", "error.specificationIds", "Vui lòng chọn ít nhất một thông số kỹ thuật");
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/suaSanPham";
+        }
+        else request.getSpecification().normalizeScreenSize(); // Normalize screenSize từ screenSizeInput
+
+        if(productService.doesProductExistByNameAndColorAndID(request.getName(), request.getColor(), request.getProductId())){
+            Product product = productService.getProductById(request.getProductId());
+            request.setExistingImageUrl(product.getImageUrl());
+            bindingResult.rejectValue("name", "error.name", "Sản phẩm với tên và màu này đã tồn tại");
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/suaSanPham"; // Trả về thông báo lỗi nếu
+        }
+
+        if (!categoryService.existsById(request.getCategory().getCategoryId())) {
+            Product product = productService.getProductById(request.getProductId());
+            request.setExistingImageUrl(product.getImageUrl());
+            bindingResult.rejectValue("categoryId", "error.categoryId", "Danh mục không hợp lệ");
+            model.addAttribute("request", request);
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/suaSanPham";
+        }
+
+        try {
+            productService.updateProduct(request);
+            // Thêm thông báo thành công vào FlashAttributes
+            redirectAttributes.addFlashAttribute("successMessage", "Sửa thông tin sản phẩm thành công!");
+            return "redirect:/management/products"; // Chuyển hướng về trang danh sách sản phẩm
+        } catch (RuntimeException ex) {
+            Product product = productService.getProductById(request.getProductId());
+            request.setExistingImageUrl(product.getImageUrl());
+            model.addAttribute("errorMessage", "Lỗi khi sửa sản phẩm: " + ex.getMessage());
+            model.addAttribute("categories", categoryService.findAll());
+            return "DashBoard/suaSanPham";
+        }
+    }
+
+    // Chức năng xóa sản phẩm
+    @PostMapping("/delete")
+    String deleteProduct(@RequestParam Long productId, RedirectAttributes redirectAttributes){
+
+        Product product = productService.getProductById(productId);
+        if (product != null) {
+            productService.deleteProduct(productId);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa sản phẩm thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy sản phẩm để xóa!");
+        }
+        return "redirect:/management/products"; // Chuyển hướng về trang danh sách nhân viên
     }
 
     // Lấy thông tin sản phẩm để hiển thị vào modal xem thông số kỹ thuật
@@ -166,6 +247,50 @@ public class ProductController {
         return ResponseEntity.ok(dto);
     }
 
+    // Chuyển đổi dữ liệu Product sang ProductUpdateRequest
+    private ProductUpdateRequest convertToUpdateRequest(Product product) {
+        ProductUpdateRequest dto = new ProductUpdateRequest();
+        dto.setProductId(product.getProductId());
+        dto.setName(product.getName());
+        dto.setExistingImageUrl(product.getImageUrl());
+        dto.setColor(product.getColor());
+        dto.setDescription(product.getDescription());
+        dto.setCategory(product.getCategory()); // nếu trong DTO là Category chứ không phải categoryId
+
+        // Convert specification
+        Specification spec = product.getSpecification();
+        if (spec != null) {
+            SpecificationCreationRequest specDto = new SpecificationCreationRequest();
+            specDto.setScreenSize(spec.getScreenSize());
+            specDto.setFrontCamera(spec.getFrontCamera());
+            specDto.setRearCamera(spec.getRearCamera());
+            specDto.setChipset(spec.getChipset());
+            specDto.setCpu(spec.getCpu());
+            specDto.setRam(spec.getRam());
+            specDto.setSim(spec.getSim());
+            specDto.setCharging(spec.getCharging());
+            specDto.setOperatingSystem(spec.getOperatingSystem());
+            specDto.setScreenSizeInput(String.valueOf(spec.getScreenSize()));
+
+            dto.setSpecification(specDto);
+        }
+
+        // Convert romVariants (nếu tồn tại)
+        if (spec != null && spec.getVariants() != null) {
+            List<SpecificationVariantRequest> variantDTOs = spec.getVariants().stream().map(variant -> {
+                SpecificationVariantRequest v = new SpecificationVariantRequest();
+                v.setRom(variant.getRom());
+                v.setImportPrice(variant.getImportPrice());
+                v.setSellingPrice(variant.getSellingPrice());
+                v.setQuantity(variant.getQuantity());
+                return v;
+            }).toList();
+
+            dto.setRomVariants(variantDTOs);
+        }
+
+        return dto;
+    }
 
 
 }

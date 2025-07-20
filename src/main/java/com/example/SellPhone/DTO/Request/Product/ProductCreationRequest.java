@@ -2,6 +2,7 @@ package com.example.SellPhone.DTO.Request.Product;
 
 import com.example.SellPhone.DTO.Request.Specification.SpecificationCreationRequest;
 import com.example.SellPhone.DTO.Request.SpecificationVariant.SpecificationVariantRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -32,18 +33,13 @@ public class ProductCreationRequest {
     @Size(max = 25, message = "Màu sản phẩm không được vượt quá 25 kí tự")
     String color;
 
-//    @NotNull(message = "Số lượng không được để trống")
-//    @Min(value = 0, message = "Số lượng phải lớn hơn hoặc bằng 0")
-//    Integer quantity;
-
-//    @NotBlank(message = "Trạng thái không được để trống")
-//    String status;
-
     String description;
 
     @NotNull(message = "Thông số kỹ thuật không được để trống")
+    @Valid
     SpecificationCreationRequest specification; // Danh sách các specificationId cho sản phẩm, tránh lưu trực tiếp đối tượng Specification
 
     @NotEmpty(message = "Cần có ít nhất một phiên bản ROM")
+    @Valid
     private List<SpecificationVariantRequest> romVariants;
 }

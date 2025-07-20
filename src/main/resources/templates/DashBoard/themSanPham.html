@@ -64,8 +64,8 @@
             color: red;
         }
         .image-preview {
-            width: 175px;
-            height: 175px;
+            width: 255px;
+            height: 255px;
             border: 2px dashed #ddd;
             border-radius: 5px;
             display: flex;
@@ -198,10 +198,6 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label class="required-field">Mã sản phẩm</label>
-                                                <input type="text" class="form-control" placeholder="Mã sản phẩm tự động" readonly>
-                                            </div>
-                                            <div class="form-group">
                                                 <label class="required-field">Tên sản phẩm</label>
                                                 <input type="text" class="form-control" placeholder="Nhập tên sản phẩm" th:field="*{name}" required>
                                             </div>
@@ -216,15 +212,15 @@
                                                 </select>
                                             </div>
                                             <div class="form-group">
+                                                <label class="required-field">Màu sắc</label>
+                                                <input type="text" class="form-control" placeholder="Nhập màu sản phẩm" th:field="*{color}" required>
+                                            </div>
+                                            <div class="form-group">
                                                 <label class="required-field">Mô tả sản phẩm</label>
                                                 <textarea class="form-control" placeholder="Mô tả sản phẩm" th:field="*{description}"></textarea>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="required-field">Màu sắc</label>
-                                                <input type="text" class="form-control" placeholder="Nhập màu sản phẩm" th:field="*{color}" required>
-                                            </div>
                                             <div class="form-group">
                                                 <label class="required-field">Hình ảnh</label>
                                                 <input type="file" class="form-control" accept="image/*" th:field="*{imageUrl}">
@@ -243,19 +239,19 @@
                                         <div class="rom-row row align-items-end mb-2">
                                             <div class="col-md-3">
                                                 <label class="required-field">ROM</label>
-                                                <input type="text" class="form-control" name="romVariants[0].rom" placeholder="Ví dụ: 128GB" required>
+                                                <input type="text" class="form-control" onkeydown="return isNumberKey(event)" name="romVariants[0].rom" placeholder="Ví dụ: 128GB" required>
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="required-field">Giá nhập</label>
-                                                <input type="number" class="form-control" name="romVariants[0].importPrice" placeholder="Nhập giá nhập" min="0" required>
+                                                <input type="text" class="form-control format-number" name="romVariants[0].importPrice" placeholder="Nhập giá nhập" min="0" required>
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="required-field">Giá bán</label>
-                                                <input type="number" class="form-control" name="romVariants[0].sellingPrice" placeholder="Nhập giá bán" min="0" required>
+                                                <input type="text" class="form-control format-number" name="romVariants[0].sellingPrice" placeholder="Nhập giá bán" min="0" required>
                                             </div>
                                             <div class="col-md-2">
                                                 <label class="required-field">Số lượng</label>
-                                                <input type="number" class="form-control" name="romVariants[0].quantity" placeholder="Số lượng" min="0" required>
+                                                <input type="text" class="form-control"  onkeydown="return isNumberKey(event)" name="romVariants[0].quantity" placeholder="Số lượng" min="0" required>
                                             </div>
                                             <div class="col-md-1">
                                                 <button type="button" class="btn btn-danger btn-sm remove-rom mt-4"><i class="fa fa-trash"></i></button>
@@ -273,7 +269,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Kích thước màn hình</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: 6.7 inch" th:field="*{specification.screenSize}" required>
+                                                <input type="text" class="form-control" placeholder="Ví dụ: 6.7 inch" th:field="*{specification.screenSizeInput}" required>
                                             </div>
                                         </div>
                                         <!-- Hệ điều hành -->
@@ -331,7 +327,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">RAM</label>
-                                                <input type="text" class="form-control" placeholder="Ví dụ: 8GB" th:field="*{specification.ram}" required>
+                                                <input type="text" class="form-control"  onkeydown="return isNumberKey(event)" placeholder="Ví dụ: 8GB" th:field="*{specification.ram}" required>
                                             </div>
                                         </div>
                                     </div>
@@ -410,16 +406,16 @@
             row.className = 'rom-row row align-items-end mb-2';
             row.innerHTML = `
                 <div class="col-md-3">
-                    <input type="text" class="form-control" name="romVariants[${romIndex}].rom" placeholder="Ví dụ: 256GB" required>
+                    <input type="text" class="form-control" onkeydown="return isNumberKey(event)" name="romVariants[${romIndex}].rom" placeholder="Ví dụ: 256GB" required>
                 </div>
                 <div class="col-md-3">
-                    <input type="number" class="form-control" name="romVariants[${romIndex}].importPrice" placeholder="Giá nhập" min="0" required>
+                    <input type="text" class="form-control format-number" name="romVariants[${romIndex}].importPrice" placeholder="Nhập giá nhập" min="0" required>
                 </div>
                 <div class="col-md-3">
-                    <input type="number" class="form-control" name="romVariants[${romIndex}].sellingPrice" placeholder="Giá bán" min="0" required>
+                    <input type="text" class="form-control format-number" name="romVariants[${romIndex}].sellingPrice" placeholder="Nhập giá bán" min="0" required>
                 </div>
                 <div class="col-md-2">
-                    <input type="number" class="form-control" name="romVariants[${romIndex}].quantity" placeholder="Số lượng" min="0" required>
+                    <input type="text" class="form-control"  onkeydown="return isNumberKey(event)" name="romVariants[${romIndex}].quantity" placeholder="Số lượng" min="0" required>
                 </div>
                 <div class="col-md-1">
                     <button type="button" class="btn btn-danger btn-sm remove-rom"><i class="fa fa-trash"></i></button>
@@ -435,6 +431,52 @@
                 row.remove();
             }
         });
+    </script>
+
+    <!--Script xử lý định dạng số cho ô giá nhập và giá bán-->
+    <script>
+        function formatNumberInput(input) {
+            const value = input.value.replace(/\D/g, '');
+            if (value === '') {
+                input.value = '';
+                return;
+            }
+            input.value = Number(value).toLocaleString('vi-VN');
+        }
+
+        // Format ngay khi người dùng nhập
+        document.addEventListener('input', function (e) {
+            if (e.target.classList.contains('format-number')) {
+                formatNumberInput(e.target);
+            }
+        });
+
+        // Format toàn bộ sau khi trang tải xong (giá trị ban đầu)
+        window.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.format-number').forEach(input => {
+                formatNumberInput(input);
+            });
+        });
+
+        // Bỏ dấu chấm khi submit form
+        document.getElementById('updateProductForm')?.addEventListener('submit', function () {
+            document.querySelectorAll('.format-number').forEach(input => {
+                input.value = input.value.replace(/\./g, '');
+            });
+        });
+    </script>
+
+    <!-- Script kiểm tra nhập số (chỉ cho phép nhập số) -->
+    <script>
+        function isNumberKey(evt) {
+            let charCode = evt.which ? evt.which : evt.keyCode;
+            // Chỉ cho phép các phím số (0-9), nút backsapace và delete
+            if ((charCode < 48 && !charCode == 8 && !charCode == 46) || charCode > 57) {
+                evt.preventDefault();
+                return false;
+            }
+            return true;
+        }
     </script>
 
 </body>
