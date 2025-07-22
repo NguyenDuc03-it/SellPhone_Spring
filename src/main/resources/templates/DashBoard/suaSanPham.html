@@ -22,6 +22,10 @@
     <!-- modernizr css -->
     <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
     <style>
+        textarea {
+           overflow-y: hidden;
+           resize: none; /* Tùy chọn: ẩn kéo thủ công */
+        }
         .card {
             border: none;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
@@ -221,7 +225,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="required-field">Mô tả sản phẩm</label>
-                                            <textarea class="form-control" th:field="*{description}" placeholder="Mô tả sản phẩm"></textarea>
+                                            <textarea class="form-control" th:field="*{description}" oninput="autoResize(this)" placeholder="Mô tả sản phẩm"></textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -302,19 +306,19 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Camera sau</label>
-                                            <textarea class="form-control" th:field="*{specification.rearCamera}" placeholder="Camera sau" required></textarea>
+                                            <textarea class="form-control" th:field="*{specification.rearCamera}" placeholder="Camera sau" oninput="autoResize(this)" required></textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Camera trước</label>
-                                            <textarea class="form-control" th:field="*{specification.frontCamera}" placeholder="Camera trước" required></textarea>
+                                            <textarea class="form-control" th:field="*{specification.frontCamera}" oninput="autoResize(this)" placeholder="Camera trước" required></textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Kích thước màn hình</label>
-                                            <textarea class="form-control" th:field="*{specification.sim}" placeholder="Thẻ SIM" required></textarea>
+                                            <textarea class="form-control" th:field="*{specification.sim}" oninput="autoResize(this)" placeholder="Thẻ SIM" required></textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -326,13 +330,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">CPU</label>
-                                            <textarea class="form-control" th:field="*{specification.cpu}" placeholder="CPU" required></textarea>
+                                            <textarea class="form-control" th:field="*{specification.cpu}" oninput="autoResize(this)" placeholder="CPU" required></textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="required-field">Công nghệ sạc</label>
-                                            <textarea class="form-control" th:field="*{specification.charging}" placeholder="Công nghệ sạc" required></textarea>
+                                            <textarea class="form-control" th:field="*{specification.charging}" oninput="autoResize(this)" placeholder="Công nghệ sạc" required></textarea>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -451,10 +455,18 @@
     document.getElementById('rom-container').addEventListener('click', function (e) {
         if (e.target.closest('.remove-rom')) {
             e.preventDefault();
+
+            // Không cho xóa nếu chỉ còn 1 phiên bản ROM
+            const rows = document.querySelectorAll('.rom-row');
+            if (rows.length <= 1) {
+                return;
+            }
+
+            // Xoá dòng ROM
             const row = e.target.closest('.rom-row');
             if (row) {
                 row.remove();
-                updateRomFieldsIndex(); // 👈 Cập nhật lại index sau khi xoá
+                updateRomFieldsIndex(); // Cập nhật lại index sau khi xoá
             }
         }
     });
@@ -505,6 +517,21 @@
         }
         return true;
     }
+</script>
+
+<!--Script auto resize cho textarea-->
+<script>
+    function autoResize(textarea) {
+      textarea.style.height = 'auto'; // Reset chiều cao
+      textarea.style.height = textarea.scrollHeight + 'px'; // Đặt chiều cao mới
+    }
+
+    // Gọi autoResize cho tất cả textarea ngay khi trang load
+    window.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('textarea').forEach(function (textarea) {
+        autoResize(textarea);
+      });
+    });
 </script>
 
 </body>

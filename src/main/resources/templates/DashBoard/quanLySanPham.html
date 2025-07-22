@@ -646,7 +646,7 @@
                    if (variants.length > 0) {
                        // Hiển thị các tabs cho các loại ROM
                        variants.forEach((variant, index) => {
-                           const romLabel = variant.rom + 'GB';
+                           const romLabel = formatRom(variant.rom);
 
                            // Tabs
                            const tab = document.createElement('li');
@@ -664,7 +664,7 @@
                                <div class="row">
                                    <div class="col-md-6 mb-2"><strong>Màn hình:</strong> ${spec.screenSize} inch</div>
                                    <div class="col-md-6 mb-2"><strong>Hệ điều hành:</strong> ${spec.operatingSystem}</div>
-                                   <div class="col-md-6 mb-2"><strong>ROM:</strong> ${variant.rom}GB</div>
+                                   <div class="col-md-6 mb-2"><strong>ROM:</strong> ${formatRom(variant.rom)}</div>
                                    <div class="col-md-6 mb-2"><strong>RAM:</strong> ${spec.ram}GB</div>
                                    <div class="col-md-6 mb-2"><strong>Chip xử lý:</strong> ${spec.chipset}</div>
                                    <div class="col-md-6 mb-2"><strong>Camera trước:</strong> ${spec.frontCamera}</div>
@@ -677,7 +677,7 @@
                                    <div class="col-md-6 mb-2"><strong>Số lượng:</strong> ${variant.quantity}</div>
                                </div>
                                <div class="mt-3">
-                                   <h6 class="text-muted mb-1">Mô tả sản phẩm:</h6>
+                                   <h6 class="mb-1"><strong>Mô tả sản phẩm:</strong></h6>
                                    <div class="border p-2 bg-light">${data.description}</div>
                                </div>
                            `;
@@ -735,6 +735,15 @@
                })
                .catch(error => console.error('Lỗi khi tải chi tiết sản phẩm:', error));
        }
+
+       function formatRom(rom) {
+           if (rom >= 1000) {
+               return (rom / 1000).toFixed(rom % 1000 === 0 ? 0 : 1) + 'TB';
+           } else {
+               return rom + 'GB';
+           }
+       }
+
 
     </script>
 
