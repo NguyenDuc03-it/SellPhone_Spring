@@ -22,6 +22,11 @@
     <!-- modernizr css -->
     <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
     <style>
+        textarea {
+           overflow-y: hidden;
+           resize: none; /* Tùy chọn: ẩn kéo thủ công */
+        }
+
         .card {
             border: none;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
@@ -101,6 +106,18 @@
 
         .btn i {
             margin-right: 5px;
+        }
+
+        .autofilled {
+            background-color: #9eff78 !important; // #94ff94
+            transition: background-color 0.8s ease-in-out;
+            border: 1px solid #3dff00; // #00d400
+        }
+
+        .autofilledWhite {
+            background-color: white !important;
+            transition: background-color 0.8s ease-in-out;
+            border: 1px solid #ddd;
         }
     </style>
 </head>
@@ -217,7 +234,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="required-field">Mô tả sản phẩm</label>
-                                                <textarea class="form-control" placeholder="Mô tả sản phẩm" th:field="*{description}"></textarea>
+                                                <textarea oninput="autoResize(this)" class="form-control" placeholder="Mô tả sản phẩm" th:field="*{description}"></textarea>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -283,13 +300,13 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Camera sau</label>
-                                                <textarea class="form-control" placeholder="Ví dụ: 48MP + 12MP + 12MP" th:field="*{specification.rearCamera}" required></textarea>
+                                                <textarea oninput="autoResize(this)" class="form-control" placeholder="Ví dụ: 48MP + 12MP + 12MP" th:field="*{specification.rearCamera}" required></textarea>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Camera trước</label>
-                                                <textarea class="form-control" placeholder="Ví dụ: 12MP" th:field="*{specification.frontCamera}" required></textarea>
+                                                <textarea oninput="autoResize(this)" class="form-control" placeholder="Ví dụ: 12MP" th:field="*{specification.frontCamera}" required></textarea>
                                             </div>
                                         </div>
 
@@ -297,7 +314,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Thẻ SIM</label>
-                                                <textarea class="form-control" placeholder="Ví dụ: 2 SIM (Nano-SIM)" th:field="*{specification.sim}" required></textarea>
+                                                <textarea oninput="autoResize(this)" class="form-control" placeholder="Ví dụ: 2 SIM (Nano-SIM)" th:field="*{specification.sim}" required></textarea>
                                             </div>
                                         </div>
 
@@ -311,7 +328,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">CPU</label>
-                                                <textarea class="form-control" placeholder="Ví dụ: 6 nhân, tốc độ 3.46 GHz" th:field="*{specification.cpu}" required></textarea>
+                                                <textarea oninput="autoResize(this)" class="form-control" placeholder="Ví dụ: 6 nhân, tốc độ 3.46 GHz" th:field="*{specification.cpu}" required></textarea>
                                             </div>
                                         </div>
 
@@ -319,7 +336,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="required-field">Công nghệ sạc</label>
-                                                <textarea class="form-control" placeholder="Ví dụ: Sạc nhanh 25W, sạc không dây 15W" th:field="*{specification.charging}" required></textarea>
+                                                <textarea oninput="autoResize(this)" class="form-control" placeholder="Ví dụ: Sạc nhanh 25W, sạc không dây 15W" th:field="*{specification.charging}" required></textarea>
                                             </div>
                                         </div>
 
@@ -477,6 +494,122 @@
             }
             return true;
         }
+    </script>
+
+    <!--Tìm thông số kỹ thuật, mô tả, danh mục của sản phẩm trong db để cập nhật vào các ô input-->
+    <script>
+        let typingTimer;
+        const doneTypingInterval = 2000; // 2 giây
+        const productNameInput = document.querySelector('input[name="name"]');
+        let lastCheckedName = ''; // Lưu tên đã check gần nhất
+
+        productNameInput.addEventListener('keyup', function () {
+            clearTimeout(typingTimer);
+            if (productNameInput.value) {
+                typingTimer = setTimeout(checkProductName, doneTypingInterval);
+            }
+        });
+
+        function checkProductName() {
+            const name = productNameInput.value.trim();
+            if (!name || name === lastCheckedName) return; // Không gọi lại nếu không thay đổi
+
+            lastCheckedName = name; // Cập nhật tên đã check
+
+            fetch(`/management/products/check-name?name=${encodeURIComponent(name)}`)
+                .then(response => {
+                    if (!response.ok) throw new Error("Không tìm thấy sản phẩm");
+                    return response.json();
+                })
+                .then(prdI => {
+                    console.log("ProductInfo:", prdI);
+                    // Gán giá trị vào các ô input
+                    document.querySelector('input[name="specification.screenSizeInput"]').value = prdI.screenSizeInput || '';
+                    highlightField('input[name="specification.screenSizeInput"]');
+
+                    document.querySelector('input[name="specification.operatingSystem"]').value = prdI.operatingSystem || '';
+                    highlightField('input[name="specification.operatingSystem"]');
+
+                    document.querySelector('textarea[name="specification.rearCamera"]').value = prdI.rearCamera || '';
+                    highlightField('textarea[name="specification.rearCamera"]');
+
+                    document.querySelector('textarea[name="specification.frontCamera"]').value = prdI.frontCamera || '';
+                    highlightField('textarea[name="specification.frontCamera"]');
+
+                    document.querySelector('textarea[name="specification.sim"]').value = prdI.sim || '';
+                    highlightField('textarea[name="specification.sim"]');
+
+                    document.querySelector('input[name="specification.chipset"]').value = prdI.chipset || '';
+                    highlightField('input[name="specification.chipset"]');
+
+                    document.querySelector('textarea[name="specification.cpu"]').value = prdI.cpu || '';
+                    highlightField('textarea[name="specification.cpu"]');
+
+                    document.querySelector('textarea[name="specification.charging"]').value = prdI.charging || '';
+                    highlightField('textarea[name="specification.charging"]');
+
+                    document.querySelector('input[name="specification.ram"]').value = prdI.ram || '';
+                    highlightField('input[name="specification.ram"]');
+
+                    document.querySelector('textarea[name="description"]').value = prdI.description || '';
+                    highlightField('textarea[name="description"]');
+
+                    document.querySelector('select[name="categoryId"]').value = prdI.categoryId || '';
+                    highlightField('select[name="categoryId"]');
+
+                })
+                .catch(err => {
+                    console.log("Sản phẩm:", err.message);
+                    document.querySelector('input[name="specification.screenSizeInput"]').value = '';
+                    document.querySelector('input[name="specification.operatingSystem"]').value = '';
+                    document.querySelector('textarea[name="specification.rearCamera"]').value = '';
+                    document.querySelector('textarea[name="specification.frontCamera"]').value = '';
+                    document.querySelector('textarea[name="specification.sim"]').value = '';
+                    document.querySelector('input[name="specification.chipset"]').value = '';
+                    document.querySelector('textarea[name="specification.cpu"]').value = '';
+                    document.querySelector('textarea[name="specification.charging"]').value = '';
+                    document.querySelector('input[name="specification.ram"]').value = '';
+                    document.querySelector('textarea[name="description"]').value = '';
+                    document.querySelector('select[name="categoryId"]').value = '';
+                });
+        }
+
+        function highlightField(selector) {
+            const el = document.querySelector(selector);
+            if (!el) return;
+
+            el.classList.add("autofilled");
+
+            if (el.tagName.toLowerCase() === 'textarea') {
+                autoResize(el);
+            }
+
+            setTimeout(() => {
+                el.classList.add("autofilledWhite");
+            }, 500);
+
+            setTimeout(() => {
+                el.classList.remove("autofilled");
+                el.classList.remove("autofilledWhite");
+                el.style.backgroundColor = ""; // trở về mặc định
+            }, 1500);
+        }
+
+    </script>
+
+    <!--Script auto resize cho textarea-->
+    <script>
+        function autoResize(textarea) {
+          textarea.style.height = 'auto'; // Reset chiều cao
+          textarea.style.height = textarea.scrollHeight + 'px'; // Đặt chiều cao mới
+        }
+
+        // Gọi autoResize cho tất cả textarea ngay khi trang load
+        window.addEventListener('DOMContentLoaded', function () {
+          document.querySelectorAll('textarea').forEach(function (textarea) {
+            autoResize(textarea);
+          });
+        });
     </script>
 
 </body>

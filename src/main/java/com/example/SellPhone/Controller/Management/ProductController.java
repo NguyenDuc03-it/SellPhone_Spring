@@ -6,11 +6,10 @@ import com.example.SellPhone.DTO.ProductSpecificationDTO;
 import com.example.SellPhone.DTO.Request.Product.ProductUpdateRequest;
 import com.example.SellPhone.DTO.Request.Specification.SpecificationCreationRequest;
 import com.example.SellPhone.DTO.Request.SpecificationVariant.SpecificationVariantRequest;
-import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
 import com.example.SellPhone.DTO.Respone.Product.ProductSpecificationResponse;
+import com.example.SellPhone.DTO.ProductInfoDTO;
 import com.example.SellPhone.Model.Product;
 import com.example.SellPhone.Model.Specification;
-import com.example.SellPhone.Model.User;
 import com.example.SellPhone.Service.CategoryService;
 import com.example.SellPhone.Service.ProductService;
 import jakarta.validation.Valid;
@@ -18,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/management/products")
@@ -290,6 +291,32 @@ public class ProductController {
         }
 
         return dto;
+    }
+
+    // Kiểm tra sản phẩm có tồn tại trong db không (để fill vào ô input trong chức năng thêm sản phẩm)
+    @GetMapping("/check-name")
+    public ResponseEntity<?> checkProductName(@RequestParam("name") String name) {
+        Optional<Product> productOpt = productService.findByName(name);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            Specification spec = product.getSpecification();
+            ProductInfoDTO dto = new ProductInfoDTO();
+
+            dto.setScreenSizeInput(spec.getScreenSize());
+            dto.setOperatingSystem(spec.getOperatingSystem());
+            dto.setRearCamera(spec.getRearCamera());
+            dto.setFrontCamera(spec.getFrontCamera());
+            dto.setSim(spec.getSim());
+            dto.setChipset(spec.getChipset());
+            dto.setCpu(spec.getCpu());
+            dto.setCharging(spec.getCharging());
+            dto.setRam(spec.getRam());
+            dto.setDescription(product.getDescription());
+            dto.setCategoryId(product.getCategory() != null ? product.getCategory().getCategoryId() : null);
+            return ResponseEntity.ok(dto);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sản phẩm chưa tồn tại");
+        }
     }
 
 

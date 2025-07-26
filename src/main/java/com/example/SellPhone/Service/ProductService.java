@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -282,5 +283,9 @@ public class ProductService {
                 e.printStackTrace();
             }
         } else System.out.println("LỖI: KHÔNG TÌM  THẤY ẢNH CẦN XÓA");
+    }
+
+    public Optional<Product> findByName(String name) {
+        return productRepository.findByName(name);
     }
 }

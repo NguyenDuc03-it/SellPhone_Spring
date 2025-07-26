@@ -1,0 +1,23 @@
+package com.example.SellPhone.DTO;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
+
+@Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ProductInfoDTO {
+    Float screenSizeInput;
+    String operatingSystem;
+    String rearCamera;
+    String frontCamera;
+    String sim;
+    String chipset;
+    String cpu;
+    String charging;
+    Integer ram;
+    String description;
+    Long categoryId;
+}
