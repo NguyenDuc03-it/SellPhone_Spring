@@ -3,10 +3,7 @@ package com.example.SellPhone.Controller.Management;
 
 import com.example.SellPhone.DTO.Request.Category.CategoryCreationRequest;
 import com.example.SellPhone.DTO.Request.Category.CategoryUpdateRequest;
-import com.example.SellPhone.DTO.Request.User.UserCreationRequest;
-import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
-import com.example.SellPhone.Model.Category;
-import com.example.SellPhone.Model.User;
+import com.example.SellPhone.Entity.Category;
 import com.example.SellPhone.Service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +41,8 @@ public class CategoryController {
         model.addAttribute("categories", categories);
         model.addAttribute("category", new CategoryCreationRequest());
         model.addAttribute("updateCategory", new CategoryUpdateRequest());
-
-        return "DashBoard/quanLyDanhMuc";
+        model.addAttribute("currentPage", "categories");
+        return "DashBoard/category-management";
     }
 
     // Chức năng thêm danh mục
@@ -66,7 +63,8 @@ public class CategoryController {
 
             model.addAttribute("categories", categories);
             model.addAttribute("errorMessage", "Thêm danh mục thất bại!");
-            return "DashBoard/quanLyDanhMuc"; // Trả về một thông báo lỗi
+            model.addAttribute("currentPage", "categories");
+            return "DashBoard/category-management"; // Trả về một thông báo lỗi
         }
 
         if(categoryService.doesCategoryExistByName(request.getName())){
@@ -84,7 +82,8 @@ public class CategoryController {
 
             model.addAttribute("categories", categories);
             model.addAttribute("errorMessage", "Danh mục đã tồn tại!");
-            return "DashBoard/quanLyDanhMuc"; // Trả về thông báo lỗi nếu email đã tồn tại
+            model.addAttribute("currentPage", "categories");
+            return "DashBoard/category-management"; // Trả về thông báo lỗi nếu email đã tồn tại
         }
 
 
@@ -116,7 +115,8 @@ public class CategoryController {
 
             model.addAttribute("categories", categories);
             model.addAttribute("errorMessage", "Cập nhật thông tin danh mục thất bại!");
-            return "DashBoard/quanLyDanhMuc"; // Trả về một thông báo lỗi
+            model.addAttribute("currentPage", "categories");
+            return "DashBoard/category-management"; // Trả về một thông báo lỗi
         }
 
         Category category = categoryService.updateCategory(request.getCategoryId(), request);

@@ -2,7 +2,7 @@ package com.example.SellPhone.DTO.Request.Product;
 
 import com.example.SellPhone.DTO.Request.Specification.SpecificationCreationRequest;
 import com.example.SellPhone.DTO.Request.SpecificationVariant.SpecificationVariantRequest;
-import com.example.SellPhone.Model.Category;
+import com.example.SellPhone.Entity.Category;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Getter;

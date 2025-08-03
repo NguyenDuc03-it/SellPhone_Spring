@@ -1,4 +1,4 @@
-package com.example.SellPhone.Model;
+package com.example.SellPhone.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,15 +1,15 @@
 package com.example.SellPhone.Controller.Management;
 
-import com.example.SellPhone.DTO.ProductSpecificationVariantDTO;
+import com.example.SellPhone.DTO.Respone.Product.ProductSpecificationVariantDTO;
 import com.example.SellPhone.DTO.Request.Product.ProductCreationRequest;
-import com.example.SellPhone.DTO.ProductSpecificationDTO;
+import com.example.SellPhone.DTO.Respone.Product.ProductSpecificationDTO;
 import com.example.SellPhone.DTO.Request.Product.ProductUpdateRequest;
 import com.example.SellPhone.DTO.Request.Specification.SpecificationCreationRequest;
 import com.example.SellPhone.DTO.Request.SpecificationVariant.SpecificationVariantRequest;
 import com.example.SellPhone.DTO.Respone.Product.ProductSpecificationResponse;
-import com.example.SellPhone.DTO.ProductInfoDTO;
-import com.example.SellPhone.Model.Product;
-import com.example.SellPhone.Model.Specification;
+import com.example.SellPhone.DTO.Respone.Product.ProductInfoDTO;
+import com.example.SellPhone.Entity.Product;
+import com.example.SellPhone.Entity.Specification;
 import com.example.SellPhone.Service.CategoryService;
 import com.example.SellPhone.Service.ProductService;
 import jakarta.validation.Valid;
@@ -53,8 +53,8 @@ public class ProductController {
 
         // Truyền các URL vào model
         model.addAttribute("products", products);
-
-        return "DashBoard/quanLySanPham";
+        model.addAttribute("currentPage", "products");
+        return "DashBoard/product-management";
     }
 
     //Mở trang thêm sản phẩm
@@ -62,7 +62,8 @@ public class ProductController {
     String opAddProduct(Model model){
         model.addAttribute("request", new ProductCreationRequest());
         model.addAttribute("categories", categoryService.findAll()); // Trả về List<Category>
-        return  "DashBoard/themSanPham";
+        model.addAttribute("currentPage", "products");
+        return  "DashBoard/add-product";
     }
 
     //Mở trang cập nhật thông tin sản phẩm
@@ -79,7 +80,8 @@ public class ProductController {
         ProductUpdateRequest request = convertToUpdateRequest(product);
         model.addAttribute("request", request);
         model.addAttribute("categories", categoryService.findAll());
-        return "DashBoard/suaSanPham";
+        model.addAttribute("currentPage", "products");
+        return "DashBoard/edit-product";
     }
 
     // Chức năng thêm sản phẩm
@@ -94,7 +96,8 @@ public class ProductController {
             // Xử lý lỗi
             model.addAttribute("request", request);
             model.addAttribute("categories", categoryService.findAll());
-            return "DashBoard/themSanPham"; // Trả về một thông báo lỗi
+            model.addAttribute("currentPage", "products");
+            return "DashBoard/add-product"; // Trả về một thông báo lỗi
         }
 
         // Normalize screenSize từ screenSizeInput
@@ -106,21 +109,24 @@ public class ProductController {
             bindingResult.rejectValue("name", "error.name", "Sản phẩm với tên và màu này đã tồn tại");
             model.addAttribute("request", request);
             model.addAttribute("categories", categoryService.findAll());
-            return "DashBoard/themSanPham"; // Trả về thông báo lỗi nếu
+            model.addAttribute("currentPage", "products");
+            return "DashBoard/add-product"; // Trả về thông báo lỗi nếu
         }
 
         if (!categoryService.existsById(request.getCategoryId())) {
             bindingResult.rejectValue("categoryId", "error.categoryId", "Danh mục không hợp lệ");
             model.addAttribute("request", request);
             model.addAttribute("categories", categoryService.findAll());
-            return "DashBoard/themSanPham";
+            model.addAttribute("currentPage", "products");
+            return "DashBoard/add-product";
         }
 
         if(request.getSpecification() == null) {
             bindingResult.rejectValue("specificationIds", "error.specificationIds", "Vui lòng chọn ít nhất một thông số kỹ thuật");
             model.addAttribute("request", request);
             model.addAttribute("categories", categoryService.findAll());
-            return "DashBoard/themSanPham";
+            model.addAttribute("currentPage", "products");
+            return "DashBoard/add-product";
         }
 
         try {
@@ -131,7 +137,8 @@ public class ProductController {
         } catch (RuntimeException ex) {
             model.addAttribute("errorMessage", "Lỗi khi lưu sản phẩm: " + ex.getMessage());
             model.addAttribute("categories", categoryService.findAll());
-            return "DashBoard/themSanPham";
+            model.addAttribute("currentPage", "products");
+            return "DashBoard/add-product";
         }
     }
 
@@ -146,7 +153,8 @@ public class ProductController {
             // Xử lý lỗi
             model.addAttribute("request", request);
             model.addAttribute("categories", categoryService.findAll());
-            return "DashBoard/suaSanPham"; // Trả về một thông báo lỗi
+            model.addAttribute("currentPage", "products");
+            return "DashBoard/edit-product"; // Trả về một thông báo lỗi
         }
 
         if(request.getSpecification() == null) {
@@ -155,7 +163,8 @@ public class ProductController {
             bindingResult.rejectValue("specificationIds", "error.specificationIds", "Vui lòng chọn ít nhất một thông số kỹ thuật");
             model.addAttribute("request", request);
             model.addAttribute("categories", categoryService.findAll());
-            return "DashBoard/suaSanPham";
+            model.addAttribute("currentPage", "products");
+            return "DashBoard/edit-product";
         }
         else request.getSpecification().normalizeScreenSize(); // Normalize screenSize từ screenSizeInput
 
@@ -165,7 +174,8 @@ public class ProductController {
             bindingResult.rejectValue("name", "error.name", "Sản phẩm với tên và màu này đã tồn tại");
             model.addAttribute("request", request);
             model.addAttribute("categories", categoryService.findAll());
-            return "DashBoard/suaSanPham"; // Trả về thông báo lỗi nếu
+            model.addAttribute("currentPage", "products");
+            return "DashBoard/edit-product"; // Trả về thông báo lỗi nếu
         }
 
         if (!categoryService.existsById(request.getCategory().getCategoryId())) {
@@ -174,7 +184,8 @@ public class ProductController {
             bindingResult.rejectValue("categoryId", "error.categoryId", "Danh mục không hợp lệ");
             model.addAttribute("request", request);
             model.addAttribute("categories", categoryService.findAll());
-            return "DashBoard/suaSanPham";
+            model.addAttribute("currentPage", "products");
+            return "DashBoard/edit-product";
         }
 
         try {
@@ -185,9 +196,11 @@ public class ProductController {
         } catch (RuntimeException ex) {
             Product product = productService.getProductById(request.getProductId());
             request.setExistingImageUrl(product.getImageUrl());
-            model.addAttribute("errorMessage", "Lỗi khi sửa sản phẩm: " + ex.getMessage());
+            model.addAttribute("errorMessage", "Lỗi khi sửa sản phẩm!");
+            System.out.println("Lỗi khi sửa sản phẩm: " + ex.getMessage());
             model.addAttribute("categories", categoryService.findAll());
-            return "DashBoard/suaSanPham";
+            model.addAttribute("currentPage", "products");
+            return "DashBoard/edit-product";
         }
     }
 
@@ -203,6 +216,19 @@ public class ProductController {
             redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy sản phẩm để xóa!");
         }
         return "redirect:/management/products"; // Chuyển hướng về trang danh sách nhân viên
+    }
+
+    @PostMapping("/discontinue")
+    String discontinueProduct(@RequestParam Long productId, RedirectAttributes redirectAttributes){
+        Product product = productService.getProductById(productId);
+        if(product != null){
+            productService.discontinueProduct(product);
+            redirectAttributes.addFlashAttribute("successMessage", "Chuyển trạng thái sản phẩm thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy sản phẩm để xóa!");
+        }
+        return "redirect:/management/products"; // Chuyển hướng về trang danh sách nhân viên
+
     }
 
     // Lấy thông tin sản phẩm để hiển thị vào modal xem thông số kỹ thuật

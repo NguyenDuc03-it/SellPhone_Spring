@@ -1,6 +1,5 @@
 package com.example.SellPhone.DTO.Respone.Product;
 
-import com.example.SellPhone.DTO.ProductSpecificationDTO;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

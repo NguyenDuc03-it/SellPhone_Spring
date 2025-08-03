@@ -2,12 +2,11 @@ package com.example.SellPhone.Controller.Management;
 
 import com.example.SellPhone.DTO.Request.User.UserCreationRequest;
 import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
-import com.example.SellPhone.Model.User;
+import com.example.SellPhone.Entity.User;
 import com.example.SellPhone.Service.CustomerService;
 import com.example.SellPhone.Service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +36,8 @@ public class CustomerController {
     @GetMapping("/op_add")
     String opAddCustomer(Model model){
         model.addAttribute("customer", new User());
-        return "DashBoard/themKhachHang";
+        model.addAttribute("currentPage", "customers");
+        return "DashBoard/add-customer";
     }
 
     //Mở trang cập nhật thông tin khách hàng
@@ -61,7 +61,8 @@ public class CustomerController {
         user.setDob(formattedDob);
 
         model.addAttribute("customer", user);
-        return "DashBoard/suaKhachHang";
+        model.addAttribute("currentPage", "customers");
+        return "DashBoard/edit-customer";
     }
 
 
@@ -71,26 +72,30 @@ public class CustomerController {
         if (bindingResult.hasErrors()) {
             // Xử lý lỗi
             model.addAttribute("customer", request);
-            return "DashBoard/themKhachHang"; // Trả về một thông báo lỗi
+            model.addAttribute("currentPage", "customers");
+            return "DashBoard/add-customer"; // Trả về một thông báo lỗi
         }
 
         // Kiểm tra ngày sinh có phải trong tương lai không
         if (isDobInFuture(request.getDob())) {
             bindingResult.rejectValue("dob", "error.dob", "Ngày sinh không hợp lệ hoặc nằm trong tương lai");
             model.addAttribute("customer", request);
-            return "DashBoard/themKhachHang"; // Trả về thông báo lỗi nếu ngày sinh không hợp lệ
+            model.addAttribute("currentPage", "customers");
+            return "DashBoard/add-customer"; // Trả về thông báo lỗi nếu ngày sinh không hợp lệ
         }
 
         if(customerService.doesCustomerExistByEmail(request.getEmail())){
             bindingResult.rejectValue("email", "error.email", "Email đã tồn tại");
             model.addAttribute("customer", request);
-            return "DashBoard/themKhachHang"; // Trả về thông báo lỗi nếu email đã tồn tại
+            model.addAttribute("currentPage", "customers");
+            return "DashBoard/add-customer"; // Trả về thông báo lỗi nếu email đã tồn tại
         }
 
         if(customerService.doesCustomerExistByCCCD(request.getCCCD())){
             bindingResult.rejectValue("CCCD", "error.CCCD", "CCCD đã tồn tại");
             model.addAttribute("customer", request);
-            return "DashBoard/themKhachHang"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
+            model.addAttribute("currentPage", "customers");
+            return "DashBoard/add-customer"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
         }
 
         User user = customerService.createCustomer(request);
@@ -105,14 +110,16 @@ public class CustomerController {
         if (bindingResult.hasErrors()) {
             // Xử lý lỗi
             model.addAttribute("customer", request);
-            return "DashBoard/suaKhachHang"; // Trả về một thông báo lỗi
+            model.addAttribute("currentPage", "customers");
+            return "DashBoard/edit-customer"; // Trả về một thông báo lỗi
         }
 
         // Kiểm tra ngày sinh có phải trong tương lai không
         if (isDobInFuture(request.getDob())) {
             bindingResult.rejectValue("dob", "error.dob", "Ngày sinh không thể là ngày trong tương lai");
             model.addAttribute("customer", request);
-            return "DashBoard/suaKhachHang"; // Trả về thông báo lỗi nếu ngày sinh không hợp lệ
+            model.addAttribute("currentPage", "customers");
+            return "DashBoard/edit-customer"; // Trả về thông báo lỗi nếu ngày sinh không hợp lệ
         }
 
 
@@ -120,7 +127,8 @@ public class CustomerController {
         if(customerService.doesCustomerExistByCCCD(request.getCCCD()) && !request.getCCCD().equals(customerService.getCustomerById(request.getUserId()).getCCCD())){
             bindingResult.rejectValue("CCCD", "error.CCCD", "CCCD đã tồn tại");
             model.addAttribute("customer", request);
-            return "DashBoard/suaKhachHang"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
+            model.addAttribute("currentPage", "customers");
+            return "DashBoard/edit-customer"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
         }
 
         User user = customerService.updateCustomer(request.getUserId(), request);
@@ -165,8 +173,8 @@ public class CustomerController {
 
         // Truyền các URL vào model
         model.addAttribute("customers", customers);
-
-        return "DashBoard/quanLyKhachHang";
+        model.addAttribute("currentPage", "customers");
+        return "DashBoard/customer-management";
     }
 
 

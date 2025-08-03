@@ -21,6 +21,12 @@
     <link rel="stylesheet" href="../../static/assets/css/responsive.css" th:href="@{/assets/css/responsive.css}">
     <!-- modernizr css -->
     <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+    <script src="/assets/js/pending-orders-badge.js"></script>
+    <style>
+        .badge{
+            padding: .5em 1em;
+        }
+    </style>
 </head>
 
 <body>
@@ -32,72 +38,13 @@
     <!-- page container area start -->
     <div class="page-container">
         <!-- sidebar menu area start -->
-        <div class="sidebar-menu">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <a href="dashboard.html"><img src="../../static/assets/images/icon/logo.png" alt="logo"></a>
-                </div>
-            </div>
-            <div class="main-menu">
-                <div class="menu-inner">
-                    <nav>
-                        <ul class="metismenu" id="menu">
-                            <li>
-                                <a href="/management/dashboard" aria-expanded="true"><i class="ti-dashboard"></i><span>dashboard</span></a>
-                                <ul class="collapse">
-                                    <li><a href="dashboard.html">ICO dashboard</a></li>
-                                    <li><a href="dashboard2.html">Ecommerce dashboard</a></li>
-                                    <li><a href="dashboard3.html">SEO dashboard</a></li>
-                                </ul>
-                            </li>
-                            <!-- Quản lý nhân viên -->
-                            <li>
-                                <a href="/management/staff" aria-expanded="true"><i class="fa fa-users"></i><span>Quản lý nhân viên</span></a>
-                            </li>
-                            <!-- Quản lý khách hàng -->
-                            <li>
-                                <a href="/management/customers" aria-expanded="true"><i class="fa fa-user"></i><span>Quản lý khách hàng</span></a>
-                            </li>
-                            <!-- Quản lý sản phẩm -->
-                            <li class="active">
-                                <a href="/management/products" aria-expanded="true"><i class="fa fa-mobile"></i><span>Quản lý sản phẩm</span></a>
-                            </li>
-                            <!-- Quản lý đơn hàng -->
-                            <li>
-                                <a href="quanLyDonHang.html" aria-expanded="true"><i class="fa fa-shopping-cart"></i><span>Quản lý đơn hàng</span></a>
-                            </li>
-                            <!-- Quản lý danh mục -->
-                            <li>
-                                <a href="/management/categories" aria-expanded="true"><i class="fa fa-list"></i><span>Quản lý danh mục</span></a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
+        <div th:replace="~{Fragments/sidebar :: *}"></div>
         <!-- sidebar menu area end -->
 
         <!-- main content area start -->
         <div class="main-content">
             <!-- header area start -->
-            <div class="header-area">
-                <div class="row align-items-center">
-                    <!-- nav and search button -->
-                    <div class="col-md-6 col-sm-8 clearfix">
-                        <div class="nav-btn pull-left">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                        <div class="search-box pull-left">
-                            <form action="#">
-                                <input type="text" name="search" placeholder="Search..." required>
-                                <i class="ti-search"></i>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div th:replace="~{Fragments/header :: *}"></div>
             <!-- header area end -->
 
             <!-- Thông báo thành công với thanh tiến trình -->
@@ -135,9 +82,9 @@
                             <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png" alt="avatar" th:src="@{/assets/images/author/avatar.png}">
                             <h4 class="user-name dropdown-toggle" data-toggle="dropdown" th:text="${username}"><i class="fa fa-angle-down"></i></h4>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Message</a>
-                                <a class="dropdown-item" href="#">Settings</a>
-                                <a class="dropdown-item" href="/logout">Log Out</a>
+                                <a class="dropdown-item" href="#">Thông báo</a>
+                                <a class="dropdown-item" href="#">Cài đặt</a>
+                                <a class="dropdown-item" href="/logout">Đăng xuất</a>
                             </div>
                         </div>
                     </div>
@@ -149,7 +96,7 @@
                 <div class="container mt-4">
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <a href="themSanPham.html" th:href="@{/management/products/op_add}">
+                            <a href="add-product.html" th:href="@{/management/products/op_add}">
                                 <button class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">
                                     <i class="fa fa-plus"></i> Thêm sản phẩm mới
                                 </button>
@@ -190,7 +137,7 @@
                                                 <td th:text="${pd.name}"></td>
                                                 <td th:text="${pd.category.name}"></td>
                                                 <td th:text="${pd.color}"></td>
-                                                <td><span class="badge" th:classappend="${pd.status == 'Còn hàng' ? 'badge-success' : 'badge-danger'}"
+                                                <td><span class="text-white badge" th:classappend="${pd.status == 'Còn hàng' ? 'badge-success' : (pd.status == 'Ngừng bán' ? 'badge-warning' : 'badge-danger')}"
                                                           th:text="${pd.status}"></span></td>
                                                 <td>
                                                     <button class="btn btn-info btn-sm view-specs-btn"
@@ -200,15 +147,19 @@
                                                     </button>
                                                 </td>
                                                 <td>
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <a href="suaSanPham.html" th:href="@{/management/products/op_update(productId=${pd.productId})}">
+                                        <div class="d-flex justify-content-center">
+                                            <a href="edit-product.html" th:href="@{/management/products/op_update(productId=${pd.productId})}">
                                                 <button class="btn btn-primary btn-sm mr-2" title="Sửa">
                                                             <i class="fa fa-edit"></i>
-                                                        </button>
+                                                </button>
                                             </a>
-                                                    <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteProductModal" th:data-id="${pd.productId}">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
+                                            <button class="btn btn-warning btn-sm mr-2 text-light" title="Ngừng bán" data-toggle="modal" data-target="#confirmDiscontinueModal"
+                                                    th:data-id="${pd.productId}" th:disabled="${pd.status == 'Ngừng bán'}">
+                                                <i class="fa fa-ban"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" title="Xóa" data-toggle="modal" data-target="#deleteProductModal" th:data-id="${pd.productId}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -232,17 +183,13 @@
                             </li>
                         </ul>
                     </nav>
-    </div>
-                    </div>
-
                 </div>
+            </div>
+
+        </div>
         <!-- main content area end -->
         <!-- footer area start-->
-        <footer>
-            <div class="footer-area">
-                <p>© Copyright 2025.</p>
-            </div>
-        </footer>
+        <div th:replace="~{Fragments/footer :: *}"></div>
         <!-- footer area end-->
     </div>
     <!-- page container area end -->
@@ -338,6 +285,32 @@
         </div>
     </div>
 
+    <!-- Modal xác nhận ngừng bán -->
+    <div class="modal fade" id="confirmDiscontinueModal" tabindex="-1" role="dialog" aria-labelledby="discontinueModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title" id="discontinueModalLabel">Xác nhận ngừng bán</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Đóng">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn chuyển sản phẩm này sang trạng thái <strong>"Ngừng bán"</strong> không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+
+                    <!-- Form gửi POST tới controller để xóa sản phẩm -->
+                    <form id="discontinueProductForm" action="#" th:action="@{/management/products/discontinue}" method="POST">
+                        <!-- Trường ẩn để chứa productId -->
+                        <input type="hidden" name="productId" id="productIdToDiscontinue"/>
+                        <button type="submit" class="btn btn-warning text-white" id="confirmDiscontinueBtn">Xác nhận</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Style chỉ áp dụng cho modal -->
     <style>
@@ -745,6 +718,19 @@
        }
 
 
+    </script>
+
+    <!-- Script cho chức năng chuyển trạng thái sản phẩm sang ngừng bán-->
+    <script>
+        // Lắng nghe sự kiện khi modal được mở
+        $('#confirmDiscontinueModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Lấy button đã mở modal
+            var productId = button.data('id'); // Lấy productId từ thuộc tính data-id
+            var modal = $(this);
+
+            // Cập nhật giá trị của input hidden trong form modal
+            modal.find('#productIdToDiscontinue').val(productId);
+        });
     </script>
 
 </body>

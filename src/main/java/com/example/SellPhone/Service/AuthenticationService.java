@@ -1,7 +1,6 @@
 package com.example.SellPhone.Service;
 
 import com.example.SellPhone.DTO.Request.Auth.AuthenticationRequest;
-import com.example.SellPhone.Model.User;
 import com.example.SellPhone.Repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 // Xác thực và phân quyền tài khoản

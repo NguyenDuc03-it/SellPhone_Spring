@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../../static/assets/css/responsive.css" th:href="@{/assets/css/responsive.css}">
     <!-- modernizr css -->
     <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+    <script src="/assets/js/pending-orders-badge.js"></script>
     <style>
         .card {
             border: none;
@@ -85,9 +86,15 @@
 
 <body>
     <!-- Giữ nguyên preloader và sidebar như các trang khác -->
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+    <div class="page-container">
+        <!-- Sidebar Menu -->
+        <div th:replace="~{Fragments/sidebar :: *}"></div>
 
-    <!-- Main Content -->
-    <div class="main-content">
+        <!-- Main Content -->
+        <div class="main-content">
         <!-- Header Area -->
         <div class="page-title-area">
             <div class="row align-items-center">
@@ -297,7 +304,7 @@
                                 <button type="submit" class="btn btn-primary btn-submit mr-2">
                                     <i class="fa fa-save"></i> Lưu thay đổi
                                 </button>
-                                <a href="quanLyNhanVien.html" th:href="@{/management/staff}" class="btn btn-cancel text-white">
+                                <a href="staff-management.html" th:href="@{/management/staff}" class="btn btn-cancel text-white">
                                     <i class="fa fa-times"></i> Hủy
                                 </a>
                             </div>
@@ -306,6 +313,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+        <!-- Footer -->
+        <div th:replace="~{Fragments/footer :: *}"></div>
     </div>
 
     <!-- Scripts -->

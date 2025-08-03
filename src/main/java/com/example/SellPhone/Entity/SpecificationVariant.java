@@ -1,4 +1,4 @@
-package com.example.SellPhone.Model;
+package com.example.SellPhone.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,10 +16,10 @@ public class SpecificationVariant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "specification_variant_id")
-    Long specificationVariantId;
+    private Long specificationVariantId;
 
     @Column(name = "rom")
-    private int rom;
+    private Integer rom;
 
     @Column(name = "import_price")
     private Long importPrice;

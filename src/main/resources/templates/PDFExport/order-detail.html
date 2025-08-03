@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      font-family: DejaVu Serif, sans-serif;
+      margin: 20px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #000;
+      padding-bottom: 10px;
+    }
+    .shop-info {
+      font-size: 14px;
+    }
+    .logo {
+      width: 100px;
+      height: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .total {
+      text-align: right;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Tiêu đề shop -->
+<div class="header">
+  <div class="shop-info">
+    <h2>CỬA HÀNG TD MOBILE</h2>
+    <p>Địa chỉ: 123 Đường ABC, XYZ, TP.HN</p>
+    <p>Điện thoại: 0123 456 789</p>
+    <p>Email: info@abcmobile.vn</p>
+  </div>
+  <div>
+<!--    <img th:src="@{/images/logo.png}" alt="Logo Shop" class="logo"/>-->
+    TDMobile
+  </div>
+</div>
+
+<!-- Thông tin đặt hàng -->
+<h2 style="margin-top: 30px;">Đơn hàng #<span th:text="${order.orderId}"></span></h2>
+<p><strong>Khách hàng:</strong> <span th:text="${order.user.fullname}"></span></p>
+<p><strong>Số điện thoại:</strong> <span th:text="${order.user.phone}"></span></p>
+<p><strong>Địa chỉ:</strong> <span th:text="${order.user.address}"></span></p>
+<p><strong>Phương thức thanh toán:</strong> <span th:text="${order.paymentMethod}"></span></p>
+
+<!-- Bảng danh sách sản phẩm -->
+<h4>Chi tiết sản phẩm:</h4>
+<table>
+  <thead>
+  <tr>
+    <th>Tên</th>
+    <th>Màu</th>
+    <th>ROM</th>
+    <th>Giá</th>
+    <th>Số lượng</th>
+    <th>Thành tiền</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="item : ${order.orderItems}">
+    <td th:text="${item.product.name}"></td>
+    <td th:text="${item.product.color}"></td>
+    <td th:text="${item.rom >= 1000 ? (item.rom % 1000 == 0 ? (item.rom / 1000) + 'TB' : (item.rom / 1000.0) + 'TB') : item.rom + 'GB'}"></td>
+    <td th:text="${#numbers.formatDecimal(item.price, 0, 'POINT', 0, 'POINT') + 'đ'}"></td>
+    <td th:text="${item.quantity}"></td>
+    <td th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'POINT', 0, 'POINT') + 'đ'}"></td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- Tổng tiền -->
+<p class="total">
+  Tổng tiền: <span th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'POINT', 0, 'POINT') + 'đ'}"></span>
+</p>
+
+</body>
+</html>

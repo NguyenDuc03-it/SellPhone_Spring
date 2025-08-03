@@ -1,4 +1,4 @@
-package com.example.SellPhone.DTO;
+package com.example.SellPhone.DTO.Respone.Product;
 
 import lombok.AccessLevel;
 import lombok.Getter;

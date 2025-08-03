@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../../static/assets/css/responsive.css" th:href="@{/assets/css/responsive.css}">
     <!-- modernizr css -->
     <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+    <script src="/assets/js/pending-orders-badge.js"></script>
     <style>
         textarea {
            overflow-y: hidden;
@@ -119,42 +120,12 @@
 </div>
 <div class="page-container">
     <!-- Sidebar Menu -->
-    <div class="sidebar-menu">
-        <div class="sidebar-header">
-            <div class="logo">
-                <a href="dashboard.html"><img src="assets/images/icon/logo.png" alt="logo"></a>
-            </div>
-        </div>
-        <div class="main-menu">
-            <div class="menu-inner">
-                <nav>
-                    <ul class="metismenu" id="menu">
-                        <li><a href="/management/dashboard"><i class="ti-dashboard"></i><span>Dashboard</span></a></li>
-                        <li><a href="/management/staff"><i class="fa fa-users"></i><span>Quản lý nhân viên</span></a></li>
-                        <li><a href="/management/customers"><i class="fa fa-user"></i><span>Quản lý khách hàng</span></a></li>
-                        <li class="active"><a href="/management/products"><i class="fa fa-mobile"></i><span>Quản lý sản phẩm</span></a></li>
-                        <li><a href="quanLyDonHang.html"><i class="fa fa-shopping-cart"></i><span>Quản lý đơn hàng</span></a></li>
-                        <li><a href="/management/categories"><i class="fa fa-list"></i><span>Quản lý danh mục</span></a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </div>
+    <div th:replace="~{Fragments/sidebar :: *}"></div>
 
     <!-- Main Content -->
     <div class="main-content">
         <!-- Header Area -->
-        <div class="header-area">
-            <div class="row align-items-center">
-                <div class="col-md-6 col-sm-8 clearfix">
-                    <div class="nav-btn pull-left">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div th:replace="~{Fragments/header :: *}"></div>
         <!-- Page Title -->
         <div class="page-title-area">
             <div class="row align-items-center">
@@ -360,11 +331,7 @@
         </div>
     </div>
     <!-- Footer -->
-    <footer>
-        <div class="footer-area">
-            <p>© Copyright 2025. TĐ Mobile - Hệ thống bán điện thoại di động.</p>
-        </div>
-    </footer>
+    <div th:replace="~{Fragments/footer :: *}"></div>
 </div>
 
 <!-- Scripts -->

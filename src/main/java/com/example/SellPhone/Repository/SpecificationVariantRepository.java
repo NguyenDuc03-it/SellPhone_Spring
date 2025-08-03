@@ -1,6 +1,6 @@
 package com.example.SellPhone.Repository;
 
-import com.example.SellPhone.Model.SpecificationVariant;
+import com.example.SellPhone.Entity.SpecificationVariant;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

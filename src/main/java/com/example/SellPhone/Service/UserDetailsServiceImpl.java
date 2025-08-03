@@ -1,10 +1,9 @@
 package com.example.SellPhone.Service;
 
 import com.example.SellPhone.Config.CustomUserDetails;
-import com.example.SellPhone.Model.User;
+import com.example.SellPhone.Entity.User;
 import com.example.SellPhone.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

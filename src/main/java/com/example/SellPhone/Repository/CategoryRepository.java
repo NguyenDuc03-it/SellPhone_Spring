@@ -1,6 +1,6 @@
 package com.example.SellPhone.Repository;
 
-import com.example.SellPhone.Model.Category;
+import com.example.SellPhone.Entity.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

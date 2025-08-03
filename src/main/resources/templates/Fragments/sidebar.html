@@ -1,0 +1,55 @@
+<th:block th:fragment="*">
+<style>
+    .metismenu li a {
+        display: flex;
+        align-items: center;
+    }
+
+    .metismenu li a i {
+        width: 30px;
+        text-align: center;
+        font-size: 16px;
+    }
+
+</style>
+<div class="sidebar-menu">
+    <div class="sidebar-header">
+        <div class="logo">
+            <a href="/management/dashboard"><img src="/assets/images/icon/logo_TDMobile_withouIcon.png" alt="logo"></a>
+        </div>
+    </div>
+    <div class="main-menu">
+        <div class="menu-inner">
+            <nav>
+                <ul class="metismenu" id="menu">
+                    <li th:classappend="${currentPage} == 'dashboard' ? 'active'">
+                        <a href="/management/dashboard"><i class="ti-dashboard"></i><span>Dashboard</span></a>
+                    </li>
+                    <li th:classappend="${currentPage} == 'staff' ? 'active'">
+                        <a href="/management/staff"><i class="fa fa-users"></i><span>Quản lý nhân viên</span></a>
+                    </li>
+                    <li th:classappend="${currentPage} == 'customers' ? 'active'">
+                        <a href="/management/customers"><i class="fa fa-user"></i><span>Quản lý khách hàng</span></a>
+                    </li>
+                    <li th:classappend="${currentPage} == 'products' ? 'active'">
+                        <a href="/management/products"><i class="fa fa-mobile"></i><span>Quản lý sản phẩm</span></a>
+                    </li>
+                    <li th:classappend="${currentPage} == 'orders' ? 'active'">
+                        <a href="/management/orders">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>Quản lý đơn hàng</span>
+                            <span id="pendingOrdersBadge"
+                                  style="display: none;"
+                                  class="badge badge-danger ml-2"
+                                  >!</span>
+                        </a>
+                    </li>
+                    <li th:classappend="${currentPage} == 'categories' ? 'active'">
+                        <a href="/management/categories"><i class="fa fa-list"></i><span>Quản lý danh mục</span></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+</th:block>

@@ -2,7 +2,7 @@ package com.example.SellPhone.Service;
 
 import com.example.SellPhone.DTO.Request.User.UserCreationRequest;
 import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
-import com.example.SellPhone.Model.User;
+import com.example.SellPhone.Entity.User;
 import com.example.SellPhone.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

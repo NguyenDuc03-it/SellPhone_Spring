@@ -3,10 +3,10 @@ package com.example.SellPhone.Service;
 import com.example.SellPhone.DTO.Request.Product.ProductCreationRequest;
 import com.example.SellPhone.DTO.Request.Product.ProductUpdateRequest;
 import com.example.SellPhone.DTO.Request.Specification.SpecificationCreationRequest;
-import com.example.SellPhone.Model.Category;
-import com.example.SellPhone.Model.Product;
-import com.example.SellPhone.Model.Specification;
-import com.example.SellPhone.Model.SpecificationVariant;
+import com.example.SellPhone.Entity.Category;
+import com.example.SellPhone.Entity.Product;
+import com.example.SellPhone.Entity.Specification;
+import com.example.SellPhone.Entity.SpecificationVariant;
 import com.example.SellPhone.Repository.CategoryRepository;
 import com.example.SellPhone.Repository.ProductRepository;
 import com.example.SellPhone.Repository.SpecificationRepository;
@@ -200,10 +200,10 @@ public class ProductService {
     @Transactional
     public void updateProduct(@Valid ProductUpdateRequest request) {
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không tồn tại"));
+                .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
         // Lấy danh mục
         Category category = categoryRepository.findById(request.getCategory().getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("Danh mục không tồn tại"));
+                .orElseThrow(() -> new RuntimeException("Danh mục không tồn tại"));
 
         SpecificationCreationRequest specReq = request.getSpecification();
 
@@ -270,7 +270,7 @@ public class ProductService {
     // Xóa sản phẩm
     @Transactional
     public void deleteProduct(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
 
         // Xóa ảnh sản phẩm trong thư mục của dự án và xóa sản phẩm
         if (product.getImageUrl() != null && !product.getImageUrl().isBlank()) {
@@ -285,7 +285,15 @@ public class ProductService {
         } else System.out.println("LỖI: KHÔNG TÌM  THẤY ẢNH CẦN XÓA");
     }
 
+    // Tìm kiếm sản phẩm theo tên
     public Optional<Product> findByName(String name) {
         return productRepository.findByName(name);
+    }
+
+    // Sửa trạng thái sản phẩm thành ngừng bán
+    @Transactional
+    public void discontinueProduct(Product product) {
+        product.setStatus("Ngừng bán");
+        productRepository.save(product);
     }
 }

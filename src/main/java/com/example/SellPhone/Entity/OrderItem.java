@@ -1,4 +1,4 @@
-package com.example.SellPhone.Model;
+package com.example.SellPhone.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,13 +23,16 @@ public class OrderItem {
     @JoinColumn(name = "order_id", nullable = false)  // Khóa ngoại liên kết với bảng orders
     private Order order;  // Mỗi mục hàng thuộc về một đơn hàng
 
-    @Column(name = "product_id")
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @Column(name = "quantity")
-    private int quantity;
+    private Integer quantity;
+
+    @Column(name = "rom")
+    private Integer rom;
 
     @Column(name = "price")
     private Long price;
-
 }

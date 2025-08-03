@@ -2,11 +2,10 @@ package com.example.SellPhone.Service;
 
 import com.example.SellPhone.DTO.Request.Category.CategoryCreationRequest;
 import com.example.SellPhone.DTO.Request.Category.CategoryUpdateRequest;
-import com.example.SellPhone.Model.Category;
-import com.example.SellPhone.Model.Product;
+import com.example.SellPhone.Entity.Category;
+import com.example.SellPhone.Entity.Product;
 import com.example.SellPhone.Repository.CategoryRepository;
 import com.example.SellPhone.Repository.ProductRepository;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

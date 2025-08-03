@@ -1,4 +1,4 @@
-package com.example.SellPhone.Model;
+package com.example.SellPhone.Entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,14 +21,17 @@ public class Order {
     @Column(name = "order_id")
     private Long orderId;
 
-    @Column(name = "user_id")
-    private Long userId;
+//    @Column(name = "user_id")
+//    private Long userId;
 
     @Column(name = "delivery_adress")
     private String deliveryAdress;
 
-    @Column(name = "delivery_time")
-    private String deliveryTime;
+    @Column(name = "order_time")
+    private String orderTime;
+
+    @Column(name = "delivery_time_end")
+    private String deliveryTimeEnd;
 
     @Column(name = "order_status")
     private String orderStatus;
@@ -43,5 +46,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

@@ -1,7 +1,9 @@
-package com.example.SellPhone.Model;
+package com.example.SellPhone.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -39,4 +41,7 @@ public class Product {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "specification_id")
     private Specification specification;
+
+    @OneToMany(mappedBy = "product")
+    private List<OrderItem> orderItems;
 }

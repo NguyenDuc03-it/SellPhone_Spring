@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="../../static/assets/css/responsive.css" th:href="@{/assets/css/responsive.css}">
     <!-- modernizr css -->
     <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+    <script src="/assets/js/pending-orders-badge.js"></script>
 </head>
 
 <body>
@@ -36,77 +37,13 @@
     <!-- page container area start -->
     <div class="page-container">
         <!-- sidebar menu area start -->
-        <div class="sidebar-menu">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <a href="dashboard.html"><img src="../../static/assets/images/icon/logo.png" alt="logo"></a>
-                </div>
-            </div>
-            <div class="main-menu">
-                <div class="menu-inner">
-                    <nav>
-                        <ul class="metismenu" id="menu">
-                            <li>
-                                <a href="javascript:void(0)" aria-expanded="true"><i class="ti-dashboard"></i><span>dashboard</span></a>
-                                <ul class="collapse">
-                                    <li class="active"><a href="dashboard.html">ICO dashboard</a></li>
-                                    <li><a href="dashboard2.html">Ecommerce dashboard</a></li>
-                                    <li><a href="dashboard3.html">SEO dashboard</a></li>
-                                </ul>
-                            </li>
-                            <!-- Quản lý nhân viên -->
-                            <li  class="active">
-                                <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-users"></i><span>Quản lý nhân viên
-                                    </span></a>
-                            </li>
-                            <!-- Quản lý khách hàng -->
-                            <li>
-                                <a href="/management/customers" aria-expanded="true"><i class="fa fa-user"></i><span>Quản lý khách hàng
-                                    </span></a>
-                            </li>
-                            <!-- Quản lý sản phẩm -->
-                            <li>
-                                <a href="/management/products" aria-expanded="true"><i class="fa fa-user"></i><span>Quản lý sản phẩm
-                                    </span></a>
-                            </li>
-                            <!-- Quản lý đơn hàng -->
-                            <li>
-                                <a href="quanLyDonHang.html" aria-expanded="true"><i class="fa fa-user"></i><span>Quản lý đơn hàng
-                                    </span></a>
-                            </li>
-                            <!-- Quản lý danh mục -->
-                            <li>
-                                <a href="/management/categories" aria-expanded="true"><i class="fa fa-user"></i><span>Quản lý danh mục
-                                    </span></a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
+        <div th:replace="~{Fragments/sidebar :: *}"></div>
+
         <!-- sidebar menu area end -->
         <!-- main content area start -->
         <div class="main-content ">
             <!-- header area start -->
-            <div class="header-area">
-                <div class="row align-items-center">
-                    <!-- nav and search button -->
-                    <div class="col-md-6 col-sm-8 clearfix">
-                        <div class="nav-btn pull-left">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                        <div class="search-box pull-left">
-                            <form action="#">
-                                <input type="text" name="search" placeholder="Search..." required>
-                                <i class="ti-search"></i>
-                            </form>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
+            <div th:replace="~{Fragments/header :: *}"></div>
             <!-- header area end -->
 
             <!-- Thông báo thành công với thanh tiến trình -->
@@ -132,7 +69,7 @@
                 <div class="row align-items-center">
                     <div class="col-sm-6">
                         <div class="breadcrumbs-area clearfix">
-                            <h4 class="page-title pull-left">Dashboard</h4>
+                            <h4 class="page-title pull-left">Quản lý nhân viên</h4>
                             <ul class="breadcrumbs pull-left">
                                 <li><a href="dashboard.html">Home</a></li>
                                 <li><span>Quản lý nhân viên</span></li>
@@ -160,7 +97,7 @@
                  <div class="container mt-4">
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <a href="themNhanVien.html" th:href="@{/management/staff/op_add}">
+                            <a href="add-staff.html" th:href="@{/management/staff/op_add}">
                                 <button class="btn btn-primary" data-toggle="modal" data-target="#addStaffrModal">
                                     <i class="fa fa-plus"></i> Thêm nhân viên mới
                                 </button>
@@ -251,11 +188,7 @@
         </div>
         <!-- main content area end -->
         <!-- footer area start-->
-        <footer>
-            <div class="footer-area">
-                <p>© Copyright 2025.</p>
-            </div>
-        </footer>
+        <div th:replace="~{Fragments/footer :: *}"></div>
         <!-- footer area end-->
     </div>
     <!-- page container area end -->

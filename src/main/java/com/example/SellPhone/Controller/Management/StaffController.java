@@ -2,7 +2,7 @@ package com.example.SellPhone.Controller.Management;
 
 import com.example.SellPhone.DTO.Request.User.UserCreationRequest;
 import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
-import com.example.SellPhone.Model.User;
+import com.example.SellPhone.Entity.User;
 import com.example.SellPhone.Service.StaffService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,8 @@ public class StaffController {
     @GetMapping("/op_add")
     String opAddStaff(Model model){
         model.addAttribute("staff", new User());
-        return "DashBoard/themNhanVien";
+        model.addAttribute("currentPage", "staff");
+        return "DashBoard/add-staff";
     }
 
     //Mở trang cập nhật thông tin khách hàng
@@ -58,7 +59,8 @@ public class StaffController {
         user.setDob(formattedDob);
 
         model.addAttribute("staff", user);
-        return "DashBoard/suaNhanVien";
+        model.addAttribute("currentPage", "staff");
+        return "DashBoard/edit-staff";
     }
 
     // Chức năng thêm nhân viên
@@ -67,26 +69,30 @@ public class StaffController {
         if (bindingResult.hasErrors()) {
             // Xử lý lỗi
             model.addAttribute("staff", request);
-            return "DashBoard/themNhanVien"; // Trả về một thông báo lỗi
+            model.addAttribute("currentPage", "staff");
+            return "DashBoard/add-staff"; // Trả về một thông báo lỗi
         }
 
         // Kiểm tra ngày sinh có phải trong tương lai không
         if (isDobInFuture(request.getDob())) {
             bindingResult.rejectValue("dob", "error.dob", "Ngày sinh không hợp lệ hoặc nằm trong tương lai");
             model.addAttribute("staff", request);
-            return "DashBoard/themNhanVien"; // Trả về thông báo lỗi nếu ngày sinh không hợp lệ
+            model.addAttribute("currentPage", "staff");
+            return "DashBoard/add-staff"; // Trả về thông báo lỗi nếu ngày sinh không hợp lệ
         }
 
         if(staffService.doesCustomerExistByEmail(request.getEmail())){
             bindingResult.rejectValue("email", "error.email", "Email đã tồn tại");
             model.addAttribute("staff", request);
-            return "DashBoard/themNhanVien"; // Trả về thông báo lỗi nếu email đã tồn tại
+            model.addAttribute("currentPage", "staff");
+            return "DashBoard/add-staff"; // Trả về thông báo lỗi nếu email đã tồn tại
         }
 
         if(staffService.doesCustomerExistByCCCD(request.getCCCD())){
             bindingResult.rejectValue("CCCD", "error.CCCD", "CCCD đã tồn tại");
             model.addAttribute("staff", request);
-            return "DashBoard/themNhanVien"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
+            model.addAttribute("currentPage", "staff");
+            return "DashBoard/add-staff"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
         }
 
         User user = staffService.createStaff(request);
@@ -101,14 +107,16 @@ public class StaffController {
         if (bindingResult.hasErrors()) {
             // Xử lý lỗi
             model.addAttribute("staff", request);
-            return "DashBoard/suaNhanVien"; // Trả về một thông báo lỗi
+            model.addAttribute("currentPage", "staff");
+            return "DashBoard/edit-staff"; // Trả về một thông báo lỗi
         }
 
         // Kiểm tra ngày sinh có phải trong tương lai không
         if (isDobInFuture(request.getDob())) {
             bindingResult.rejectValue("dob", "error.dob", "Ngày sinh không thể là ngày trong tương lai");
             model.addAttribute("staff", request);
-            return "DashBoard/suaNhanVien"; // Trả về thông báo lỗi nếu ngày sinh không hợp lệ
+            model.addAttribute("currentPage", "staff");
+            return "DashBoard/edit-staff"; // Trả về thông báo lỗi nếu ngày sinh không hợp lệ
         }
 
 
@@ -116,7 +124,8 @@ public class StaffController {
         if(staffService.doesCustomerExistByCCCD(request.getCCCD()) && !request.getCCCD().equals(staffService.getStaffById(request.getUserId()).getCCCD())){
             bindingResult.rejectValue("CCCD", "error.CCCD", "CCCD đã tồn tại");
             model.addAttribute("staff", request);
-            return "DashBoard/suaNhanVien"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
+            model.addAttribute("currentPage", "staff");
+            return "DashBoard/edit-staff"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
         }
 
         User user = staffService.updateStaff(request.getUserId(), request);
@@ -149,7 +158,8 @@ public class StaffController {
 
         model.addAttribute("staff", staff);
         model.addAttribute("searchQuery", searchQuery); // Để giữ giá trị tìm kiếm trong form
-        return "DashBoard/quanLyNhanVien"; // Trả về trang quản lý nhân viên
+        model.addAttribute("currentPage", "staff");
+        return "DashBoard/staff-management"; // Trả về trang quản lý nhân viên
     }
 
 
@@ -168,7 +178,8 @@ public class StaffController {
             staff = staffService.getStaff(pageable);
         }
         model.addAttribute("staff", staff);
-        return "DashBoard/quanLyNhanVien";
+        model.addAttribute("currentPage", "staff");
+        return "DashBoard/staff-management";
     }
 
     // Phương thức kiểm tra ngày sinh có phải là trong tương lai không

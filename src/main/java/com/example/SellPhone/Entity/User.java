@@ -1,4 +1,4 @@
-package com.example.SellPhone.Model;
+package com.example.SellPhone.Entity;
 
 
 import jakarta.persistence.*;
@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -62,4 +64,7 @@ public class User {
         }
         return position;
     }
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
 }

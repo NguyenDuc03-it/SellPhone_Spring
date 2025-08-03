@@ -1,0 +1,685 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>TĐ Mobile - Quản lý đơn hàng</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png" href="../../static/assets/images/icon/favicon.ico" th:href="@{/assets/images/icon/favicon.ico}">
+    <link rel="stylesheet" href="../../static/assets/css/bootstrap.min.css" th:href="@{/assets/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/font-awesome.min.css" th:href="@{/assets/css/font-awesome.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/themify-icons.css" th:href="@{/assets/css/themify-icons.css}">
+    <link rel="stylesheet" href="../../static/assets/css/metisMenu.css" th:href="@{/assets/css/metisMenu.css}">
+    <link rel="stylesheet" href="../../static/assets/css/owl.carousel.min.css" th:href="@{/assets/css/owl.carousel.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/slicknav.min.css" th:href="@{/assets/css/slicknav.min.css}">
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="../../static/assets/css/typography.css" th:href="@{/assets/css/typography.css}">
+    <link rel="stylesheet" href="../../static/assets/css/default-css.css" th:href="@{/assets/css/default-css.css}">
+    <link rel="stylesheet" href="../../static/assets/css/styles.css" th:href="@{/assets/css/styles.css}">
+    <link rel="stylesheet" href="../../static/assets/css/responsive.css" th:href="@{/assets/css/responsive.css}">
+    <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+    <script src="/assets/js/pending-orders-badge.js"></script>
+    <style>
+        .badge {
+            padding: .5em 1em;
+        }
+
+        #cancelOrderModal .fa-exclamation-triangle {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Đổi màu nền cho các option bị disabled */
+        #updateOrderStatus option:disabled {
+            background-color: #e9ecef; /* Màu nền xám nhạt */
+            color: #6c757d; /* Màu chữ xám */
+            opacity: 0.6; /* Làm mờ */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+    <div class="page-container">
+        <!-- Sidebar Menu -->
+        <div th:replace="~{Fragments/sidebar :: *}"></div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header Area -->
+            <div th:replace="~{Fragments/header :: *}"></div>
+
+            <!-- Thông báo thành công với thanh tiến trình -->
+            <div id="successNotification" class="alert alert-success" th:if="${successMessage}">
+                <strong>Thành công!</strong><br>
+                <span th:text="${successMessage}"></span>
+                <div id="progressBar" class="progress mt-2" style="height: 5px;">
+                    <div id="progress" class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- Thông báo thất bại với thanh tiến trình -->
+            <div id="errorNotification" class="alert alert-danger" th:if="${errorMessage}">
+                <strong>Thất bại!</strong><br>
+                <span th:text="${errorMessage}"></span>
+                <div id="errorProgressBar" class="progress mt-2" style="height: 5px;">
+                    <div id="errorProgress" class="progress-bar bg-danger" role="progressbar" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- Page Title -->
+            <div class="page-title-area">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <div class="breadcrumbs-area clearfix">
+                            <h4 class="page-title pull-left">Quản lý đơn hàng</h4>
+                            <ul class="breadcrumbs pull-left">
+                                <li><a href="/management/dashboard">Trang chủ</a></li>
+                                <li><span>Quản lý đơn hàng</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 clearfix">
+                        <div class="user-profile pull-right">
+                            <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png" th:src="@{/assets/images/author/avatar.png}">
+                            <h4 class="user-name dropdown-toggle" data-toggle="dropdown" th:text="${username}"><i class="fa fa-angle-down"></i></h4>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Đăng xuất</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Inner -->
+            <div class="main-content-inner">
+                <div class="container mt-4">
+                    <!-- Search and Filter Section -->
+                    <form action="/management/orders" method="GET">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Tìm kiếm đơn hàng..." name="searchQuery" th:value="${searchQuery}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="submit" name="action" value="search">
+                                                <i class="fa fa-search"></i> Tìm kiếm
+                                            </button>
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-end">
+                                    <select class="form-control mr-2" style="width: 200px;" name="statusFilter">
+                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="Chờ xử lý" th:selected="${statusFilter == 'Chờ xử lý'}">Chờ xử lý</option>
+                                        <option value="Đang xử lý" th:selected="${statusFilter == 'Đang xử lý'}">Đang xử lý</option>
+                                        <option value="Đang giao hàng" th:selected="${statusFilter == 'Đang giao hàng'}">Đang giao hàng</option>
+                                        <option value="Đã hoàn thành" th:selected="${statusFilter == 'Đã hoàn thành'}">Đã hoàn thành</option>
+                                        <option value="Đã hủy" th:selected="${statusFilter == 'Đã hủy'}">Đã hủy</option>
+                                    </select>
+                                    <button class="btn btn-secondary" type="submit" name="action" value="filter">
+                                        <i class="fa fa-filter"></i> Lọc
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Orders Table -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center" style="min-width: 1500px;">
+                            <thead class="bg-primary text-white">
+                                <tr>
+                                    <th style="min-width: 100px;">Mã ĐH</th>
+                                    <th style="min-width: 150px;">Khách hàng</th>
+                                    <th style="min-width: 150px;">Số điện thoại</th>
+                                    <th style="min-width: 200px;">Địa chỉ</th>
+                                    <th style="min-width: 150px;">Ngày đặt</th>
+                                    <th style="min-width: 150px;">Ngày nhận hàng</th>
+                                    <th style="min-width: 150px;">Tổng tiền</th>
+                                    <th style="min-width: 150px;">Phương thức TT</th>
+                                    <th style="min-width: 150px;">Trạng thái</th>
+                                    <th style="min-width: 200px;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="order : ${orders}">
+                                    <td th:text="${order.orderId}"></td>
+                                    <td th:text="${order.user.fullname}"></td>
+                                    <td th:text="${order.user.phone}"></td>
+                                    <td th:text="${order.user.address}"></td>
+                                    <td th:text="${order.orderTime}"></td>
+                                    <td th:text="${order.deliveryTimeEnd}"></td>
+                                    <td th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'POINT', 0, 'POINT') + 'đ'}"></td>
+                                    <td th:text="${order.paymentMethod}"></td>
+                                    <td>
+                                        <span class="badge"
+                                              th:classappend="${order.orderStatus == 'Chờ xử lý' ? 'badge-secondary' :
+                                                              (order.orderStatus == 'Đang xử lý' ? 'badge-warning' :
+                                                              (order.orderStatus == 'Đang giao hàng' ? 'badge-info' :
+                                                              (order.orderStatus == 'Đã hoàn thành' ? 'badge-success' :
+                                                              (order.orderStatus == 'Đã hủy' ? 'badge-danger' : 'badge-light'))))}"
+                                              th:text="${order.orderStatus}">
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-info btn-sm mr-2" title="Chi tiết" th:onclick="'viewOrderDetails(' + ${order.orderId} + ')'">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-primary btn-sm mr-2 op-update-modal" title="Cập nhật"
+                                                    th:data-order-id="${order.orderId}" th:data-order-status="${order.orderStatus}" th:disabled="${order.orderStatus == 'Đã hủy'}">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" title="Hủy đơn" data-toggle="modal"
+                                                    data-target="#cancelOrderModal" th:data-id="${order.orderId}" th:disabled="${order.orderStatus == 'Đã hủy'}">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Phân trang -->
+                    <nav class="mt-3">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${orders.hasPrevious()} ? '' : 'disabled'">
+                                <a class="page-link" href="?page=0"  th:href="@{/management/orders(page=${orders.number - 1}, searchQuery=${searchQuery}, statusFilter=${statusFilter})}" tabindex="-1">Trước</a>
+                            </li>
+                            <!-- Lặp qua các trang -->
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, orders.totalPages - 1)}"
+                                th:classappend="${i == orders.number ? 'active' : ''}">
+                                <a class="page-link" th:href="@{/management/orders(page=${i}, searchQuery=${searchQuery}, statusFilter=${statusFilter})}">[[${i + 1}]]</a>
+                            </li>
+                            <li class="page-item" th:classappend="${orders.hasNext()} ? '' : 'disabled'">
+                                <a class="page-link" th:href="@{/management/orders(page=${orders.number + 1}, searchQuery=${searchQuery}, statusFilter=${statusFilter})}" >Sau</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div th:replace="~{Fragments/footer :: *}"></div>
+    </div>
+
+    <!-- Modal Chi tiết đơn hàng -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết đơn hàng #<span id="orderIdDetail"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6>Thông tin khách hàng</h6>
+                            <p><strong>Tên khách hàng:</strong> <span id="customerName"></span></p>
+                            <p><strong>Số điện thoại:</strong> <span id="customerPhone"></span></p>
+                            <p><strong>Địa chỉ:</strong> <span id="customerAddress"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Thông tin đơn hàng</h6>
+                            <p><strong>Ngày đặt:</strong> <span id="orderDate"></span></p>
+                            <p><strong>Trạng thái:</strong> <span id="orderStatus"></span></p>
+                            <p><strong>Phương thức thanh toán:</strong> <span id="paymentMethod"></span></p>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Màu</th>
+                                    <th>ROM</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderItems">
+                                <!-- Các sản phẩm sẽ được thêm vào đây bằng JavaScript -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5" class="text-right"><strong>Tổng tiền:</strong></td>
+                                    <td id="totalAmount"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-success" onclick="exportOrderToPDF()">Xuất PDF</button>
+                    <button type="button" class="btn btn-primary" id="updateOrderBtn">Cập nhật</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cập nhật đơn hàng -->
+    <div class="modal fade" id="updateOrderModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cập nhật đơn hàng #<span id="updateOrderId"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form id="updateOrderForm" th:action="@{/management/orders/update}" method="POST" th:object="${request}">
+                    <div class="modal-body">
+                            <input type="hidden" th:field="*{orderId}" id="updateOrderIdInput"/>
+                            <div class="form-group">
+                                <label>Trạng thái đơn hàng</label>
+                                <select class="form-control" id="updateOrderStatus" th:field="*{status}">
+                                    <option value="Chờ xử lý">Chờ xử lý</option>
+                                    <option value="Đang xử lý">Đang xử lý</option>
+                                    <option value="Đang giao hàng">Đang giao hàng</option>
+                                    <option value="Đã hoàn thành">Đã hoàn thành</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Ghi chú</label>
+                                <textarea class="form-control" id="updateOrderNote" rows="3"></textarea>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Xác nhận hủy -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Xác nhận hủy đơn hàng</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fa fa-exclamation-triangle text-danger" style="font-size: 50px;"></i>
+                    </div>
+                    <p class="text-center">Bạn có chắc chắn muốn hủy đơn hàng này?</p>
+                    <p class="text-center text-danger"><strong>Lưu ý:</strong> Hành động này không thể hoàn tác!</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fa fa-times"></i> Đóng
+                    </button>
+                    <!-- Form gửi POST tới controller để xóa đơn hàng -->
+                    <form id="cancelOrderForm" action="#" th:action="@{/management/orders/cancel}" method="POST">
+                        <!-- Trường ẩn để chứa orderId -->
+                        <input type="hidden" name="orderId" id="orderIdToCancel"/>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa fa-ban"></i> Hủy
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thêm các script cần thiết -->
+    <script src="../../static/assets/js/vendor/jquery-2.2.4.min.js" th:src="@{/assets/js/vendor/jquery-2.2.4.min.js}"></script>
+    <script src="../../static/assets/js/popper.min.js" th:src="@{/assets/js/popper.min.js}"></script>
+    <script src="../../static/assets/js/bootstrap.min.js" th:src="@{/assets/js/bootstrap.min.js}"></script>
+    <script src="../../static/assets/js/owl.carousel.min.js" th:src="@{/assets/js/owl.carousel.min.js}"></script>
+    <script src="../../static/assets/js/metisMenu.min.js" th:src="@{/assets/js/metisMenu.min.js}"></script>
+    <script src="../../static/assets/js/jquery.slimscroll.min.js" th:src="@{/assets/js/jquery.slimscroll.min.js}"></script>
+    <script src="../../static/assets/js/jquery.slicknav.min.js" th:src="@{/assets/js/jquery.slicknav.min.js}"></script>
+    <script src="../../static/assets/js/plugins.js" th:src="@{/assets/js/plugins.js}"></script>
+    <script src="../../static/assets/js/scripts.js" th:src="@{/assets/js/scripts.js}"></script>
+
+    <!--Style áp dụng cho thông báo thành công-->
+    <style>
+        #successNotification {
+
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+        width: 300px;
+        padding: 15px;
+        background-color: #eafaf1; /* Nền sáng hơn */
+        color: #28a745; /* Chữ xanh lá */
+        border-radius: 8px;
+        font-size: 16px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+        animation: slideIn 0.5s ease-in-out;
+        }
+
+        #successNotification strong {
+        font-weight: bold;
+        }
+
+        #successNotification span {
+        display: block;
+        margin-top: 5px;
+        word-wrap: break-word;  /* Đảm bảo chữ không vượt ra ngoài */
+        }
+
+        #progressBar {
+        height: 5px;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+        margin-top: 10px;
+        }
+
+        #progress {
+        width: 100%;
+        height: 5px;
+        background-color: #5cb85c;
+        border-radius: 3px;
+        }
+
+        /* Animation for sliding in */
+        @keyframes slideIn {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+        }
+    </style>
+
+    <!-- Style áp dụng cho thông báo thất bại-->
+    <style>
+        #errorNotification {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            width: 300px;
+            padding: 15px;
+            background-color: #f8d7da; /* Nền màu đỏ nhạt */
+            color: #dc3545; /* Chữ đỏ */
+            border-radius: 8px;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        #errorNotification strong {
+            font-weight: bold;
+        }
+
+        #errorNotification span {
+            display: block;
+            margin-top: 5px;
+            word-wrap: break-word;  /* Đảm bảo chữ không vượt ra ngoài */
+        }
+
+        #errorProgressBar {
+            height: 5px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+
+        #errorProgress {
+            width: 100%;
+            height: 5px;
+            background-color: #dc3545;
+            border-radius: 3px;
+        }
+
+        /* Animation for sliding in */
+        @keyframes slideIn {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+    </style>
+
+    <!-- Script for success notification -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var successMessage = /*[[${successMessage}]]*/ 'null';
+        if (successMessage !== 'null') {
+            var successNotification = document.getElementById('successNotification');
+            var successProgressBar = document.getElementById('progress');
+            var successProgress = 100; // Initial value of the progress bar
+
+            // Display the notification
+            successNotification.style.display = 'block';
+
+            // Progress bar decreases from 100% to 0%
+            var successInterval = setInterval(function() {
+                if (successProgress > 0) {
+                    successProgress -= 1;
+                    successProgressBar.style.width = successProgress + '%';
+                } else {
+                    clearInterval(successInterval); // Stop the progress when it reaches 0%
+                    setTimeout(function() {
+                        successNotification.style.display = 'none'; // Hide the notification after completion
+                    }, 500); // Wait 500ms for the progress bar to disappear gradually
+                }
+            }, 30); // Every 30ms, decrease the progress bar by 1%
+
+            // Hide the notification after 5 seconds (along with the progress bar)
+            setTimeout(function() {
+                if (successProgress > 0) { // If the progress bar is not yet completed
+                    clearInterval(successInterval); // Stop the progress bar
+                    successProgressBar.style.width = '0%'; // Set the progress bar to 0%
+                    successNotification.style.display = 'none'; // Hide the notification
+                }
+            }, 5000); // 5000 ms = 5 seconds
+        }
+        /*]]>*/
+    </script>
+
+    <!-- Script for error notification -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var errorMessage = /*[[${errorMessage}]]*/ 'null';
+        if (errorMessage !== 'null') {
+            var errorNotification = document.getElementById('errorNotification');
+            var errorProgressBar = document.getElementById('errorProgress');
+            var errorProgress = 100; // Initial value of the progress bar
+
+            // Display the notification
+            errorNotification.style.display = 'block';
+
+            // Progress bar decreases from 100% to 0%
+            var errorInterval = setInterval(function() {
+                if (errorProgress > 0) {
+                    errorProgress -= 1;
+                    errorProgressBar.style.width = errorProgress + '%';
+                } else {
+                    clearInterval(errorInterval); // Stop the progress when it reaches 0%
+                    setTimeout(function() {
+                        errorNotification.style.display = 'none'; // Hide the notification after completion
+                    }, 500); // Wait 500ms for the progress bar to disappear gradually
+                }
+            }, 30); // Every 30ms, decrease the progress bar by 1%
+
+            // Hide the notification after 5 seconds (along with the progress bar)
+            setTimeout(function() {
+                if (errorProgress > 0) { // If the progress bar is not yet completed
+                    clearInterval(errorInterval); // Stop the progress bar
+                    errorProgressBar.style.width = '0%'; // Set the progress bar to 0%
+                    errorNotification.style.display = 'none'; // Hide the notification
+                }
+            }, 5000); // 5000 ms = 5 seconds
+        }
+        /*]]>*/
+    </script>
+
+    <!-- Script cho chức năng xem chi tiết đơn hàng -->
+    <script>
+        // Xem chi tiết đơn hàng
+        function viewOrderDetails(orderId) {
+            fetch(`/management/orders/${orderId}`)
+                .then(response => response.json())
+                .then(orderData => {
+                    // Cập nhật thông tin khách hàng
+                    $('#orderIdDetail').text(orderData.orderId);
+                    $('#customerName').text(orderData.fullname);
+                    $('#customerPhone').text(orderData.phone);
+                    $('#customerAddress').text(orderData.address);
+                    $('#orderDate').text(orderData.orderTime);
+                    $('#orderStatus').text(orderData.orderStatus);
+                    $('#paymentMethod').text(orderData.paymentMethod);
+
+                    // Cập nhật danh sách sản phẩm
+                    let itemsHtml = '';
+                    orderData.productInfos.forEach(item => {
+                        itemsHtml += `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${item.color}</td>
+                                <td>${formatRom(item.rom)}</td>
+                                <td>${item.price.toLocaleString('vi-VN')}đ</td>
+                                <td>${item.quantity}</td>
+                                <td>${(item.price * item.quantity).toLocaleString('vi-VN')}đ</td>
+                            </tr>
+                        `;
+                    });
+                    $('#orderItems').html(itemsHtml);
+
+                    // Cập nhật tổng tiền
+                    $('#totalAmount').text(orderData.totalPrice.toLocaleString('vi-VN') + 'đ');
+
+                    // Hiển thị modal
+                    $('#orderDetailsModal').modal('show');
+                })
+                .catch(error => {
+                    console.error('Lỗi khi lấy chi tiết đơn hàng:', error);
+                });
+        }
+
+        function formatRom(rom) {
+           if (rom >= 1000) {
+               return (rom / 1000).toFixed(rom % 1000 === 0 ? 0 : 1) + 'TB';
+           } else {
+               return rom + 'GB';
+           }
+       }
+
+    </script>
+
+    <!--Script cho chức năng sửa trạng thái đơn hàng-->
+    <script>
+        // Hàm mở modal cập nhật đơn hàng
+        function openUpdateOrderModal(button) {
+            // Lấy dữ liệu từ thuộc tính data-* của nút
+            const orderId = button.getAttribute('data-order-id');
+            const orderStatus = button.getAttribute('data-order-status');
+
+            // Cập nhật ID đơn hàng trong modal
+            document.getElementById('updateOrderId').innerText = orderId;
+            document.getElementById('updateOrderIdInput').value = orderId;
+            document.getElementById('updateOrderStatus').value = orderStatus;
+
+            // Set trạng thái hiện tại của đơn hàng trong dropdown
+            const updateOrderStatus = document.getElementById('updateOrderStatus');
+            updateOrderStatus.value = orderStatus;
+
+            // Disable các option dựa trên trạng thái hiện tại
+            disableOptionsBasedOnStatus(orderStatus);
+
+            // Hiển thị modal
+            $('#updateOrderModal').modal('show');
+        }
+
+        // Thêm sự kiện click cho nút
+        document.querySelectorAll('.op-update-modal').forEach(button => {
+            button.addEventListener('click', function() {
+                openUpdateOrderModal(this);
+            });
+        });
+
+        // Hàm vô hiệu hóa các option trước option hiện tại trong dropdown
+        function disableOptionsBasedOnStatus(currentStatus) {
+            const statusOptions = document.getElementById('updateOrderStatus').options;
+
+            // Duyệt qua tất cả các option và disable những option không hợp lệ
+            for (let i = 0; i < statusOptions.length; i++) {
+                const option = statusOptions[i];
+
+                if (shouldDisableOption(option.value, currentStatus)) {
+                    option.disabled = true;
+                } else {
+                    option.disabled = false;
+                }
+            }
+        }
+
+        // Hàm kiểm tra xem option có nên bị disable không
+        function shouldDisableOption(optionValue, currentStatus) {
+            const statuses = ["Chờ xử lý", "Đang xử lý", "Đang giao hàng", "Đã hoàn thành"];
+            const currentStatusIndex = statuses.indexOf(currentStatus);
+            const optionIndex = statuses.indexOf(optionValue);
+
+            return optionIndex < currentStatusIndex;  // Disable tất cả các option trước trạng thái hiện tại
+        }
+    </script>
+
+    <!--Script cho chức năng hủy đơn hàng-->
+    <script>
+        // Lắng nghe sự kiện khi modal được mở
+        $('#cancelOrderModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Lấy button đã mở modal
+            var orderId = button.data('id'); // Lấy orderId từ thuộc tính data-id
+            var modal = $(this);
+
+            // Cập nhật giá trị của input hidden trong form modal
+            modal.find('#orderIdToCancel').val(orderId);
+        });
+    </script>
+
+    <!--Script cho chức năng xuất PDF-->
+    <script>
+        function exportOrderToPDF() {
+            const orderId = document.getElementById('orderIdDetail').textContent;
+
+            fetch(`/management/orders/export-pdf/${orderId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error("Không thể tải PDF");
+                    return response.blob();
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `order_${orderId}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error("Lỗi khi tải PDF:", error);
+                });
+        }
+    </script>
+</body>
+</html>
