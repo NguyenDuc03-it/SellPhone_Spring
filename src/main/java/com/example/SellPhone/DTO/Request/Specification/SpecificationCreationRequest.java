@@ -19,26 +19,14 @@ public class SpecificationCreationRequest {
 
     @NotBlank(message = "Thông tin camera sau không được để trống")
     @Size(max = 255, message = "Thông tin camera sau không được vượt quá 255 kí tự")
-    @Pattern(
-            regexp = "^[a-zA-Z0-9\\s/-]+$",
-            message = "Thông tin camera sau chỉ được chứa chữ cái không dấu, số, dấu '/' và '-'"
-    )
     private String rearCamera;    // Camera sau
 
     @NotBlank(message = "Thông tin camera trước không được để trống")
     @Size(max = 255, message = "Thông tin camera trước không được vượt quá 255 kí tự")
-    @Pattern(
-            regexp = "^[a-zA-Z0-9\\s/-]+$",
-            message = "Thông tin camera trước chỉ được chứa chữ cái không dấu, số, dấu '/' và '-'"
-    )
     private String frontCamera;   // Camera trước
 
     @NotBlank(message = "Thông tin chip không được để trống")
     @Size(max = 255, message = "Thông tin chip không được vượt quá 255 kí tự")
-    @Pattern(
-            regexp = "^[a-zA-Z0-9\\s/-]+$",
-            message = "Thông tin chip chỉ được chứa chữ cái không dấu, số, dấu '/' và '-'"
-    )
     private String chipset;       // Chipset
 
     @NotNull(message = "Thông tin ram không được để trống")
@@ -48,10 +36,6 @@ public class SpecificationCreationRequest {
 
     @NotBlank(message = "Thông tin thẻ sim không được để trống")
     @Size(max = 255, message = "Thông tin thẻ sim không được vượt quá 255 kí tự")
-    @Pattern(
-            regexp = "^[a-zA-Z0-9À-ỹà-ỹ\\s/\\-()]+$",
-            message = "Thông tin sim chỉ được nhập chữ, số, dấu cách, '/', '-', và dấu ()"
-    )
     private String sim;           // Thẻ SIM
 
     @NotBlank(message = "Thông tin hệ điều hành không được để trống")
@@ -64,18 +48,10 @@ public class SpecificationCreationRequest {
 
     @NotBlank(message = "Thông tin cpu không được để trống")
     @Size(max = 255, message = "Thông tin cpu không được vượt quá 255 kí tự")
-    @Pattern(
-            regexp = "^[a-zA-Z0-9À-ỹà-ỹ\\s/\\-()]+$",
-            message = "CPU chỉ được nhập chữ, số, dấu cách, '/', '-', và dấu ()"
-    )
     private String cpu;           // CPU
 
     @NotBlank(message = "Thông tin sạc không được để trống")
     @Size(max = 255, message = "Thông tin sạc không được vượt quá 255 kí tự")
-    @Pattern(
-            regexp = "^[a-zA-Z0-9À-ỹà-ỹ\\s/\\-()]+$",
-            message = "Công nghệ sạc chỉ được nhập chữ, số, dấu cách, '/', '-', và dấu ()"
-    )
     private String charging;      // Công nghệ sạc
 
     // Hàm chuyển đổi String sang Float

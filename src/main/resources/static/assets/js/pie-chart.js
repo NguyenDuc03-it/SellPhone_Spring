@@ -430,3 +430,77 @@ if ($('#seolinechart8').length) {
     });
 }
 /*-------------- 7 Pie chart chartjs end ------------*/
+
+/*-------------- Biểu đồ tròn tỉ lệ trạng thái đơn hàng start------------*/
+if ($('#seolinechart19').length) {
+    var dataLabels = [
+        "Đang chờ thanh toán",
+        "Đang chờ xử lý",
+        "Đang xử lý",
+        "Đang giao",
+        "Đã hoàn thành",
+        "Đã hủy"
+    ];
+    var backgroundColors = [
+        "#8A8DFB",
+        "#50B5F2",
+        "#F8CB3F",
+        "#FF9F40",
+        "#12C498",
+        "#F44336"
+    ];
+
+    var ctx = document.getElementById("seolinechart18").getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'doughnut',
+        // The data for our dataset
+        data: {
+            labels: dataLabels,
+            datasets: [{
+                backgroundColor: backgroundColors,
+                borderColor: '#fff',
+                data: [810, 410, 260, 150, 720, 90],
+            }]
+        },
+        // Configuration options go here
+        options: {
+            legend: {
+                display: false,
+                position: 'bottom',
+                labels: {
+                    boxWidth: 12,
+                    padding: 15,
+                    fontSize: 13,
+                    usePointStyle: true
+                }
+            },
+            animation: {
+                easing: "easeInOutBack"
+            },
+            maintainAspectRatio: true, // giữ nguyên tỉ lệ
+            responsive: true
+        }
+
+    });
+
+    // Tạo legend custom
+    var legendContainer = document.getElementById('custom-legend');
+    legendContainer.innerHTML = ''; // Xóa nếu có legend cũ
+
+    dataLabels.forEach(function (label, index) {
+        var item = document.createElement('div');
+        item.classList.add('custom-legend-item');
+
+        var colorBox = document.createElement('span');
+        colorBox.classList.add('custom-legend-color');
+        colorBox.style.backgroundColor = backgroundColors[index];
+
+        var text = document.createTextNode(label);
+
+        item.appendChild(colorBox);
+        item.appendChild(text);
+        legendContainer.appendChild(item);
+    });
+}
+/*-------------- Biểu đồ tròn tỉ lệ trạng thái đơn hàng end------------*/

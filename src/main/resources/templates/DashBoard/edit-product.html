@@ -170,6 +170,15 @@
                                 <ul><li th:each="err : ${#fields.errors()}" th:text="${err}"></li></ul>
                             </div>
 
+                            <!-- Thông báo thất bại với thanh tiến trình -->
+                            <div id="errorNotification" class="alert alert-danger" th:if="${errorMessage}">
+                                <strong>Thất bại!</strong><br>
+                                <span th:text="${errorMessage}"></span>
+                                <div id="errorProgressBar" class="progress mt-2" style="height: 5px;">
+                                    <div id="errorProgress" class="progress-bar bg-danger" role="progressbar" style="width: 100%;"></div>
+                                </div>
+                            </div>
+
                             <!-- Thông tin cơ bản -->
                             <div class="form-section">
                                 <h5 class="form-section-title">Thông tin cơ bản</h5>
@@ -347,6 +356,96 @@
 <!-- others plugins -->
 <script src="../../static/assets/js/plugins.js" th:src="@{/assets/js/plugins.js}"></script>
 <script src="../../static/assets/js/scripts.js" th:src="@{/assets/js/scripts.js}"></script>
+
+<!-- Style áp dụng cho thông báo thất bại-->
+<style>
+    #errorNotification {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 9999;
+        width: 300px;
+        padding: 15px;
+        background-color: #f8d7da; /* Nền màu đỏ nhạt */
+        color: #dc3545; /* Chữ đỏ */
+        border-radius: 8px;
+        font-size: 16px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+        animation: slideIn 0.5s ease-in-out;
+    }
+
+    #errorNotification strong {
+        font-weight: bold;
+    }
+
+    #errorNotification span {
+        display: block;
+        margin-top: 5px;
+        word-wrap: break-word;  /* Đảm bảo chữ không vượt ra ngoài */
+    }
+
+    #errorProgressBar {
+        height: 5px;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+        margin-top: 10px;
+    }
+
+    #errorProgress {
+        width: 100%;
+        height: 5px;
+        background-color: #dc3545;
+        border-radius: 3px;
+    }
+
+    /* Animation for sliding in */
+    @keyframes slideIn {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(0);
+        }
+    }
+</style>
+
+<!-- Script for error notification -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var errorMessage = /*[[${errorMessage}]]*/ 'null';
+    if (errorMessage !== 'null') {
+        var errorNotification = document.getElementById('errorNotification');
+        var errorProgressBar = document.getElementById('errorProgress');
+        var errorProgress = 100; // Initial value of the progress bar
+
+        // Display the notification
+        errorNotification.style.display = 'block';
+
+        // Progress bar decreases from 100% to 0%
+        var errorInterval = setInterval(function() {
+            if (errorProgress > 0) {
+                errorProgress -= 1;
+                errorProgressBar.style.width = errorProgress + '%';
+            } else {
+                clearInterval(errorInterval); // Stop the progress when it reaches 0%
+                setTimeout(function() {
+                    errorNotification.style.display = 'none'; // Hide the notification after completion
+                }, 500); // Wait 500ms for the progress bar to disappear gradually
+            }
+        }, 30); // Every 30ms, decrease the progress bar by 1%
+
+        // Hide the notification after 5 seconds (along with the progress bar)
+        setTimeout(function() {
+            if (errorProgress > 0) { // If the progress bar is not yet completed
+                clearInterval(errorInterval); // Stop the progress bar
+                errorProgressBar.style.width = '0%'; // Set the progress bar to 0%
+                errorNotification.style.display = 'none'; // Hide the notification
+            }
+        }, 5000); // 5000 ms = 5 seconds
+    }
+    /*]]>*/
+</script>
 
 <!-- Script xử lý preview ảnh -->
 <script>

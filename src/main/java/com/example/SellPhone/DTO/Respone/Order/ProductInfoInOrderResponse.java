@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductInfoInOrderDTO {
+public class ProductInfoInOrderResponse {
     String name;
     String color;
     int rom;

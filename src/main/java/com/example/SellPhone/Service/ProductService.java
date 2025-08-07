@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -263,7 +264,11 @@ public class ProductService {
                 .anyMatch(v -> v.getQuantity() != null && v.getQuantity() > 0);
         product.setStatus(hasQuantity ? "Còn hàng" : "Hết hàng");
 
-        productRepository.save(product);
+        try {
+            productRepository.save(product);
+        } catch (DataIntegrityViolationException ex) {
+            throw new RuntimeException("ROM hoặc thông số kỹ thuật bị trùng lặp!");
+        }
 
     }
 

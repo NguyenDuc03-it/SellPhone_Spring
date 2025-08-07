@@ -50,4 +50,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             String role1, String searchQuery1,
             String role2, String searchQuery2,
             Pageable pageable);
+
+    int countByRole(String role);
 }

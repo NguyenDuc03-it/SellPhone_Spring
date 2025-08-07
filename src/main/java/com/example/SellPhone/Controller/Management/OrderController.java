@@ -1,8 +1,8 @@
 package com.example.SellPhone.Controller.Management;
 
 import com.example.SellPhone.DTO.Request.Order.OrderUpdateRequest;
-import com.example.SellPhone.DTO.Respone.Order.OrderDTO;
-import com.example.SellPhone.DTO.Respone.Order.ProductInfoInOrderDTO;
+import com.example.SellPhone.DTO.Respone.Order.OrderResponse;
+import com.example.SellPhone.DTO.Respone.Order.ProductInfoInOrderResponse;
 import com.example.SellPhone.Entity.Order;
 import com.example.SellPhone.Service.OrderService;
 import com.lowagie.text.pdf.BaseFont;
@@ -75,12 +75,12 @@ public class OrderController {
 
     // Lấy dữ liệu đơn hàng để hiển thị lên modal xem chi tiết đơn hàng
     @GetMapping("/{id}")
-    ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id, Model model) {
+    ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id, Model model) {
         Optional<Order> orderOptionalt = orderService.findById(id); // Gồm cả user + orderItems + product
         if(orderOptionalt.isPresent())
         {
             Order order = orderOptionalt.get();
-            OrderDTO orderDTO = new OrderDTO();
+            OrderResponse orderDTO = new OrderResponse();
 
             orderDTO.setOrderId(order.getOrderId());
             orderDTO.setFullname(order.getUser().getFullname());
@@ -91,8 +91,8 @@ public class OrderController {
             orderDTO.setPaymentMethod(order.getPaymentMethod());
             orderDTO.setTotalPrice(order.getTotalPrice());
 
-            List<ProductInfoInOrderDTO> productInfoDTOs = order.getOrderItems().stream().map(
-                    productInfo -> ProductInfoInOrderDTO.builder()
+            List<ProductInfoInOrderResponse> productInfoDTOs = order.getOrderItems().stream().map(
+                    productInfo -> ProductInfoInOrderResponse.builder()
                             .name(productInfo.getProduct().getName())
                             .rom(productInfo.getRom())
                             .color(productInfo.getProduct().getColor())

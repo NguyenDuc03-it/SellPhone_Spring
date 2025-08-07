@@ -1,13 +1,13 @@
 package com.example.SellPhone.Controller.Management;
 
-import com.example.SellPhone.DTO.Respone.Product.ProductSpecificationVariantDTO;
+import com.example.SellPhone.DTO.Respone.Product.ProductSpecificationVariantResponse;
 import com.example.SellPhone.DTO.Request.Product.ProductCreationRequest;
 import com.example.SellPhone.DTO.Respone.Product.ProductSpecificationDTO;
 import com.example.SellPhone.DTO.Request.Product.ProductUpdateRequest;
 import com.example.SellPhone.DTO.Request.Specification.SpecificationCreationRequest;
 import com.example.SellPhone.DTO.Request.SpecificationVariant.SpecificationVariantRequest;
 import com.example.SellPhone.DTO.Respone.Product.ProductSpecificationResponse;
-import com.example.SellPhone.DTO.Respone.Product.ProductInfoDTO;
+import com.example.SellPhone.DTO.Respone.Product.ProductInfoResponse;
 import com.example.SellPhone.Entity.Product;
 import com.example.SellPhone.Entity.Specification;
 import com.example.SellPhone.Service.CategoryService;
@@ -196,7 +196,11 @@ public class ProductController {
         } catch (RuntimeException ex) {
             Product product = productService.getProductById(request.getProductId());
             request.setExistingImageUrl(product.getImageUrl());
-            model.addAttribute("errorMessage", "Lỗi khi sửa sản phẩm!");
+            if (ex.getMessage().contains("trùng")) {
+                bindingResult.rejectValue("romVariants", "error.romVariants", ex.getMessage());
+            } else {
+                model.addAttribute("errorMessage", "Lỗi khi sửa sản phẩm!");
+            }
             System.out.println("Lỗi khi sửa sản phẩm: " + ex.getMessage());
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("currentPage", "products");
@@ -261,7 +265,7 @@ public class ProductController {
         specDTO.setCpu(spec.getCpu());
         specDTO.setCharging(spec.getCharging());
 
-        List<ProductSpecificationVariantDTO> variantDTOs = spec.getVariants().stream().map(variant -> ProductSpecificationVariantDTO.builder()
+        List<ProductSpecificationVariantResponse> variantDTOs = spec.getVariants().stream().map(variant -> ProductSpecificationVariantResponse.builder()
                 .rom(variant.getRom())
                 .importPrice(variant.getImportPrice())
                 .sellingPrice(variant.getSellingPrice())
@@ -326,7 +330,7 @@ public class ProductController {
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             Specification spec = product.getSpecification();
-            ProductInfoDTO dto = new ProductInfoDTO();
+            ProductInfoResponse dto = new ProductInfoResponse();
 
             dto.setScreenSizeInput(spec.getScreenSize());
             dto.setOperatingSystem(spec.getOperatingSystem());

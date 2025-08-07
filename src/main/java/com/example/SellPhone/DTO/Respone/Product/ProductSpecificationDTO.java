@@ -22,5 +22,5 @@ public class ProductSpecificationDTO {
      String cpu;
      String charging;
 
-     List<ProductSpecificationVariantDTO> variants;
+     List<ProductSpecificationVariantResponse> variants;
 }

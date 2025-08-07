@@ -227,15 +227,15 @@
                                         <div class="rom-row row align-items-end mb-2">
                                             <div class="col-md-3">
                                                 <label class="required-field">ROM</label>
-                                                <input type="text" class="form-control" onkeydown="return isNumberKey(event)" name="romVariants[0].rom" placeholder="Ví dụ: 128GB" required>
+                                                <input type="text" class="form-control" onkeydown="return isNumberKey(event)" name="romVariants[0].rom" placeholder="Ví dụ: 128" required>
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="required-field">Giá nhập</label>
-                                                <input type="text" class="form-control format-number" name="romVariants[0].importPrice" placeholder="Nhập giá nhập" min="0" required>
+                                                <input type="text" class="form-control format-number" name="romVariants[0].importPrice" placeholder="Giá nhập" min="0" required>
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="required-field">Giá bán</label>
-                                                <input type="text" class="form-control format-number" name="romVariants[0].sellingPrice" placeholder="Nhập giá bán" min="0" required>
+                                                <input type="text" class="form-control format-number" name="romVariants[0].sellingPrice" placeholder="Giá bán" min="0" required>
                                             </div>
                                             <div class="col-md-2">
                                                 <label class="required-field">Số lượng</label>
@@ -390,13 +390,13 @@
             row.className = 'rom-row row align-items-end mb-2';
             row.innerHTML = `
                 <div class="col-md-3">
-                    <input type="text" class="form-control" onkeydown="return isNumberKey(event)" name="romVariants[${romIndex}].rom" placeholder="Ví dụ: 256GB" required>
+                    <input type="text" class="form-control" onkeydown="return isNumberKey(event)" name="romVariants[${romIndex}].rom" placeholder="Ví dụ: 128" required>
                 </div>
                 <div class="col-md-3">
-                    <input type="text" class="form-control format-number" name="romVariants[${romIndex}].importPrice" placeholder="Nhập giá nhập" min="0" required>
+                    <input type="text" class="form-control format-number" name="romVariants[${romIndex}].importPrice" placeholder="Giá nhập" min="0" required>
                 </div>
                 <div class="col-md-3">
-                    <input type="text" class="form-control format-number" name="romVariants[${romIndex}].sellingPrice" placeholder="Nhập giá bán" min="0" required>
+                    <input type="text" class="form-control format-number" name="romVariants[${romIndex}].sellingPrice" placeholder="Giá bán" min="0" required>
                 </div>
                 <div class="col-md-2">
                     <input type="text" class="form-control"  onkeydown="return isNumberKey(event)" name="romVariants[${romIndex}].quantity" placeholder="Số lượng" min="0" required>
@@ -443,7 +443,7 @@
         });
 
         // Bỏ dấu chấm khi submit form
-        document.getElementById('updateProductForm')?.addEventListener('submit', function () {
+        document.getElementById('addProductForm')?.addEventListener('submit', function () {
             document.querySelectorAll('.format-number').forEach(input => {
                 input.value = input.value.replace(/\./g, '');
             });

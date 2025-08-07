@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderDTO {
+public class OrderResponse {
     Long orderId;
     String fullname;
     String phone;
@@ -19,6 +19,6 @@ public class OrderDTO {
     String orderStatus;
     String paymentMethod;
     Long totalPrice;
-    List<ProductInfoInOrderDTO> productInfos;
+    List<ProductInfoInOrderResponse> productInfos;
 
 }

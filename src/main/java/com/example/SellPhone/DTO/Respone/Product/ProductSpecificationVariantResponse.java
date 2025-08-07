@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductSpecificationVariantDTO {
+public class ProductSpecificationVariantResponse {
     Integer rom;
     Long importPrice;
     Long sellingPrice;

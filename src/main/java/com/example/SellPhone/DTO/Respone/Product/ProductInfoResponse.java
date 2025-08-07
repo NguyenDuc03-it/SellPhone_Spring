@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductInfoDTO {
+public class ProductInfoResponse {
     Float screenSizeInput;
     String operatingSystem;
     String rearCamera;
