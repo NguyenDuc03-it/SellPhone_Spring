@@ -119,6 +119,7 @@
                                     <select class="form-control mr-2" style="width: 200px;" name="statusFilter">
                                         <option value="">Tất cả trạng thái</option>
                                         <option value="Chờ xử lý" th:selected="${statusFilter == 'Chờ xử lý'}">Chờ xử lý</option>
+                                        <option value="Chờ thanh toán" th:selected="${statusFilter == 'Chờ thanh toán'}">Chờ thanh toán</option>
                                         <option value="Đang xử lý" th:selected="${statusFilter == 'Đang xử lý'}">Đang xử lý</option>
                                         <option value="Đang giao hàng" th:selected="${statusFilter == 'Đang giao hàng'}">Đang giao hàng</option>
                                         <option value="Đã hoàn thành" th:selected="${statusFilter == 'Đã hoàn thành'}">Đã hoàn thành</option>

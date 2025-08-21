@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-
+@Setter
 public class OrderUpdateRequest {
     @NotNull(message = "Không tìm thấy ID đơn hàng")
     @Min(value = 1, message = "ID đơn hàng không hợp lệ")
