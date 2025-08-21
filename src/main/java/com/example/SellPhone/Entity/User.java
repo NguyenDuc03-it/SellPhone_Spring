@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -51,6 +53,12 @@ public class User {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "created_at")
+    private String createdAt;
+
+    @Column(name = "updated_at")
+    private String updatedAt;
+
     public String getRoleWithPrefix(){
         String position = "";
         if(role.equals("Admin")){
@@ -67,4 +75,18 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
+
+    @PrePersist
+    protected void onCreate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String now = LocalDate.now().format(formatter);
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        this.updatedAt = LocalDate.now().format(formatter);
+    }
 }

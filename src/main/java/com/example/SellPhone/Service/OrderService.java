@@ -75,4 +75,9 @@ public class OrderService {
         List<String> excludedStatuses = List.of("Đã hoàn thành", "Đã hủy");
         return orderRepository.countByOrderStatusNotIn(excludedStatuses);
     }
+
+    // Tính tổng doanh thu trong khoảng thời gian từ ngày bắt đầu đến ngày kết thúc
+    public Long calculateTotalRevenue(String startDate, String endDate) {
+        return orderRepository.calculateTotalRevenue(startDate, endDate);
+    }
 }

@@ -3,7 +3,6 @@ package com.example.SellPhone.Service;
 import com.example.SellPhone.DTO.Respone.Product.BestSellingProductResponse;
 import com.example.SellPhone.DTO.Respone.Product.RecentlySoldProductsResponse;
 import com.example.SellPhone.Entity.Order;
-import com.example.SellPhone.Entity.OrderItem;
 import com.example.SellPhone.Repository.*;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;

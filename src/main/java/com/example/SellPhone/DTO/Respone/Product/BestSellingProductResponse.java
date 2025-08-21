@@ -18,4 +18,13 @@ public class BestSellingProductResponse {
     Long rom;
     Long sellingPrice;
     Long totalQuantity;
+
+    public BestSellingProductResponse(long productId, String name, String color, Long rom, Long sellingPrice, Long totalQuantity) {
+        this.productId = productId;
+        this.name = name;
+        this.color = color;
+        this.rom = rom;
+        this.sellingPrice = sellingPrice;
+        this.totalQuantity = totalQuantity;
+    }
 }
