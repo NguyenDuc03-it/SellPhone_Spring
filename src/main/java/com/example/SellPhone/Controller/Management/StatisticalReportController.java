@@ -84,15 +84,15 @@ public class StatisticalReportController {
         }
 
         // Phân biệt hành động
-//        if ("export".equals(action)) {
-//            // Gọi hàm xuất báo cáo (Excel hoặc PDF)
-//            switch (filter.getReportType()) {
-//                case "revenue" -> reportService.exportRevenueReportToExcel(filter, response);
-//                case "products" -> reportService.exportBestSellersReportToExcel(filter, response);
-//                case "customers" -> reportService.exportCustomersReportToExcel(filter, response);
-//            }
-//            return null; // Vì đã trả về file nên không cần trả view
-//        }
+        if ("export".equals(action)) {
+            // Gọi hàm xuất báo cáo (Excel hoặc PDF)
+            switch (filter.getReportType()) {
+                case "revenue" -> reportService.exportRevenueReportToExcel(filter, response);
+                case "products" -> reportService.exportBestSellersReportToExcel(filter, response);
+                case "customers" -> reportService.exportCustomersReportToExcel(filter, response);
+            }
+            return null; // Vì đã trả về file nên không cần trả view
+        }
 
         // Ngược lại, là lọc dữ liệu
         switch (filter.getReportType()) {

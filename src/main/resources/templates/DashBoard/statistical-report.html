@@ -186,7 +186,7 @@
                     </div>
                 </div>
 
-                <!-- Best Sellers Report -->
+                <!-- Product Report -->
                 <div id="products-report" class="report-content">
                     <div class="row d-flex">
                         <div class="col-lg-8 mb-4">
@@ -210,7 +210,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12 mb-4"><div class="card"><div class="card-body"><h5 class="card-title">Chi tiết sản phẩm bán chạy</h5><div class="table-responsive"><table class="table table-bordered text-center">
-                            <thead class="bg-light"><tr><th>Hạng</th><th>Mã SP</th><th>Tên sản phẩm</th><th>Màu</th><th>ROM</th><th>Doanh thu</th><th>Đã bán</th></tr></thead>
+                            <thead class="bg-light"><tr><th>Hạng</th><th>Mã SP</th><th>Tên sản phẩm</th><th>Màu</th><th>ROM</th><th>Giá bán</th><th>Đã bán</th></tr></thead>
                             <tbody>
                             <tr th:each="bestSellingProduct, idex : ${bestSellingProducts}">
                                 <td th:text="${idex.index + 1}"></td>
