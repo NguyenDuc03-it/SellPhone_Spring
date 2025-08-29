@@ -1,12 +1,17 @@
 package com.example.SellPhone.Service;
 
+import com.example.SellPhone.Config.CustomUserDetails;
 import com.example.SellPhone.DTO.Request.User.UserCreationRequest;
 import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
+import com.example.SellPhone.Entity.ShoppingCart;
 import com.example.SellPhone.Entity.User;
+import com.example.SellPhone.Repository.ShoppingCartRepository;
 import com.example.SellPhone.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +27,9 @@ public class CustomerService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ShoppingCartRepository shoppingCartRepository;
+
     // Tạo khách hàng mới
     public User createCustomer(UserCreationRequest request){
         User user = new User();
@@ -30,6 +38,8 @@ public class CustomerService {
         user.setPhone(request.getPhone());
         user.setCCCD(request.getCCCD());
         user.setAddress(request.getAddress());
+        user.setCreatedBy(getCurrentUserId());
+        user.setUpdatedBy(getCurrentUserId());
         user.setRole("Khách hàng");
 
         // Chuyển đổi ngày sinh từ yyyy-MM-dd thành dd/MM/yyyy
@@ -42,7 +52,28 @@ public class CustomerService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         user.setPassword(encodedPassword);
 
-        return userRepository.save(user);
+        // Lưu khách hàng vào cơ sở dữ liệu
+        User savedUser = null;
+        try {
+            // Lưu khách hàng vào cơ sở dữ liệu
+            savedUser = userRepository.save(user);
+        } catch (Exception e) {
+            // Log lỗi khi tạo khách hàng và ném ngoại lệ
+            throw new RuntimeException("Lỗi khi tạo khách hàng");
+        }
+
+        // Nếu tạo khách hàng thành công, thực hiện tạo giỏ hàng
+        try {
+            // Tạo giỏ hàng
+            ShoppingCart shoppingCart = new ShoppingCart();
+            shoppingCart.setUser(savedUser);
+            shoppingCartRepository.save(shoppingCart);
+        } catch (Exception e) {
+            // Log lỗi khi tạo giỏ hàng và ném ngoại lệ
+            throw new RuntimeException("Lỗi khi tạo giỏ hàng cho khách hàng: ");
+        }
+
+        return savedUser;
     }
 
     // Hiển thị danh sách user có role là 'Khách hàng'
@@ -61,6 +92,7 @@ public class CustomerService {
         user.setGender(request.getGender());
         user.setStatus(request.getStatus());
         user.setRole(request.getRole());
+        user.setUpdatedBy(getCurrentUserId());
 
         // Chuyển đổi ngày sinh từ yyyy-MM-dd thành dd/MM/yyyy
         String formattedDob = convertDateFormat(request.getDob());
@@ -148,5 +180,24 @@ public class CustomerService {
     public void deleteCustomer(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
         userRepository.delete(user);
+    }
+
+    // Lấy id của người dùng đang đăng nhập
+    private Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof CustomUserDetails userDetails) {
+                return userDetails.getUserId();
+            }
+        }
+        throw new RuntimeException("Không thể xác định người dùng hiện tại");
+    }
+
+    // Lấy fullname của người dùng theo id
+    public String getFullnameById(Long userId) {
+        return userRepository.findById(userId)
+                .map(User::getFullname)
+                .orElse("Không xác định");
     }
 }

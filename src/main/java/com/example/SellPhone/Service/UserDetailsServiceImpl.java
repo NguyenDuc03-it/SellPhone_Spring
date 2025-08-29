@@ -30,6 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         if("Hoạt động".equals(user.getStatus())){
             return new CustomUserDetails(
+                    user.getUserId(),
                     user.getEmail(),
                     user.getPassword(),
                     user.getFullname(),

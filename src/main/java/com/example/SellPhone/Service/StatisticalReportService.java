@@ -141,7 +141,7 @@ public class StatisticalReportService {
     // Đơn hàng trung bình/ KH
     public String calculateAverageOrdersPerCustomer(String startDate, String endDate) {
         int totalOrders = orderRepository.countByDeliveryTimeEndBetween(startDate, endDate);
-        int totalCustomers = userRepository.countCustomersByCreatedAtBetween(startDate, endDate);
+        int totalCustomers = userRepository.countActiveCustomersCreatedBefore(endDate);
         if (totalCustomers == 0) {
             return "0"; // Tránh chia cho 0
         }

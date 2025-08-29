@@ -26,6 +26,70 @@
         .badge{
             padding: .5em 1em;
         }
+
+        /* Đảm bảo bảng có thể cuộn ngang */
+        .table-responsive {
+            overflow-x: auto;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Sticky cột cuối "Thao Tác" */
+        .sticky-column {
+            position: sticky;
+            right: 0;
+            background: #F3F8FB;
+            z-index: 2;
+        }
+
+        /* Chỉ áp dụng box-shadow cho tbody */
+        tbody .sticky-column {
+            box-shadow: -3px 0 0 #dee2e6;
+        }
+
+        /* Nếu box-shadow chưa đủ rõ, thêm ::before để tạo đường kẻ */
+        tbody .sticky-column::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -1px;
+            width: 1px;
+            height: 100%;
+            background-color: #dee2e6;
+        }
+
+        /* Header cột thao tác */
+        thead .sticky-column {
+            z-index: 3; /* cao hơn phần thân bảng */
+            background: #007bff !important;
+            color: white;
+        }
+
+        /* Tùy chọn thêm: cải thiện hiển thị border bảng */
+        .table-bordered {
+            border-collapse: collapse;
+            border: 1px solid #dee2e6;
+        }
+
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid #dee2e6;
+        }
+
+        /* Đảm bảo các nút không dính sát */
+        .sticky-column .btn {
+            margin: 0 2px;
+        }
+
+        /* Khi cuộn xuống cuối bảng, bỏ sticky bằng cách override */
+        .sticky-column.unstick {
+            position: static !important;
+            box-shadow: none !important;
+        }
+
+        .sticky-column.unstick::before {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -127,7 +191,7 @@
                                                 <th>Màu sắc</th>
                                                 <th>Trạng thái</th>
                                                 <th>Thông số kỹ thuật</th>
-                                                <th>Thao tác</th>
+                                                <th class="sticky-column">Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -146,7 +210,7 @@
                                                         <i class="fa fa-info-circle"></i>
                                                     </button>
                                                 </td>
-                                                <td>
+                                                <td class="sticky-column">
                                         <div class="d-flex justify-content-center">
                                             <a href="edit-product.html" th:href="@{/management/products/op_update(productId=${pd.productId})}">
                                                 <button class="btn btn-primary btn-sm mr-2" title="Sửa">
@@ -730,6 +794,28 @@
 
             // Cập nhật giá trị của input hidden trong form modal
             modal.find('#productIdToDiscontinue').val(productId);
+        });
+    </script>
+
+    <!-- Script để xử lý sticky column -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tableWrapper = document.querySelector('.table-responsive');
+            const stickyColumns = document.querySelectorAll('.sticky-column');
+
+            tableWrapper.addEventListener('scroll', function () {
+                const scrollLeft = tableWrapper.scrollLeft;
+                const maxScrollLeft = tableWrapper.scrollWidth - tableWrapper.clientWidth;
+
+                // Nếu còn cuộn được sang phải, giữ sticky
+                if (scrollLeft < maxScrollLeft - 1) {
+                    stickyColumns.forEach(col => col.classList.remove('unstick'));
+                } else {
+                    // Đã cuộn tới cuối bảng ngang
+                    stickyColumns.forEach(col => col.classList.add('unstick'));
+                }
+            });
+            tableWrapper.dispatchEvent(new Event('scroll'));
         });
     </script>
 

@@ -74,7 +74,7 @@ public class CategoryService {
     // Cập nhật danh mục
     public Category updateCategory(Long categoryId, CategoryUpdateRequest request) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy danh mục với ID: " + categoryId));
+                .orElseThrow(() -> new RuntimeException("Danh mục với ID: " + categoryId + " không còn tồn tại!"));
         // Cập nhật các trường của danh mục
         category.setNotes(request.getNotes());
         category.setStatus(request.getStatus());
@@ -88,7 +88,7 @@ public class CategoryService {
         if (canDeleteCategory(categoryId)) {
             categoryRepository.deleteById(categoryId);
         } else {
-            throw new IllegalStateException("Danh mục có sản phẩm không hợp lệ, không thể xóa.");
+            throw new IllegalStateException("Danh mục có sản phẩm đang được bán, không thể xóa.");
         }
     }
 
@@ -103,7 +103,7 @@ public class CategoryService {
         List<Product> products = productRepository.findByCategory_CategoryId(categoryId);
 
         for (Product product : products) {
-            if (product.getStatus().equals("Dừng bán") || product.getStatus().equals("Hết hàng")) {
+            if (!product.getStatus().equals("Ngừng bán")) {
                 return false;  // Nếu có sản phẩm không hợp lệ, không cho phép xóa danh mục
             }
         }

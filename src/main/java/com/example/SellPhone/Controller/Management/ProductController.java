@@ -10,6 +10,7 @@ import com.example.SellPhone.DTO.Respone.Product.ProductSpecificationResponse;
 import com.example.SellPhone.DTO.Respone.Product.ProductInfoResponse;
 import com.example.SellPhone.Entity.Product;
 import com.example.SellPhone.Entity.Specification;
+import com.example.SellPhone.Repository.OrderItemRepository;
 import com.example.SellPhone.Service.CategoryService;
 import com.example.SellPhone.Service.ProductService;
 import jakarta.validation.Valid;
@@ -36,6 +37,7 @@ public class ProductController {
 
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final OrderItemRepository orderItemRepository;
 
     // Hiển thị danh sách sản phẩm và phân trang
     @GetMapping
@@ -210,30 +212,46 @@ public class ProductController {
 
     // Chức năng xóa sản phẩm
     @PostMapping("/delete")
-    String deleteProduct(@RequestParam Long productId, RedirectAttributes redirectAttributes){
+    public String deleteProduct(@RequestParam Long productId, RedirectAttributes redirectAttributes) {
 
         Product product = productService.getProductById(productId);
-        if (product != null) {
-            productService.deleteProduct(productId);
-            redirectAttributes.addFlashAttribute("successMessage", "Xóa sản phẩm thành công!");
-        } else {
+        if (product == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy sản phẩm để xóa!");
+            return "redirect:/management/products";
         }
-        return "redirect:/management/products"; // Chuyển hướng về trang danh sách nhân viên
+
+        boolean hasUnfinishedOrders = orderItemRepository.existsUnfinishedOrderWithProduct(productId);
+        if (hasUnfinishedOrders) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể xóa sản phẩm vì đang nằm trong đơn hàng chưa hoàn thành!");
+            return "redirect:/management/products";
+        }
+
+        productService.deleteProduct(productId);
+        redirectAttributes.addFlashAttribute("successMessage", "Xóa sản phẩm thành công!");
+        return "redirect:/management/products";
     }
 
     @PostMapping("/discontinue")
-    String discontinueProduct(@RequestParam Long productId, RedirectAttributes redirectAttributes){
+    public String discontinueProduct(@RequestParam Long productId, RedirectAttributes redirectAttributes){
         Product product = productService.getProductById(productId);
-        if(product != null){
-            productService.discontinueProduct(product);
-            redirectAttributes.addFlashAttribute("successMessage", "Chuyển trạng thái sản phẩm thành công!");
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy sản phẩm để xóa!");
-        }
-        return "redirect:/management/products"; // Chuyển hướng về trang danh sách nhân viên
 
+        if(product == null){
+            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy sản phẩm!");
+            return "redirect:/management/products";
+        }
+
+        boolean hasUnfinishedOrders = orderItemRepository.existsUnfinishedOrderWithProduct(productId);
+        if (hasUnfinishedOrders) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Không thể ngừng bán vì sản phẩm đang nằm trong đơn hàng chưa hoàn thành!");
+            return "redirect:/management/products";
+        }
+
+        // Nếu không nằm trong đơn hàng chưa hoàn thành, thực hiện chuyển trạng thái
+        productService.discontinueProduct(product);
+        redirectAttributes.addFlashAttribute("successMessage", "Chuyển trạng thái sản phẩm thành công!");
+        return "redirect:/management/products";
     }
+
 
     // Lấy thông tin sản phẩm để hiển thị vào modal xem thông số kỹ thuật
     @GetMapping("/get-detail-product/{productId}")
@@ -326,7 +344,7 @@ public class ProductController {
     // Kiểm tra sản phẩm có tồn tại trong db không (để fill vào ô input trong chức năng thêm sản phẩm)
     @GetMapping("/check-name")
     public ResponseEntity<?> checkProductName(@RequestParam("name") String name) {
-        Optional<Product> productOpt = productService.findByName(name);
+        Optional<Product> productOpt = productService.findLatestByName(name);
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             Specification spec = product.getSpecification();

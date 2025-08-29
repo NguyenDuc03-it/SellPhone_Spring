@@ -1,5 +1,6 @@
 package com.example.SellPhone.Service;
 
+import com.example.SellPhone.Config.CustomUserDetails;
 import com.example.SellPhone.DTO.Request.User.UserCreationRequest;
 import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
 import com.example.SellPhone.Entity.User;
@@ -7,6 +8,8 @@ import com.example.SellPhone.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,8 @@ public class StaffService {
         user.setPhone(request.getPhone());
         user.setCCCD(request.getCCCD());
         user.setAddress(request.getAddress());
+        user.setCreatedBy(getCurrentUserId());
+        user.setUpdatedBy(getCurrentUserId());
         user.setRole("Nhân viên");
 
         // Chuyển đổi ngày sinh từ yyyy-MM-dd thành dd/MM/yyyy
@@ -62,6 +67,7 @@ public class StaffService {
         user.setGender(request.getGender());
         user.setStatus(request.getStatus());
         user.setRole(request.getRole());
+        user.setUpdatedBy(getCurrentUserId());
 
         // Chuyển đổi ngày sinh từ yyyy-MM-dd thành dd/MM/yyyy
         String formattedDob = convertDateFormat(request.getDob());
@@ -151,4 +157,22 @@ public class StaffService {
         return date.format(outputFormatter);
     }
 
+    // Lấy id của người dùng đang đăng nhập
+    private Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof CustomUserDetails userDetails) {
+                return userDetails.getUserId();
+            }
+        }
+        throw new RuntimeException("Không thể xác định người dùng hiện tại");
+    }
+
+    // Lấy fullname của người dùng theo id
+    public String getFullnameById(Long userId) {
+        return userRepository.findById(userId)
+                .map(User::getFullname)
+                .orElse("Không xác định");
+    }
 }

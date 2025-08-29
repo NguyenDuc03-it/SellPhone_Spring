@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 // Trang quản lý nhân viên
 @Controller
@@ -95,10 +97,15 @@ public class StaffController {
             return "DashBoard/add-staff"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
         }
 
-        User user = staffService.createStaff(request);
-        // Thêm thông báo thành công vào FlashAttributes
-        redirectAttributes.addFlashAttribute("successMessage", "Thêm nhân viên thành công!");
-        return "redirect:/management/staff"; // Chuyển hướng về trang danh sách nhân viên
+        try {
+            staffService.createStaff(request);
+            // Thêm thông báo thành công vào FlashAttributes
+            redirectAttributes.addFlashAttribute("successMessage", "Thêm nhân viên thành công!");
+            return "redirect:/management/staff"; // Chuyển hướng về trang danh sách nhân viên
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Thêm nhân viên thành công!");
+            return "redirect:/management/staff"; // Chuyển hướng về trang danh sách nhân viên
+        }
     }
 
     // Chức năng sửa thông tin nhân viên
@@ -128,10 +135,15 @@ public class StaffController {
             return "DashBoard/edit-staff"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
         }
 
-        User user = staffService.updateStaff(request.getUserId(), request);
-        // Thêm thông báo thành công vào FlashAttributes
-        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin nhân viên thành công!");
-        return "redirect:/management/staff"; // Chuyển hướng về trang danh sách nhân viên
+        try {
+            staffService.updateStaff(request.getUserId(), request);
+            // Thêm thông báo thành công vào FlashAttributes
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin nhân viên thành công!");
+            return "redirect:/management/staff"; // Chuyển hướng về trang danh sách nhân viên
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/management/staff"; // Chuyển hướng về trang danh sách nhân viên
+        }
     }
 
     // Chức năng xóa nhân viên
@@ -177,6 +189,23 @@ public class StaffController {
             // Nếu không có tìm kiếm
             staff = staffService.getStaff(pageable);
         }
+
+        // Tạo một map để lưu trữ tên đầy đủ của người tạo và người cập nhật
+        Map<Long, String> userMap = new HashMap<>();
+        for (User st : staff) {
+            Long createdById = st.getCreatedBy();
+            Long updatedById = st.getUpdatedBy();
+
+            if (createdById != null && !userMap.containsKey(createdById)) {
+                userMap.put(createdById, staffService.getFullnameById(createdById));
+            }
+
+            if (updatedById != null && !userMap.containsKey(updatedById)) {
+                userMap.put(updatedById, staffService.getFullnameById(updatedById));
+            }
+        }
+
+        model.addAttribute("userMap", userMap);
         model.addAttribute("staff", staff);
         model.addAttribute("currentPage", "staff");
         return "DashBoard/staff-management";

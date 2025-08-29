@@ -1,8 +1,10 @@
 package com.example.SellPhone.Service;
 
 import com.example.SellPhone.DTO.Request.Order.OrderUpdateRequest;
-import com.example.SellPhone.Entity.Order;
+import com.example.SellPhone.Entity.*;
+import com.example.SellPhone.Repository.OrderItemRepository;
 import com.example.SellPhone.Repository.OrderRepository;
+import com.example.SellPhone.Repository.SpecificationVariantRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,12 @@ public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+
+    @Autowired
+    private SpecificationVariantRepository variantRepository;
 
     // Kiểm tra xem khách hàng có đơn hàng nào chưa 'Đã giao' hoặc 'Đã hủy'
     public boolean hasPendingOrders(Long userId) {
@@ -66,8 +74,27 @@ public class OrderService {
     // Hủy đơn hàng
     @Transactional
     public void cancelOrder(Order order) {
-        order.setOrderStatus("Đã hủy");
-        orderRepository.save(order);
+
+        List<OrderItem> items = orderItemRepository.findByOrder(order);
+
+        for (OrderItem item : items) {
+            Product product = item.getProduct();
+            Specification specification = product.getSpecification();
+
+            // Tìm đúng variant theo specId, rom, color
+            SpecificationVariant variant = variantRepository
+                    .findBySpecificationAndRom(specification, item.getRom())
+                    .filter(v -> product.getColor().equals(product.getColor()))
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy variant cho sản phẩm: " + product.getName()));
+
+            // Cộng lại số lượng
+            variant.setQuantity(variant.getQuantity() + item.getQuantity());
+            variantRepository.save(variant);
+
+            // Chuyển trạng thái đơn hàng
+            order.setOrderStatus("Đã hủy");
+            orderRepository.save(order);
+        }
     }
 
     // Đếm các đơn hàng có trạng thái khác 'Đã hoàn thành' và 'Đã hủy'

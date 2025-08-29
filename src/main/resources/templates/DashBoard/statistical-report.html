@@ -65,7 +65,7 @@
                     <div class="breadcrumbs-area clearfix">
                         <h4 class="page-title pull-left">Báo cáo thống kê</h4>
                         <ul class="breadcrumbs pull-left">
-                            <li><a href="index.html">Trang chủ</a></li>
+                            <li><a href="/management/dashboard">Trang chủ</a></li>
                             <li><span>Báo cáo thống kê</span></li>
                         </ul>
                     </div>
@@ -308,6 +308,8 @@
       document.querySelectorAll('.report-content').forEach(el => el.classList.remove('active'));
       document.getElementById(selectedReportType + '-report')?.classList.add('active');
 
+      switchReportView();
+
       // 1. Revenue Comparison Chart
       const ctxCompare = document.getElementById('monthlyTotalRevenueChart')?.getContext('2d');
       if (ctxCompare) {
@@ -490,137 +492,7 @@
       });
     }
 </script>
-<!--<script>-->
-<!--    let revenueChart, paymentMethodChart, categoryRevenueChart, bestSellersChart, customerSegmentsChart, monthlyTotalRevenueChart;-->
 
-<!--    // Function to switch between report views-->
-<!--    function switchReportView() {-->
-<!--        var reportType = document.getElementById('reportType').value;-->
-<!--        document.querySelectorAll('.report-content').forEach(function(el) {-->
-<!--            el.classList.remove('active');-->
-<!--        });-->
-<!--        document.getElementById(reportType + '-report').classList.add('active');-->
-<!--    }-->
-
-<!--    function formatCurrency(value) {-->
-<!--        return value.toLocaleString('vi-VN', {style : 'currency', currency : 'VND'});-->
-<!--    }-->
-
-<!--    // -&#45;&#45; Data generation and Chart drawing -&#45;&#45;-->
-<!--    function generateChartData() {-->
-<!--        // Simulate fetching data and redrawing charts-->
-<!--        // Destroy existing charts to prevent canvas reuse issues-->
-<!--        if (revenueChart) revenueChart.destroy();-->
-<!--        if (paymentMethodChart) paymentMethodChart.destroy();-->
-<!--        if (categoryRevenueChart) categoryRevenueChart.destroy();-->
-<!--        if (bestSellersChart) bestSellersChart.destroy();-->
-<!--        if (customerSegmentsChart) customerSegmentsChart.destroy();-->
-<!--        if (monthlyTotalRevenueChart) monthlyTotalRevenueChart.destroy();-->
-
-<!--        // -&#45;&#45; Generate Random Data for KPIs -&#45;&#45;-->
-<!--        const totalRevenue = Math.random() * 2000000000 + 1000000000;-->
-<!--        const totalOrders = Math.floor(Math.random() * 500) + 200;-->
-<!--        const avgOrderValue = totalRevenue / totalOrders;-->
-<!--        const todayRevenue = Math.random() * 100000000 + 20000000;-->
-
-<!--        document.getElementById('total-revenue').innerText = formatCurrency(totalRevenue);-->
-<!--        document.getElementById('total-orders').innerText = totalOrders;-->
-<!--        document.getElementById('avg-order-value').innerText = formatCurrency(avgOrderValue);-->
-<!--        document.getElementById('today-revenue').innerText = formatCurrency(todayRevenue);-->
-
-<!--        const chartTooltip = {-->
-<!--            callbacks: {-->
-<!--                label: function(context) {-->
-<!--                    let label = context.dataset.label || '';-->
-<!--                    if (label) { label += ': '; }-->
-<!--                    if (context.parsed.y !== null) {-->
-<!--                        label += formatCurrency(context.parsed.y);-->
-<!--                    }-->
-<!--                    return label;-->
-<!--                }-->
-<!--            }-->
-<!--        };-->
-
-<!--        const chartOptions = {-->
-<!--            scales: { y: { beginAtZero: true, ticks: { callback: (value) => formatCurrency(value) } } },-->
-<!--            plugins: { tooltip: chartTooltip }-->
-<!--        };-->
-
-<!--        // -&#45;&#45; Redraw Charts with new data -&#45;&#45;-->
-<!--        revenueChart = new Chart(document.getElementById('revenueChart'), {-->
-<!--            type: 'line',-->
-<!--            data: {-->
-<!--                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'],-->
-<!--                datasets: [{ label: 'Doanh thu', data: Array.from({length: 6}, () => Math.random() * 1500000000), backgroundColor: 'rgba(54, 162, 235, 0.2)', borderColor: 'rgba(54, 162, 235, 1)', tension: 0.4 }]-->
-<!--            },-->
-<!--            options: chartOptions-->
-<!--        });-->
-
-<!--        paymentMethodChart = new Chart(document.getElementById('paymentMethodChart'), {-->
-<!--            type: 'doughnut',-->
-<!--            data: {-->
-<!--                labels: ['Tiền mặt', 'Chuyển khoản', 'Ví điện tử'],-->
-<!--                datasets: [{ data: [Math.random() * 100, Math.random() * 50, Math.random() * 30], backgroundColor: ['#36a2eb', '#ff6384', '#ffcd56'] }]-->
-<!--            }-->
-<!--        });-->
-
-<!--        categoryRevenueChart = new Chart(document.getElementById('categoryRevenueChart'), {-->
-<!--            type: 'bar',-->
-<!--            data: {-->
-<!--                labels: ['Điện thoại', 'Phụ kiện', 'Laptop', 'Tablet'],-->
-<!--                datasets: [{ label: 'Doanh thu', data: Array.from({length: 4}, () => Math.random() * 1000000000), backgroundColor: '#4bc0c0', barPercentage: 0.5 }]-->
-<!--            },-->
-<!--            options: { ...chartOptions, scales: { ...chartOptions.scales, x: { grid: { display: false }, offset: true } } }-->
-<!--        });-->
-
-<!--        monthlyTotalRevenueChart = new Chart(document.getElementById('monthlyTotalRevenueChart'), {-->
-<!--            type: 'bar', // Changed from line to bar-->
-<!--            data: {-->
-<!--                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],-->
-<!--                datasets: [{-->
-<!--                    label: 'Tổng doanh thu',-->
-<!--                    data: Array.from({length: 12}, () => Math.random() * 3000000000 + 500000000),-->
-<!--                    borderColor: '#28a745',-->
-<!--                    backgroundColor: 'rgba(40, 167, 69, 0.5)',-->
-<!--                    fill: true-->
-<!--                }]-->
-<!--            },-->
-<!--            options: chartOptions-->
-<!--        });-->
-
-<!--        bestSellersChart = new Chart(document.getElementById('bestSellersChart'), {-->
-<!--            type: 'bar',-->
-<!--            data: {-->
-<!--                labels: ['iPhone 15', 'Galaxy S24', 'Xiaomi 14', 'Oppo Find X7', 'Realme GT 5'],-->
-<!--                datasets: [{ label: 'Số lượng đã bán', data: Array.from({length: 5}, () => Math.random() * 150), backgroundColor: '#ff9f40' }]-->
-<!--            },-->
-<!--            options: { scales: { y: { beginAtZero: true } }, plugins: { tooltip: { callbacks: { label: context => context.parsed.y.toFixed(0) + ' sản phẩm' } } } }-->
-<!--        });-->
-
-<!--        customerSegmentsChart = new Chart(document.getElementById('customerSegmentsChart'), {-->
-<!--            type: 'pie',-->
-<!--            data: {-->
-<!--                labels: ['Khách mới', 'Khách quay lại', 'Khách VIP'],-->
-<!--                datasets: [{ data: [Math.random() * 100, Math.random() * 70, Math.random() * 20], backgroundColor: ['#36a2eb', '#4bc0c0', '#ffc107'] }]-->
-<!--            }-->
-<!--        });-->
-<!--    }-->
-
-<!--    // Initial data load when the page is ready-->
-<!--    document.addEventListener('DOMContentLoaded', (event) => {-->
-<!--        generateChartData();-->
-<!--    });-->
-
-<!--    // Main filter function-->
-<!--    function filterData() {-->
-<!--        // Here you would typically make an AJAX call to your backend-->
-<!--        // with the selected date range.-->
-<!--        // For this example, we'll just regenerate the charts with random data.-->
-<!--        console.log("Filtering data from:", document.getElementById('startDate').value, "to", document.getElementById('endDate').value);-->
-<!--        generateChartData();-->
-<!--    }-->
-
-<!--</script>-->
 </body>
 </html>
 

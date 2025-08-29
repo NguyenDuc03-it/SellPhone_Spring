@@ -21,6 +21,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 // Trang quản lý khách hàng
@@ -98,10 +100,15 @@ public class CustomerController {
             return "DashBoard/add-customer"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
         }
 
-        User user = customerService.createCustomer(request);
-        // Thêm thông báo thành công vào FlashAttributes
-        redirectAttributes.addFlashAttribute("successMessage", "Thêm khách hàng thành công!");
-        return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
+        try {
+            customerService.createCustomer(request);
+            // Thêm thông báo thành công vào FlashAttributes
+            redirectAttributes.addFlashAttribute("successMessage", "Thêm khách hàng thành công!");
+            return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
+        }
     }
 
     // Chức năng sửa thông tin khách hàng
@@ -131,10 +138,15 @@ public class CustomerController {
             return "DashBoard/edit-customer"; // Trả về thông báo lỗi nếu CCCD đã tồn tại
         }
 
-        User user = customerService.updateCustomer(request.getUserId(), request);
-        // Thêm thông báo thành công vào FlashAttributes
-        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin khách hàng thành công!");
-        return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
+        try {
+            customerService.updateCustomer(request.getUserId(), request);
+            // Thêm thông báo thành công vào FlashAttributes
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin khách hàng thành công!");
+            return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/management/customers"; // Chuyển hướng về trang danh sách khách hàng
+        }
     }
 
     // Chức năng xóa khách hàng
@@ -171,7 +183,23 @@ public class CustomerController {
             customers = customerService.getCustomer(pageable);
         }
 
+        // Tạo một map để lưu trữ tên đầy đủ của người tạo và người cập nhật
+        Map<Long, String> userMap = new HashMap<>();
+        for (User cs : customers) {
+            Long createdById = cs.getCreatedBy();
+            Long updatedById = cs.getUpdatedBy();
+
+            if (createdById != null && !userMap.containsKey(createdById)) {
+                userMap.put(createdById, customerService.getFullnameById(createdById));
+            }
+
+            if (updatedById != null && !userMap.containsKey(updatedById)) {
+                userMap.put(updatedById, customerService.getFullnameById(updatedById));
+            }
+        }
+
         // Truyền các URL vào model
+        model.addAttribute("userMap", userMap);
         model.addAttribute("customers", customers);
         model.addAttribute("currentPage", "customers");
         return "DashBoard/customer-management";

@@ -59,6 +59,12 @@ public class User {
     @Column(name = "updated_at")
     private String updatedAt;
 
+    @Column(name = "created_by")
+    private Long createdBy;
+
+    @Column(name = "updated_by")
+    private Long updatedBy;
+
     public String getRoleWithPrefix(){
         String position = "";
         if(role.equals("Admin")){
@@ -75,6 +81,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private ShoppingCart shoppingCart;
 
     @PrePersist
     protected void onCreate() {

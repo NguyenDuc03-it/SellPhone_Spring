@@ -64,6 +64,7 @@ public class CategoryController {
             model.addAttribute("categories", categories);
             model.addAttribute("errorMessage", "Thêm danh mục thất bại!");
             model.addAttribute("currentPage", "categories");
+            model.addAttribute("updateCategory", new CategoryUpdateRequest());
             return "DashBoard/category-management"; // Trả về một thông báo lỗi
         }
 
@@ -83,6 +84,7 @@ public class CategoryController {
             model.addAttribute("categories", categories);
             model.addAttribute("errorMessage", "Danh mục đã tồn tại!");
             model.addAttribute("currentPage", "categories");
+            model.addAttribute("updateCategory", new CategoryUpdateRequest());
             return "DashBoard/category-management"; // Trả về thông báo lỗi nếu email đã tồn tại
         }
 
@@ -119,15 +121,24 @@ public class CategoryController {
             return "DashBoard/category-management"; // Trả về một thông báo lỗi
         }
 
-        Category category = categoryService.updateCategory(request.getCategoryId(), request);
-        // Thêm thông báo thành công vào FlashAttributes
-        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin danh mục thành công!");
-        return "redirect:/management/categories"; // Chuyển hướng về trang danh sách danh mục
+        try {
+            categoryService.updateCategory(request.getCategoryId(), request);
+            // Thêm thông báo thành công vào FlashAttributes
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật thông tin danh mục thành công!");
+            return "redirect:/management/categories"; // Chuyển hướng về trang danh sách danh mục
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/management/categories"; // Chuyển hướng về trang danh sách danh mục
+        }
     }
 
     // Chức năng xóa danh mục
     @PostMapping("/delete")
     public String deleteCategory(@RequestParam Long categoryId, RedirectAttributes redirectAttributes) {
+        if(!categoryService.existsById(categoryId)){
+            redirectAttributes.addFlashAttribute("errorMessage", "Danh mục không tồn tại!");
+            return "redirect:/management/categories";
+        }
         try {
             categoryService.deleteCategory(categoryId);
             redirectAttributes.addFlashAttribute("successMessage", "Xóa danh mục thành công!");

@@ -1,0 +1,122 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Đăng nhập -  TĐ Mobile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png" href="../../static/assets/images/icon/favicon.ico" th:href="@{assets/images/icon/favicon.ico}">
+    <link rel="stylesheet" href="../../static/assets/css/bootstrap.min.css" th:href="@{assets/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/font-awesome.min.css" th:href="@{assets/css/font-awesome.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/themify-icons.css" th:href="@{assets/css/themify-icons.css}">
+    <link rel="stylesheet" href="../../static/assets/css/metisMenu.css" th:href="@{assets/css/metisMenu.css}">
+    <link rel="stylesheet" href="../../static/assets/css/owl.carousel.min.css" th:href="@{assets/css/owl.carousel.min.css}">
+    <link rel="stylesheet" href="../../static/assets/css/slicknav.min.css" th:href="@{assets/css/slicknav.min.css}">
+    <!-- amchart css -->
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+    <!-- others css -->
+    <link rel="stylesheet" href="../../static/assets/css/typography.css" th:href="@{assets/css/typography.css}">
+    <link rel="stylesheet" href="../../static/assets/css/default-css.css" th:href="@{assets/css/default-css.css}">
+    <link rel="stylesheet" href="../../static/assets/css/styles.css" th:href="@{assets/css/styles.css}">
+    <link rel="stylesheet" href="../../static/assets/css/responsive.css" th:href="@{assets/css/responsive.css}">
+    <!-- modernizr css -->
+    <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+</head>
+
+<body>
+<!--    [if lt IE 8]>-->
+<!--            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>-->
+<!--        <![endif]&ndash;&gt;-->
+<!--     preloader area start -->
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+    <!-- preloader area end -->
+    <!-- login area start -->
+    <div class="login-area">
+        <div class="container">
+            <div class="login-box ptb--100">
+                <form method="post" th:action="@{/login}" th:object="${authentication}">
+                    <div class="login-form-head">
+                        <h4>Đăng nhập</h4>
+                        <p>Chào mừng đến với hệ thống bán điện thoại của cửa hàng TĐ Mobile</p>
+                    </div>
+                    <div class="login-form-body">
+                        <div class="form-gp">
+                            <label for="exampleInputEmail1">Email</label>
+                            <input type="email" id="exampleInputEmail1" name="email" required>
+                            <i class="ti-email"></i>
+                        </div>
+                        <div class="form-gp">
+                            <label for="exampleInputPassword1">Mật khẩu</label>
+                            <input type="password" id="exampleInputPassword1" name="password" required>
+                            <i class="ti-lock"></i>
+                        </div>
+                        <div class="row mb-4 rmber-area">
+                            <div class="col-6">
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input type="checkbox" class="custom-control-input" id="showPasswordCheckbox">
+                                    <label class="custom-control-label" for="showPasswordCheckbox">Hiện mật khẩu</label>
+                                </div>
+                            </div>
+                            <div class="col-6 text-right">
+                                <a href="#">Quên mật khẩu?</a>
+                            </div>
+                        </div>
+
+                        <!-- Hiển thị thông báo lỗi nếu có -->
+                        <div th:if="${param.error}" class="error-message">
+                            <p style="color: red;">Tài khoản hoặc mật khẩu không đúng. Hoặc đã bị khóa.</p>
+                        </div>
+
+
+                        <div class="submit-btn-area">
+                            <button id="form_submit" type="submit">Đăng nhập <i class="ti-arrow-right"></i></button>
+                            <div class="login-other row mt-4 d-none">
+                                <div class="col-6">
+                                    <a class="fb-login" href="#">Đăng nhập với <i class="fa fa-facebook"></i></a>
+                                </div>
+                                <div class="col-6">
+                                    <a class="google-login" href="#">Đăng nhập với <i class="fa fa-google"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-footer text-center mt-5">
+                            <p class="text-muted">Chưa có tài khoản? <a href="/register">Đăng ký ngay</a></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- login area end -->
+
+    <!-- jquery latest version -->
+    <script src="../../static/assets/js/vendor/jquery-2.2.4.min.js" th:src="@{assets/js/vendor/jquery-2.2.4.min.js}"></script>
+    <!-- bootstrap 4 js -->
+    <script src="../../static/assets/js/popper.min.js" th:src="@{assets/js/popper.min.js}"></script>
+    <script src="../../static/assets/js/bootstrap.min.js" th:src="@{assets/js/bootstrap.min.js}"></script>
+    <script src="../../static/assets/js/owl.carousel.min.js" th:src="@{assets/js/owl.carousel.min.js}"></script>
+    <script src="../../static/assets/js/metisMenu.min.js" th:src="@{assets/js/metisMenu.min.js}"></script>
+    <script src="../../static/assets/js/jquery.slimscroll.min.js" th:src="@{assets/js/jquery.slimscroll.min.js}"></script>
+    <script src="../../static/assets/js/jquery.slicknav.min.js" th:src="@{assets/js/jquery.slicknav.min.js}"></script>
+    
+    <!-- others plugins -->
+    <script src="../../static/assets/js/plugins.js" th:src="@{assets/js/plugins.js}"></script>
+    <script src="../../static/assets/js/scripts.js" th:src="@{assets/js/scripts.js}"></script>
+
+    <script>
+        // Hiển thị mật khẩu khi checkbox được chọn
+        document.getElementById('showPasswordCheckbox').addEventListener('change', function () {
+            var passwordInput = document.getElementById('exampleInputPassword1');
+            if (this.checked) {
+                passwordInput.setAttribute('type', 'text');
+            } else {
+                passwordInput.setAttribute('type', 'password');
+            }
+        });
+    </script>
+</body>
+
+</html>

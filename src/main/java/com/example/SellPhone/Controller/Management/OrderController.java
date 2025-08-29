@@ -150,14 +150,18 @@ public class OrderController {
                 return "redirect:/management/orders";
             }
 
-            orderService.cancelOrder(order);
-            redirectAttributes.addFlashAttribute("successMessage", "Hủy đơn hàng thành công!");
+            try {
+                orderService.cancelOrder(order);
+                redirectAttributes.addFlashAttribute("successMessage", "Hủy đơn hàng thành công!");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            }
 
         }
         else{
-            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy sản phẩm");
+            redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy đơn hàng");
         }
-        return "redirect:/management/orders"; // Chuyển hướng về trang danh sách sản phẩm
+        return "redirect:/management/orders"; // Chuyển hướng về trang danh sách đơn hàng
     }
 
     // Xuất PDF

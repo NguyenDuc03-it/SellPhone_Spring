@@ -7,14 +7,16 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
-
+    @Getter
+    private Long userId;
     private String username;
     private String password;
     @Getter
     private String fullname;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(String username, String password, String fullname, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(Long userId, String username, String password, String fullname, Collection<? extends GrantedAuthority> authorities) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
         this.fullname = fullname;

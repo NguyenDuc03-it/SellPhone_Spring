@@ -22,6 +22,71 @@
     <!-- modernizr css -->
     <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
     <script src="/assets/js/pending-orders-badge.js"></script>
+    <style>
+        /* Đảm bảo bảng có thể cuộn ngang */
+        .table-responsive {
+            overflow-x: auto;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Sticky cột cuối "Thao Tác" */
+        .sticky-column {
+            position: sticky;
+            right: 0;
+            background: #F3F8FB;
+            z-index: 2;
+        }
+
+        /* Chỉ áp dụng box-shadow cho tbody */
+        tbody .sticky-column {
+            box-shadow: -3px 0 0 #dee2e6;
+        }
+
+        /* Nếu box-shadow chưa đủ rõ, thêm ::before để tạo đường kẻ */
+        tbody .sticky-column::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -1px;
+            width: 1px;
+            height: 100%;
+            background-color: #dee2e6;
+        }
+
+        /* Header cột thao tác */
+        thead .sticky-column {
+            z-index: 3; /* cao hơn phần thân bảng */
+            background: #007bff !important;
+            color: white;
+        }
+
+        /* Tùy chọn thêm: cải thiện hiển thị border bảng */
+        .table-bordered {
+            border-collapse: collapse;
+            border: 1px solid #dee2e6;
+        }
+
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid #dee2e6;
+        }
+
+        /* Đảm bảo các nút không dính sát */
+        .sticky-column .btn {
+            margin: 0 2px;
+        }
+
+        /* Khi cuộn xuống cuối bảng, bỏ sticky bằng cách override */
+        .sticky-column.unstick {
+            position: static !important;
+            box-shadow: none !important;
+        }
+
+        .sticky-column.unstick::before {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -124,8 +189,12 @@
                             <th>Địa chỉ</th>
                             <th>Ngày sinh</th>
                             <th>Giới tính</th>
+                            <th>Ngày tạo</th>
+                            <th>Ngày cập nhật</th>
+                            <th>Người tạo</th>
+                            <th>Người cập nhật</th>
                             <th>Trạng thái</th>
-                            <th>Thao tác</th>
+                            <th class="sticky-column">Thao tác</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -138,10 +207,15 @@
                             <td th:text="${cs.address}"></td>
                             <td th:text="${cs.dob}"></td>
                             <td th:text="${cs.gender}"></td>
+                            <td th:text="${cs.createdAt}"></td>
+                            <td th:text="${cs.updatedAt}"></td>
+                            <td th:text="${cs.createdBy != null} ? ${userMap[cs.createdBy]} : 'Không xác định'"></td>
+                            <td th:text="${cs.updatedBy != null} ? ${userMap[cs.updatedBy]} : 'Không xác định'"></td>
+
                             <td>
                                 <span class="badge" th:classappend="${cs.status == 'Hoạt động' ? 'badge-success' : 'badge-danger'}" th:text="${cs.status}"></span>
                             </td>
-                            <td>
+                            <td class="sticky-column">
                                 <div class="d-flex justify-content-center gap-2">
                                     <form action="#" th:action="@{/management/customers/op_update}" method="POST">
                                         <input type="hidden" name="userId" th:value="${cs.userId}" />
@@ -486,6 +560,28 @@
 
         // Cập nhật giá trị của input hidden trong form modal
         modal.find('#userIdToDelete').val(userId);
+    });
+</script>
+
+<!-- Script để xử lý sticky column -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tableWrapper = document.querySelector('.table-responsive');
+        const stickyColumns = document.querySelectorAll('.sticky-column');
+
+        tableWrapper.addEventListener('scroll', function () {
+            const scrollLeft = tableWrapper.scrollLeft;
+            const maxScrollLeft = tableWrapper.scrollWidth - tableWrapper.clientWidth;
+
+            // Nếu còn cuộn được sang phải, giữ sticky
+            if (scrollLeft < maxScrollLeft - 1) {
+                stickyColumns.forEach(col => col.classList.remove('unstick'));
+            } else {
+                // Đã cuộn tới cuối bảng ngang
+                stickyColumns.forEach(col => col.classList.add('unstick'));
+            }
+        });
+        tableWrapper.dispatchEvent(new Event('scroll'));
     });
 </script>
 

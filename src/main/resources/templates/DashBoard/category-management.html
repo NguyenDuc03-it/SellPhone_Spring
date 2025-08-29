@@ -19,6 +19,71 @@
     <link rel="stylesheet" href="../../static/assets/css/responsive.css" th:href="@{/assets/css/responsive.css}">
     <script src="../../static/assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
     <script src="/assets/js/pending-orders-badge.js"></script>
+    <style>
+        /* Đảm bảo bảng có thể cuộn ngang */
+        .table-responsive {
+            overflow-x: auto;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Sticky cột cuối "Thao Tác" */
+        .sticky-column {
+            position: sticky;
+            right: 0;
+            background: white;
+            z-index: 2;
+        }
+
+        /* Chỉ áp dụng box-shadow cho tbody */
+        tbody .sticky-column {
+            box-shadow: -3px 0 0 #dee2e6;
+        }
+
+        /* Nếu box-shadow chưa đủ rõ, thêm ::before để tạo đường kẻ */
+        tbody .sticky-column::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -1px;
+            width: 1px;
+            height: 100%;
+            background-color: #dee2e6;
+        }
+
+        /* Header cột thao tác */
+        thead .sticky-column {
+            z-index: 3; /* cao hơn phần thân bảng */
+            background: #007bff !important;
+            color: white;
+        }
+
+        /* Tùy chọn thêm: cải thiện hiển thị border bảng */
+        .table-bordered {
+            border-collapse: collapse;
+            border: 1px solid #dee2e6;
+        }
+
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid #dee2e6;
+        }
+
+        /* Đảm bảo các nút không dính sát */
+        .sticky-column .btn {
+            margin: 0 2px;
+        }
+
+        /* Khi cuộn xuống cuối bảng, bỏ sticky bằng cách override */
+        .sticky-column.unstick {
+            position: static !important;
+            box-shadow: none !important;
+        }
+
+        .sticky-column.unstick::before {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -111,7 +176,7 @@
                                             <th>Tên danh mục</th>
                                             <th>Mô tả</th>
                                             <th>Trạng thái</th>
-                                            <th>Thao tác</th>
+                                            <th class="sticky-column">Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -120,7 +185,7 @@
                                             <td th:text="${ct.name}"></td>
                                             <td th:text="${ct.notes}"></td>
                                             <td><span class="badge" th:classappend="${ct.status == 'Hoạt động' ? 'badge-success' : 'badge-danger'}" th:text="${ct.status}"></span></td>
-                                            <td>
+                                            <td class="sticky-column">
                                                 <div class="d-flex justify-content-center gap-2">
                                                     <button class="btn btn-primary btn-sm mr-2" title="Sửa" data-toggle="modal" data-target="#updateCategoryModal"
                                                             th:data-id="${ct.categoryId}"
@@ -217,7 +282,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Sửa danh mục mới</h5>
+                    <h5 class="modal-title">Sửa danh mục</h5>
                     <button type="button" class="close" data-dismiss="modal">
                         <span>&times;</span>
                     </button>
@@ -588,6 +653,28 @@
         modal.find('#updateCategoryName').val(categoryName);
         modal.find('#updateCategoryDescription').val(categoryNotes);
         modal.find('#updateCategoryStatus').val(categoryStatus);
+        });
+    </script>
+
+    <!-- Script để xử lý sticky column -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tableWrapper = document.querySelector('.table-responsive');
+            const stickyColumns = document.querySelectorAll('.sticky-column');
+
+            tableWrapper.addEventListener('scroll', function () {
+                const scrollLeft = tableWrapper.scrollLeft;
+                const maxScrollLeft = tableWrapper.scrollWidth - tableWrapper.clientWidth;
+
+                // Nếu còn cuộn được sang phải, giữ sticky
+                if (scrollLeft < maxScrollLeft - 1) {
+                    stickyColumns.forEach(col => col.classList.remove('unstick'));
+                } else {
+                    // Đã cuộn tới cuối bảng ngang
+                    stickyColumns.forEach(col => col.classList.add('unstick'));
+                }
+            });
+            tableWrapper.dispatchEvent(new Event('scroll'));
         });
     </script>
 </body>

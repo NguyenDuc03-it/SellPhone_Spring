@@ -40,6 +40,70 @@
             color: #6c757d; /* Màu chữ xám */
             opacity: 0.6; /* Làm mờ */
         }
+
+        /* Đảm bảo bảng có thể cuộn ngang */
+        .table-responsive {
+            overflow-x: auto;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Sticky cột cuối "Thao Tác" */
+        .sticky-column {
+            position: sticky;
+            right: 0;
+            background: #F3F8FB;
+            z-index: 2;
+        }
+
+        /* Chỉ áp dụng box-shadow cho tbody */
+        tbody .sticky-column {
+            box-shadow: -3px 0 0 #dee2e6;
+        }
+
+        /* Nếu box-shadow chưa đủ rõ, thêm ::before để tạo đường kẻ */
+        tbody .sticky-column::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -1px;
+            width: 1px;
+            height: 100%;
+            background-color: #dee2e6;
+        }
+
+        /* Header cột thao tác */
+        thead .sticky-column {
+            z-index: 3; /* cao hơn phần thân bảng */
+            background: #007bff !important;
+            color: white;
+        }
+
+        /* Tùy chọn thêm: cải thiện hiển thị border bảng */
+        .table-bordered {
+            border-collapse: collapse;
+            border: 1px solid #dee2e6;
+        }
+
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid #dee2e6;
+        }
+
+        /* Đảm bảo các nút không dính sát */
+        .sticky-column .btn {
+            margin: 0 2px;
+        }
+
+        /* Khi cuộn xuống cuối bảng, bỏ sticky bằng cách override */
+        .sticky-column.unstick {
+            position: static !important;
+            box-shadow: none !important;
+        }
+
+        .sticky-column.unstick::before {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -147,7 +211,7 @@
                                     <th style="min-width: 150px;">Tổng tiền</th>
                                     <th style="min-width: 150px;">Phương thức TT</th>
                                     <th style="min-width: 150px;">Trạng thái</th>
-                                    <th style="min-width: 200px;">Thao tác</th>
+                                    <th style="min-width: 200px;" class="sticky-column">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -170,7 +234,7 @@
                                               th:text="${order.orderStatus}">
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="sticky-column">
                                         <div class="d-flex justify-content-center gap-2">
                                             <button class="btn btn-info btn-sm mr-2" title="Chi tiết" th:onclick="'viewOrderDetails(' + ${order.orderId} + ')'">
                                                 <i class="fa fa-eye"></i>
@@ -264,7 +328,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" onclick="exportOrderToPDF()">Xuất PDF</button>
+                    <button type="button" class="btn btn-success" onclick="exportOrderToPDF()">In hóa đơn</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                 </div>
             </div>
@@ -680,6 +744,28 @@
                     console.error("Lỗi khi tải PDF:", error);
                 });
         }
+    </script>
+
+    <!-- Script để xử lý sticky column -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tableWrapper = document.querySelector('.table-responsive');
+            const stickyColumns = document.querySelectorAll('.sticky-column');
+
+            tableWrapper.addEventListener('scroll', function () {
+                const scrollLeft = tableWrapper.scrollLeft;
+                const maxScrollLeft = tableWrapper.scrollWidth - tableWrapper.clientWidth;
+
+                // Nếu còn cuộn được sang phải, giữ sticky
+                if (scrollLeft < maxScrollLeft - 1) {
+                    stickyColumns.forEach(col => col.classList.remove('unstick'));
+                } else {
+                    // Đã cuộn tới cuối bảng ngang
+                    stickyColumns.forEach(col => col.classList.add('unstick'));
+                }
+            });
+            tableWrapper.dispatchEvent(new Event('scroll'));
+        });
     </script>
 </body>
 </html>

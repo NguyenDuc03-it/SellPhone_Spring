@@ -2,15 +2,19 @@ package com.example.SellPhone.Repository;
 
 import com.example.SellPhone.DTO.Respone.Product.BestSellingProductResponse;
 import com.example.SellPhone.DTO.Respone.Product.RecentlySoldProductsResponse;
+import com.example.SellPhone.Entity.Order;
 import com.example.SellPhone.Entity.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
+
+    List<OrderItem> findByOrder(Order order);
 
     @Query(value = """
         SELECT
@@ -90,6 +94,13 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
                   LIMIT 10;
     """, nativeQuery = true)
     List<BestSellingProductResponse> getBestSellingProductsInPeriod(String startDate, String endDate);
+
+    // Kiểm tra xem có đơn hàng chưa hoàn thành nào chứa sản phẩm với productId không
+    @Query("SELECT COUNT(oi) > 0 FROM OrderItem oi " +
+            "JOIN oi.order o " +
+            "WHERE oi.product.productId = :productId " +
+            "AND o.orderStatus NOT IN ('Đã hoàn thành')")
+    boolean existsUnfinishedOrderWithProduct(@Param("productId") Long productId);
 
 
 }

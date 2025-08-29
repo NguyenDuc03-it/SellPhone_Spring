@@ -295,6 +295,11 @@ public class ProductService {
         return productRepository.findByName(name);
     }
 
+    // Lấy product mới nhất theo id (id trong db tăng dần)
+    public Optional<Product> findLatestByName(String name) {
+        return productRepository.findTopByNameOrderByProductIdDesc(name);
+    }
+
     // Sửa trạng thái sản phẩm thành ngừng bán
     @Transactional
     public void discontinueProduct(Product product) {
