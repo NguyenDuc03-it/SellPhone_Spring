@@ -24,7 +24,9 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             pd.color AS color,
             CAST(oi.rom AS UNSIGNED) AS rom,
             CAST(spv.selling_price AS UNSIGNED) AS sellingPrice,
-            CAST(SUM(oi.quantity) AS UNSIGNED) AS totalQuantity
+            CAST(SUM(oi.quantity) AS UNSIGNED) AS totalQuantity,
+            spe.chipset AS chipset,
+            spe.operating_system AS operatingSystem
         FROM order_items oi
         JOIN orders o ON oi.order_id = o.order_id
         JOIN products pd ON oi.product_id = pd.product_id

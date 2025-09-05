@@ -18,6 +18,8 @@ public class BestSellingProductResponse {
     Long rom;
     Long sellingPrice;
     Long totalQuantity;
+    String chipset;
+    String operatingSystem;
 
     public BestSellingProductResponse(long productId, String name, String color, Long rom, Long sellingPrice, Long totalQuantity) {
         this.productId = productId;

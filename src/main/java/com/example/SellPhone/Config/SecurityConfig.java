@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/register", "/").permitAll()
                         .requestMatchers("/assets/**").permitAll() // Cho phép truy cập tài nguyên tĩnh (css, js, img)
                         .requestMatchers("/static/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/management/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasRole("CUSTOMER")
                         .anyRequest().authenticated()

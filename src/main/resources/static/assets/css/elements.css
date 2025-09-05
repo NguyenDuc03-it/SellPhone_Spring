@@ -1,0 +1,98 @@
+.brands {
+    padding: 40px 0;
+    background-color: white;
+}
+
+.brand img{
+    width: 120px;
+    height: 60px;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+
+/* Container của các logo */
+.brands-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    /* Ẩn các logo vượt quá chiều rộng */
+}
+.brand-logos-wrapper {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    /* Cho phép cuộn ngang khi cần */
+    scroll-behavior: smooth;
+    /* Cho phép cuộn mượt mà */
+    scrollbar-width: none;
+    /* Ẩn thanh scrollbar */
+}
+/* Flexbox cho các logo */
+
+.brand-logos {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 100px;
+}
+
+/* Mỗi logo */
+.brand {
+    padding: 15px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.brand {
+    width: 120px;
+    height: auto;
+}
+
+.brand {
+    flex: 1 1 150px;
+    /* Mỗi logo chiếm ít nhất 150px, có thể co giãn */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 200px;
+    /* Đảm bảo mỗi logo không quá lớn */
+}
+
+.brand img {
+    max-width: 100%;
+    height: auto;
+    /* Giữ tỷ lệ ảnh */
+    transition: transform 0.3s ease-in-out;
+    /* Hiệu ứng khi hover */
+}
+
+/* Hiệu ứng hover cho logo */
+.brand:hover {
+    opacity: 1;
+}
+
+.brand:hover img {
+    transform: scale(1.1);
+    /* Phóng to ảnh khi hover */
+    opacity: 1;
+}
+
+
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 767px) {
+    .brand-logos {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+@media (max-width: 992px) {
+    .brand-logos {
+        width: auto;
+    }
+}

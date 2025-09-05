@@ -1,6 +1,7 @@
 package com.example.SellPhone.Repository;
 
 import com.example.SellPhone.DTO.Respone.Product.BestSellingProductResponse;
+import com.example.SellPhone.DTO.Respone.Product.ProductSummaryRespone;
 import com.example.SellPhone.Entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,4 +55,29 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         LIMIT 10
     """, nativeQuery = true)
     List<BestSellingProductResponse> getLowSellingProductsInPeriod(@Param("startDate") String startDate, @Param("endDate") String endDate);
+
+    @Query(
+            value = """
+            WITH ranked_products AS (
+                SELECT
+                    pd.product_id,
+                    pd.name,
+                    pd.image_url,
+                    pd.color,
+                    spe.chipset,
+                    spe.operating_system,
+                    spv.selling_price,
+                    ROW_NUMBER() OVER (PARTITION BY pd.name ORDER BY spv.selling_price ASC) AS rn
+                FROM products pd
+                JOIN specifications spe ON spe.specification_id = pd.specification_id
+                JOIN specification_variants spv ON spv.specification_id = spe.specification_id
+            )
+            SELECT
+                product_id as productId, name, image_url as imageUrl, color, chipset, operating_system as operatingSystem, selling_price as sellingPrice
+            FROM ranked_products
+            WHERE rn = 1
+        """,
+            nativeQuery = true
+    )
+    List<ProductSummaryRespone> getProductSummary();
 }

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/user")
 public class UserController {
 
-    @GetMapping("/home")
-    public String userHome() {
-        return "Sell/index";  // Trả về trang home của user
-    }
+//    @GetMapping("/home")
+//    public String userHome() {
+//        return "Sell/index";  // Trả về trang home của user
+//    }
 }

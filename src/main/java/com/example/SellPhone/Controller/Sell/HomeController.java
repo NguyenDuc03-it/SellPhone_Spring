@@ -1,7 +1,8 @@
-package com.example.SellPhone.Controller.Account;
+package com.example.SellPhone.Controller.Sell;
 
-
+import com.example.SellPhone.DTO.Respone.Product.BestSellingProductResponse;
 import com.example.SellPhone.DTO.Respone.Product.ProductSummaryRespone;
+import com.example.SellPhone.Service.DashboardService;
 import com.example.SellPhone.Service.ProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,30 +15,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/")
 @RequiredArgsConstructor
+@RequestMapping("/user")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AccountController {
+public class HomeController {
 
     ProductService productService;
+    DashboardService service;
 
-    // Trang chủ
-    @GetMapping("/")
-    public String index(Model model){
+    @GetMapping("/home")
+    public String userHome(Model model) {
+        List<BestSellingProductResponse> bestSellingProducts = service.getBestSellingProductsCurrentMonth();
         List<ProductSummaryRespone> products = productService.getProductSummary();
+        model.addAttribute("bestSellingProducts", bestSellingProducts);
         model.addAttribute("productSummary", products);
-        return "Sell/index";
+        return "Sell/index";  // Trang chủ
     }
-
-    // Mở trang đăng nhập
-    @GetMapping("/login")
-    public String login_(Model model){ return "AboutAccount/login";}
-
-    // Mở trang đăng ký
-    @GetMapping("/register")
-    public String register_(Model model){ return "AboutAccount/register";}
-
-    // Mở trang quên mật khẩu
-    @GetMapping("/forgot-password")
-    public String forgotPassword_(Model model){ return "AboutAccount/forgot-password";}
 }

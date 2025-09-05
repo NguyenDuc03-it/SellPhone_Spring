@@ -3,6 +3,7 @@ package com.example.SellPhone.Service;
 import com.example.SellPhone.DTO.Request.Product.ProductCreationRequest;
 import com.example.SellPhone.DTO.Request.Product.ProductUpdateRequest;
 import com.example.SellPhone.DTO.Request.Specification.SpecificationCreationRequest;
+import com.example.SellPhone.DTO.Respone.Product.ProductSummaryRespone;
 import com.example.SellPhone.Entity.Category;
 import com.example.SellPhone.Entity.Product;
 import com.example.SellPhone.Entity.Specification;
@@ -305,5 +306,11 @@ public class ProductService {
     public void discontinueProduct(Product product) {
         product.setStatus("Ngừng bán");
         productRepository.save(product);
+    }
+
+    // Lấy danh sách sản phẩm để hiển thị lên trang index bán hàng
+    // Danh sách sản phẩm
+    public List<ProductSummaryRespone> getProductSummary(){
+        return productRepository.getProductSummary();
     }
 }

@@ -1,0 +1,64 @@
+<!-- header.html -->
+<th:block th:fragment="headerSellFragment">
+  <div class="top-bar">
+    <div class="container">
+      <div class="contact-info">
+        <span><i class="fas fa-phone"></i> 09876 54321</span>
+        <span><i class="fas fa-envelope"></i> info@tdmobile.com</span>
+      </div>
+      <div class="user-actions">
+        <a href="/cart/cart.html"><i class="fas fa-shopping-cart"></i> Giỏ hàng <span class="cart-count">0</span></a>
+      </div>
+    </div>
+  </div>
+  <nav>
+    <div class="container">
+      <div class="logo">
+        <h1 class="mb-0"><a href="/">TD Mobile</a></h1>
+      </div>
+      <div class="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+      <ul class="nav-menu mb-0">
+        <li><a href="/index.html">Trang chủ</a></li>
+        <li><a href="/product-detail.html">Điện thoại</a></li>
+        <li><a href="#">Phụ kiện</a></li>
+        <li><a href="#">Liên hệ</a></li>
+      </ul>
+      <div class="right-section">
+        <div class="search-bar">
+          <input type="text" placeholder="Tìm kiếm...">
+          <button><i class="fas fa-search"></i></button>
+        </div>
+        <div class="login-section">
+          <!-- Login Button - Hiển thị khi chưa đăng nhập -->
+          <a href="/login" class="login-btn" th:if="${username == null}">
+            <i class="fas fa-user"></i> Đăng nhập
+          </a>
+
+          <!-- User Info - Hiển thị khi đã đăng nhập -->
+          <div class="dropdown custom-dropdown" th:if="${username != null}">
+            <button class="btn user-info d-flex align-items-center dropdown-toggle no-effect"
+                    type="button"
+                    id="dropdownUser"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+
+              <div class="user-avatar me-2" th:text="${username.substring(0,1).toUpperCase()}">T</div>
+              <span class="sell-user-name me-2" th:text="${username}">Trung Đức</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+
+            <ul class="dropdown-menu custom-menu" aria-labelledby="dropdownUser">
+              <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Thông tin tài khoản</a></li>
+              <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-bag me-2"></i>Đơn hàng của tôi</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </nav>
+</th:block>

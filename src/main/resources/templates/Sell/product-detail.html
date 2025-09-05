@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết sản phẩm - TD Mobile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/product-detail.css" th:href="@{/assets/css/product-detail.css}">
+  <link rel="stylesheet" href="assets/css/headerSell.css" th:href="@{/assets/css/headerSell.css}">
+  <link rel="stylesheet" href="assets/css/footerSell.css" th:href="@{/assets/css/footerSell.css}">
+  <script src="assets/js/product-detail.js" th:src="@{/assets/js/product-detail.js}" defer></script>
+
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<body>
+<!-- Gọi fragment vào file index.html -->
+<div th:replace="~{Fragments/Sell/header :: headerSellFragment}"></div>
+<!-- Breadcrumb -->
+<section class="breadcrumb-section">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a href="#">Điện thoại</a></li>
+        <li class="breadcrumb-item"><a href="#">iPhone</a></li>
+        <li class="breadcrumb-item active">iPhone 14 Pro</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<!-- Chi tiết sản phẩm -->
+<section class="product-detail">
+  <div class="container">
+    <div class="row">
+      <!-- Hình ảnh sản phẩm -->
+      <div class="col-lg-6 col-md-6">
+        <div class="product-images">
+          <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel">
+            <!-- Ảnh chính -->
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="assets/images/products/iphone-14-pro-max-main-0.webp" class="d-block w-100" alt="Ảnh 1">
+              </div>
+              <div class="carousel-item">
+                <img src="assets/images/products/ip14.webp" class="d-block w-100" alt="Ảnh 2">
+              </div>
+              <div class="carousel-item">
+                <img src="assets/images/products/ip14x.webp" class="d-block w-100" alt="Ảnh 3">
+              </div>
+              <div class="carousel-item">
+                <img src="assets/images/products/ip14xx.webp" class="d-block w-100" alt="Ảnh 4">
+              </div>
+              <div class="carousel-item">
+                <img src="assets/images/products/iphone-14-pro_2__5.webp" class="d-block w-100" alt="Ảnh 5">
+              </div>
+            </div>
+
+            <!-- Nút chuyển trái/phải -->
+            <button class="carousel-control-prev custom-carousel-btn" type="button" data-bs-target="#productImageCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Trước</span>
+            </button>
+            <button class="carousel-control-next custom-carousel-btn" type="button" data-bs-target="#productImageCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Tiếp</span>
+            </button>
+          </div>
+          <!-- Thumbnail -->
+          <div class="row mt-3">
+            <div class="col-2">
+              <img src="assets/images/products/iphone-14-pro-max-main-0.webp" class="img-fluid thumbnail-img"
+                   onclick="gotoSlide(0)" />
+            </div>
+            <div class="col-2">
+              <img src="assets/images/products/ip14.webp" class="img-fluid thumbnail-img" onclick="gotoSlide(1)" />
+            </div>
+            <div class="col-2">
+              <img src="assets/images/products/ip14x.webp" class="img-fluid thumbnail-img" onclick="gotoSlide(2)" />
+            </div>
+            <div class="col-2">
+              <img src="assets/images/products/ip14xx.webp" class="img-fluid thumbnail-img" onclick="gotoSlide(3)" />
+            </div>
+            <div class="col-2">
+              <img src="assets/images/products/iphone-14-pro_2__5.webp" class="img-fluid thumbnail-img"
+                   onclick="gotoSlide(4)" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thông tin sản phẩm -->
+      <div class="col-lg-6 col-md-6">
+        <div class="product-info">
+          <h1 class="product-title">iPhone 14 Pro</h1>
+          <div class="product-rating mb-3">
+            <div class="stars">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+            <span class="rating-text">(4.5/5 từ 128 đánh giá)</span>
+          </div>
+
+          <div class="product-price mb-4">
+            <span class="current-price">24.990.000₫</span>
+            <span class="original-price">27.990.000₫</span>
+            <span class="discount-percentage">-11%</span>
+          </div>
+
+          <!-- <div class="product-highlights mb-4">
+              <ul>
+                  <li><i class="fas fa-check text-success me-2"></i>Màn hình 6.1" Super Retina XDR với ProMotion</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Chip A16 Bionic siêu mạnh</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Camera chính 48MP với Photographic Styles</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Dynamic Island thay đổi cách tương tác</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Pin lên đến 23 giờ phát video</li>
+              </ul>
+          </div> -->
+
+          <!-- Lựa chọn màu sắc -->
+          <div class="product-options mb-4">
+            <h5>Màu sắc:</h5>
+            <div class="color-options" id="colorOptions">
+              <div class="color-item" data-color="Titan Tự Nhiên" data-price="25.390.000" onclick="selectColor(this)">
+                <img src="assets/images/colors/titan-tu-nhien.jpg" alt="Titan Tự Nhiên" class="color-image">
+                <div class="color-details">
+                  <span class="color-name">Titan Tự Nhiên</span>
+                  <span class="color-price">25.390.000₫</span>
+                </div>
+              </div>
+              <div class="color-item" data-color="Titan Đen" data-price="25.090.000" onclick="selectColor(this)">
+                <img src="assets/images/colors/titan-den.jpg" alt="Titan Đen" class="color-image">
+                <div class="color-details">
+                  <span class="color-name">Titan Đen</span>
+                  <span class="color-price">25.090.000₫</span>
+                </div>
+              </div>
+              <div class="color-item" data-color="Titan Trắng" data-price="25.090.000" onclick="selectColor(this)">
+                <img src="assets/images/colors/titan-trang.jpg" alt="Titan Trắng" class="color-image">
+                <div class="color-details">
+                  <span class="color-name">Titan Trắng</span>
+                  <span class="color-price">25.090.000₫</span>
+                </div>
+              </div>
+              <div class="color-item" data-color="Titan Sà Mạc" data-price="24.990.000" onclick="selectColor(this)">
+                <img src="assets/images/colors/titan-sa-mac.jpg" alt="Titan Sà Mạc" class="color-image">
+                <div class="color-details">
+                  <span class="color-name">Titan Sà Mạc</span>
+                  <span class="color-price">24.990.000₫</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lựa chọn dung lượng -->
+          <div class="product-options mb-4">
+            <h5>Dung lượng:</h5>
+            <div class="storage-options">
+              <input type="radio" id="storage-128" name="storage" value="128" checked>
+              <label for="storage-128" class="storage-option">128GB</label>
+
+              <input type="radio" id="storage-256" name="storage" value="256">
+              <label for="storage-256" class="storage-option">256GB</label>
+
+              <input type="radio" id="storage-512" name="storage" value="512">
+              <label for="storage-512" class="storage-option">512GB</label>
+
+              <input type="radio" id="storage-1tb" name="storage" value="1024">
+              <label for="storage-1tb" class="storage-option">1TB</label>
+            </div>
+          </div>
+
+          <!-- Số lượng -->
+          <div class="quantity-section mb-4">
+            <h5>Số lượng:</h5>
+            <div class="quantity-controls">
+              <button type="button" class="btn-quantity" id="btnDecrease">-</button>
+              <input type="number" id="quantity" value="1" min="1" max="10" readonly>
+              <button type="button" class="btn-quantity" id="btnIncrease">+</button>
+            </div>
+          </div>
+
+          <!-- Nút hành động -->
+          <div class="product-actions mb-4">
+            <button class="btn btn-primary btn-lg me-3 add-to-cart-btn" data-product-id="iphone14pro" data-product-name="iPhone 14 Pro" data-product-price="24990000">
+              <i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ hàng
+            </button>
+            <button class="btn btn-outline-primary btn-lg me-3">
+              <i class="fas fa-bolt me-2"></i>Mua ngay
+            </button>
+            <!-- <button class="btn btn-success btn-lg">
+                <i class="fas fa-bolt me-2"></i>Mua ngay
+            </button> -->
+          </div>
+
+          <!-- Thông tin giao hàng -->
+          <div class="delivery-info">
+            <div class="delivery-item">
+              <i class="fas fa-truck text-primary me-2"></i>
+              <span>Miễn phí giao hàng toàn quốc cho đơn hàng từ 500.000₫</span>
+            </div>
+            <div class="delivery-item">
+              <i class="fas fa-clock text-primary me-2"></i>
+              <span>Giao hàng nhanh trong 2-4 giờ tại Hà Nội và TP.HCM</span>
+            </div>
+            <div class="delivery-item">
+              <i class="fas fa-shield-alt text-primary me-2"></i>
+              <span>Bảo hành chính hãng 12 tháng</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tabs thông tin chi tiết -->
+<section class="product-tabs">
+  <div class="container">
+    <ul class="nav nav-tabs" id="productTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">Mô tả sản phẩm</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">Thông số kỹ thuật</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Đánh giá (128)</button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="productTabsContent">
+      <!-- Mô tả sản phẩm -->
+      <div class="tab-pane fade show active" id="description" role="tabpanel">
+        <div class="tab-content-wrapper">
+          <h3>iPhone 14 Pro - Siêu phẩm công nghệ đỉnh cao</h3>
+          <p>iPhone 14 Pro là chiếc smartphone cao cấp nhất trong dòng iPhone 14 series, mang đến trải nghiệm hoàn toàn mới với Dynamic Island và camera chính 48MP.</p>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h4>Thiết kế cao cấp</h4>
+              <p>Được chế tác từ thép không gỉ và kính cường lực Ceramic Shield, iPhone 14 Pro không chỉ đẹp mà còn bền bỉ theo thời gian.</p>
+
+              <h4>Màn hình ProMotion</h4>
+              <p>Màn hình Super Retina XDR 6.1" với tần số quét 120Hz mang đến trải nghiệm mượt mà và sống động.</p>
+            </div>
+            <div class="col-md-6">
+              <h4>Camera chuyên nghiệp</h4>
+              <p>Hệ thống camera Pro với cảm biến chính 48MP cho phép chụp ảnh với độ chi tiết đáng kinh ngạc.</p>
+
+              <h4>Hiệu năng vượt trội</h4>
+              <p>Chip A16 Bionic với quy trình 4nm mang đến hiệu năng mạnh mẽ và tiết kiệm pin tối ưu.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thông số kỹ thuật -->
+      <div class="tab-pane fade" id="specifications" role="tabpanel">
+        <div class="tab-content-wrapper">
+          <div class="specifications-table">
+            <table class="table table-striped">
+              <tbody>
+              <tr>
+                <td><strong>Màn hình</strong></td>
+                <td>6.1" Super Retina XDR OLED, 2556 x 1179 pixels, 120Hz ProMotion</td>
+              </tr>
+              <tr>
+                <td><strong>Chip xử lý</strong></td>
+                <td>Apple A16 Bionic (4nm)</td>
+              </tr>
+              <tr>
+                <td><strong>RAM</strong></td>
+                <td>6GB</td>
+              </tr>
+              <tr>
+                <td><strong>Bộ nhớ trong</strong></td>
+                <td>128GB / 256GB / 512GB / 1TB</td>
+              </tr>
+              <tr>
+                <td><strong>Camera sau</strong></td>
+                <td>48MP (chính) + 12MP (góc siêu rộng) + 12MP (telephoto 3x)</td>
+              </tr>
+              <tr>
+                <td><strong>Camera trước</strong></td>
+                <td>12MP TrueDepth với autofocus</td>
+              </tr>
+              <tr>
+                <td><strong>Pin</strong></td>
+                <td>3200 mAh, sạc nhanh 20W, sạc không dây 15W MagSafe</td>
+              </tr>
+              <tr>
+                <td><strong>Hệ điều hành</strong></td>
+                <td>iOS 16</td>
+              </tr>
+              <tr>
+                <td><strong>Kích thước</strong></td>
+                <td>147.5 x 71.5 x 7.85 mm</td>
+              </tr>
+              <tr>
+                <td><strong>Trọng lượng</strong></td>
+                <td>206g</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Đánh giá -->
+      <div class="tab-pane fade" id="reviews" role="tabpanel">
+        <div class="tab-content-wrapper">
+          <div class="reviews-summary mb-4">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="rating-overview text-center">
+                  <div class="overall-rating">4.5</div>
+                  <div class="stars mb-2">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                  </div>
+                  <p>128 đánh giá</p>
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="rating-breakdown">
+                  <div class="rating-bar">
+                    <span>5 sao</span>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: 68%"></div>
+                    </div>
+                    <span>68%</span>
+                  </div>
+                  <div class="rating-bar">
+                    <span>4 sao</span>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: 22%"></div>
+                    </div>
+                    <span>22%</span>
+                  </div>
+                  <div class="rating-bar">
+                    <span>3 sao</span>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: 7%"></div>
+                    </div>
+                    <span>7%</span>
+                  </div>
+                  <div class="rating-bar">
+                    <span>2 sao</span>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: 2%"></div>
+                    </div>
+                    <span>2%</span>
+                  </div>
+                  <div class="rating-bar">
+                    <span>1 sao</span>
+                    <div class="progress">
+                      <div class="progress-bar" style="width: 1%"></div>
+                    </div>
+                    <span>1%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Danh sách đánh giá -->
+          <div class="reviews-list">
+            <div class="review-item">
+              <div class="reviewer-info">
+                <img src="https://via.placeholder.com/50x50" alt="User" class="reviewer-avatar">
+                <div class="reviewer-details">
+                  <h6>Nguyễn Văn A</h6>
+                  <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </div>
+                  <span class="review-date">15/01/2024</span>
+                </div>
+              </div>
+              <div class="review-content">
+                <p>Sản phẩm rất tốt, camera chụp ảnh đẹp, pin trâu. Dynamic Island rất tiện lợi và mới lạ. Giao hàng nhanh, đóng gói cẩn thận.</p>
+              </div>
+            </div>
+
+            <div class="review-item">
+              <div class="reviewer-info">
+                <img src="https://via.placeholder.com/50x50" alt="User" class="reviewer-avatar">
+                <div class="reviewer-details">
+                  <h6>Trần Thị B</h6>
+                  <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                  </div>
+                  <span class="review-date">12/01/2024</span>
+                </div>
+              </div>
+              <div class="review-content">
+                <p>Máy đẹp, chạy mượt. Màn hình sáng và sắc nét. Tuy nhiên giá hơi cao so với mặt bằng chung. Nhưng nhìn chung vẫn hài lòng.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sản phẩm liên quan -->
+<section class="related-products">
+  <div class="container">
+    <div class="section-title">
+      <h2>Sản phẩm liên quan</h2>
+      <p>Những sản phẩm tương tự bạn có thể quan tâm</p>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="badge">Best Seller</div>
+        <div class="product-thumb">
+          <img src="https://via.placeholder.com/300x400" alt="iPhone 14">
+        </div>
+        <div class="product-details">
+          <h3>iPhone 14</h3>
+          <div class="product-specs">
+            <span>6.1" Super Retina XDR</span>
+            <span>128GB</span>
+          </div>
+          <div class="product-price">
+            <span class="price">21.990.000₫</span>
+            <span class="discount">23.990.000₫</span>
+          </div>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-cart-btn"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="badge">New</div>
+        <div class="product-thumb">
+          <img src="https://via.placeholder.com/300x400" alt="iPhone 14 Pro Max">
+        </div>
+        <div class="product-details">
+          <h3>iPhone 14 Pro Max</h3>
+          <div class="product-specs">
+            <span>6.7" Super Retina XDR</span>
+            <span>128GB</span>
+          </div>
+          <div class="product-price">
+            <span class="price">27.990.000₫</span>
+            <span class="discount">30.990.000₫</span>
+          </div>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-cart-btn"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-thumb">
+          <img src="https://via.placeholder.com/300x400" alt="Samsung Galaxy S23">
+        </div>
+        <div class="product-details">
+          <h3>Samsung Galaxy S23</h3>
+          <div class="product-specs">
+            <span>6.1" Dynamic AMOLED</span>
+            <span>256GB</span>
+          </div>
+          <div class="product-price">
+            <span class="price">18.990.000₫</span>
+          </div>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-cart-btn"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="badge">Sale</div>
+        <div class="product-thumb">
+          <img src="https://via.placeholder.com/300x400" alt="Xiaomi 13">
+        </div>
+        <div class="product-details">
+          <h3>Xiaomi 13</h3>
+          <div class="product-specs">
+            <span>6.36" AMOLED</span>
+            <span>256GB</span>
+          </div>
+          <div class="product-price">
+            <span class="price">15.990.000₫</span>
+            <span class="discount">17.990.000₫</span>
+          </div>
+          <div class="product-actions">
+            <button class="btn btn-primary add-to-cart-btn"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<div th:replace="~{Fragments/Sell/footer :: footerSellFragment}"></div>
+
+</body>
+</html>

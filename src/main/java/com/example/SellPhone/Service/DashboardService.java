@@ -57,7 +57,7 @@ public class DashboardService {
 
         if (totalRevenue == 0 || totalImportCost == 0) {
             System.out.println("Không thể tính lợi nhuận: Một trong hai giá trị là null");
-            return null;
+            return 0L;
         }
 
         return totalRevenue - totalImportCost;

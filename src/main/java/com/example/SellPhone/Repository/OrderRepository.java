@@ -61,7 +61,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // Tính tổng doanh thu tháng này với trạng thái "hoàn thành"
     @Query(value = """
-        SELECT SUM(total_price)
+        SELECT COALESCE(SUM(total_price), 0)
         FROM orders
         WHERE order_status = 'Đã hoàn thành'
           AND order_time IS NOT NULL
