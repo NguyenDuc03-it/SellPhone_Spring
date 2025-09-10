@@ -12,18 +12,47 @@ import java.io.IOException;
 
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
+//    @Override
+//    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+//                                        Authentication authentication) throws IOException, ServletException {
+//
+//        System.out.println("User " + authentication.getName() + " has logged in successfully.");
+//        String targetUrl = determineTargetUrl(authentication);
+//
+//        if (response.isCommitted()) {
+//            return;
+//        }
+//
+//        response.sendRedirect(targetUrl);
+//    }
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        System.out.println("User " + authentication.getName() + " has logged in successfully.");
-        String targetUrl = determineTargetUrl(authentication);
+        String redirectUrl = request.getParameter("redirect");
 
-        if (response.isCommitted()) {
-            return;
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        boolean isEmployee = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_EMPLOYEE"));
+
+        boolean isCustomer = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_CUSTOMER"));
+
+        // Nếu là khách hàng và có redirect, chuyển về trang trước
+        if (isCustomer && redirectUrl != null && redirectUrl.startsWith("/")) {
+            response.sendRedirect(redirectUrl);
         }
-
-        response.sendRedirect(targetUrl);
+        // Nếu là admin hoặc nhân viên, chuyển đến trang quản trị
+        else if (isAdmin || isEmployee) {
+            response.sendRedirect("/management/dashboard");
+        }
+        // Nếu không rõ vai trò hoặc không có redirect, đưa về home
+        else {
+            response.sendRedirect("/");
+        }
     }
 
     protected String determineTargetUrl(Authentication authentication) {

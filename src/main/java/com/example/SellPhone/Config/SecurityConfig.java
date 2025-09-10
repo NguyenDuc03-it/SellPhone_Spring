@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/assets/**").permitAll() // Cho phép truy cập tài nguyên tĩnh (css, js, img)
                         .requestMatchers("/static/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/product-detail/**").permitAll()
                         .requestMatchers("/management/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasRole("CUSTOMER")
                         .anyRequest().authenticated()
@@ -43,11 +44,12 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .failureUrl("/login?error=true")
+                        //.failureUrl("/login?error=true")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .permitAll()
                         .successHandler(customAuthenticationSuccessHandler())
+                        .failureHandler(new CustomAuthenticationFailureHandler())
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

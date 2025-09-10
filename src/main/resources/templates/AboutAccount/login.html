@@ -189,6 +189,8 @@
             <i class="fas fa-lock"></i>
             <input type="password" placeholder="Mật khẩu" id="exampleInputPassword1" name="password" required>
         </div>
+        <!-- Nếu có tham số redirect trên URL, giữ lại -->
+        <input type="hidden" name="redirect" th:value="${param.redirect}" />
         <!-- Hiển thị thông báo lỗi nếu có -->
         <div th:if="${param.error}" class="error-message">
             <p style="color: red;">Tài khoản hoặc mật khẩu không đúng. Hoặc đã bị khóa.</p>

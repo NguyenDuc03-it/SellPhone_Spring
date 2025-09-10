@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh toán - TD Mobile</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/font-awesome.min.css" th:href="@{/assets/css/font-awesome.min.css}">
+  <link rel="stylesheet" href="assets/css/themify-icons.css" th:href="@{/assets/css/themify-icons.css}">
+  <link rel="stylesheet" href="assets/css/styles.css" th:href="@{/assets/css/styles.css}">
+  <link rel="stylesheet" href="assets/css/elements.css" th:href="@{/assets/css/elements.css}">
+  <link rel="stylesheet" href="assets/css/checkout.css" th:href="@{/assets/css/checkout.css}">
+  <link rel="stylesheet" href="assets/css/headerSell.css" th:href="@{/assets/css/headerSell.css}">
+  <link rel="stylesheet" href="assets/css/footerSell.css" th:href="@{/assets/css/footerSell.css}">
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<!--  <script src="checkout.js" defer></script>-->
+</head>
+<body>
+
+<!-- Gọi fragment vào file index.html -->
+<div th:replace="~{Fragments/Sell/header :: headerSellFragment}"></div>
+
+<!-- Breadcrumb -->
+<section class="breadcrumb-section mb-3 mt-3">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb m-0">
+        <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a href="#">Điện thoại</a></li>
+        <li class="breadcrumb-item"><a href="#">iPhone</a></li>
+        <li class="breadcrumb-item active">iPhone 14 Pro</li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+<!-- Main Content -->
+<div class="container">
+  <div class="checkout-container">
+    <!-- Left Column - Forms -->
+    <div class="checkout-forms">
+      <!-- Order Information -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <i class="fas fa-shopping-cart"></i>
+          Thông tin đơn hàng
+        </h3>
+
+        <!-- Product Table Header -->
+        <div class="product-table-header">
+          <div class="col-name">Tên sản phẩm</div>
+          <div class="col-price">Giá</div>
+          <div class="col-quantity">Số lượng</div>
+          <div class="col-total">Tổng</div>
+        </div>
+
+        <!-- Product Row -->
+        <div class="product-row">
+          <div class="col-name">iPhone 14 Pro 128GB - Đen</div>
+          <div class="col-price">20.000.000₫</div>
+          <div class="col-quantity">2</div>
+          <div class="col-total">40.000.000₫</div>
+        </div>
+
+        <!-- Product Row 2 -->
+        <div class="product-row">
+          <div class="col-name">Samsung Galaxy S23 Ultra 256GB</div>
+          <div class="col-price">15.000.000₫</div>
+          <div class="col-quantity">1</div>
+          <div class="col-total">15.000.000₫</div>
+        </div>
+
+        <div class="summary-section">
+          <div class="summary-row">
+            <span>Tổng tiền sản phẩm:</span>
+            <span>55.000.000 ₫</span>
+          </div>
+          <div class="summary-row">
+            <span>Phí vận chuyển:</span>
+            <span>Miễn Phí</span>
+          </div>
+          <div class="summary-row total">
+            <span>Tổng cộng:</span>
+            <span>55.000.000 ₫</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Address -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <i class="fas fa-truck"></i>
+          Địa chỉ giao hàng
+        </h3>
+
+        <div class="form-group">
+          <label>Họ và tên *</label>
+          <input type="text" class="form-control" value="Ngo Van Nam" required>
+        </div>
+
+        <div class="form-group">
+          <label>Số điện thoại *</label>
+          <input type="tel" class="form-control" value="0854128229" required>
+        </div>
+
+        <div class="form-group">
+          <label>Địa chỉ *</label>
+          <input type="text" class="form-control" value="Bến Hổ, Phường Hổ, Thị xã Thuận Thành, Tỉnh Bắc Ninh" required>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="form-section">
+        <h3 class="section-title">
+          <i class="fas fa-credit-card"></i>
+          Phương thức thanh toán
+        </h3>
+
+        <div class="payment-methods">
+          <div class="payment-option active">
+            <input type="radio" name="payment" value="cod" checked>
+            <div class="payment-info">
+              <div class="payment-title">Thanh toán khi nhận hàng (COD)</div>
+              <div class="payment-desc">Thanh toán bằng tiền mặt khi nhận hàng</div>
+            </div>
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+
+          <div class="payment-option">
+            <input type="radio" name="payment" value="vnpay">
+            <div class="payment-info">
+              <div class="payment-title">VNPAY</div>
+              <div class="payment-desc">Thanh toán qua ví điện tử VNPAY</div>
+            </div>
+            <i class="fab fa-cc-visa"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Notes -->
+      <div class="form-section notes-section">
+        <h3 class="section-title">
+          <i class="fas fa-sticky-note"></i>
+          Ghi chú
+        </h3>
+
+        <div class="form-group">
+          <textarea class="form-control" placeholder="Ghi chú cho đơn hàng (tùy chọn)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column - Order Summary -->
+    <div class="order-summary">
+      <h3 class="summary-title">Tóm tắt đơn hàng</h3>
+
+      <div class="summary-row">
+        <span>Tổng tiền sản phẩm:</span>
+        <span>55.000.000 ₫</span>
+      </div>
+
+      <div class="summary-row">
+        <span>Phí vận chuyển:</span>
+        <span>Miễn Phí</span>
+      </div>
+
+      <div class="summary-row total">
+        <span>Tổng thanh toán:</span>
+        <span>55.000.000 ₫</span>
+      </div>
+
+      <button class="checkout-btn">
+        <i class="fas fa-check"></i>
+        Đặt hàng
+      </button>
+
+      <div class="security-note">
+        <i class="fas fa-shield-alt"></i>
+        <span>Thông tin của bạn được bảo mật an toàn</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer sẽ được load vào đây -->
+<div th:replace="~{Fragments/Sell/footer :: footerSellFragment}"></div>
+
+</body>
+</html>

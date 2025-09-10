@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -292,8 +293,8 @@ public class ProductService {
     }
 
     // Tìm kiếm sản phẩm theo tên
-    public Optional<Product> findByName(String name) {
-        return productRepository.findByName(name);
+    public List<Product> findByNameAndProductIdNot(String name, Long id) {
+        return productRepository.findByNameAndProductIdNot(name, id);
     }
 
     // Lấy product mới nhất theo id (id trong db tăng dần)
@@ -310,7 +311,12 @@ public class ProductService {
 
     // Lấy danh sách sản phẩm để hiển thị lên trang index bán hàng
     // Danh sách sản phẩm
-    public List<ProductSummaryRespone> getProductSummary(){
-        return productRepository.getProductSummary();
+    public Page<ProductSummaryRespone> getProductSummary(Pageable pageable) {
+        return productRepository.getProductSummaryWithPaging(pageable);
+    }
+
+    // Lấy danh sách sản phẩm gợi ý (sản phẩm cùng danh mục, không bao gồm sản phẩm hiện tại)
+    public List<ProductSummaryRespone> getSuggestedProducts(Long currentProductId, String currentProductName) {
+        return productRepository.findSuggestedProducts(currentProductId, currentProductName);
     }
 }

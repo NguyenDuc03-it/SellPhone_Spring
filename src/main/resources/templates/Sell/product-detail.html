@@ -16,7 +16,6 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
@@ -28,14 +27,22 @@
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
         <li class="breadcrumb-item"><a href="#">Điện thoại</a></li>
-        <li class="breadcrumb-item"><a href="#">iPhone</a></li>
-        <li class="breadcrumb-item active">iPhone 14 Pro</li>
+        <li class="breadcrumb-item active" th:text="${product.name}">iPhone 14 Pro</li>
       </ol>
     </nav>
   </div>
 </section>
+
+<!-- Thông báo thành công với thanh tiến trình -->
+<div id="successNotification" class="alert alert-success" style="display:none;">
+  <strong>Thành công!</strong><br>
+  <span id="successMessageText"></span>
+  <div id="progressBar" class="progress mt-2" style="height: 5px;">
+    <div id="progress" class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+  </div>
+</div>
 
 <!-- Chi tiết sản phẩm -->
 <section class="product-detail">
@@ -44,23 +51,14 @@
       <!-- Hình ảnh sản phẩm -->
       <div class="col-lg-6 col-md-6">
         <div class="product-images">
-          <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div id="productImageCarousel" class="carousel slide">
             <!-- Ảnh chính -->
             <div class="carousel-inner">
               <div class="carousel-item active">
-                <img src="assets/images/products/iphone-14-pro-max-main-0.webp" class="d-block w-100" alt="Ảnh 1">
+                <img th:src="${product.imageUrl}" class="d-block w-100" alt="Ảnh 1">
               </div>
-              <div class="carousel-item">
-                <img src="assets/images/products/ip14.webp" class="d-block w-100" alt="Ảnh 2">
-              </div>
-              <div class="carousel-item">
-                <img src="assets/images/products/ip14x.webp" class="d-block w-100" alt="Ảnh 3">
-              </div>
-              <div class="carousel-item">
-                <img src="assets/images/products/ip14xx.webp" class="d-block w-100" alt="Ảnh 4">
-              </div>
-              <div class="carousel-item">
-                <img src="assets/images/products/iphone-14-pro_2__5.webp" class="d-block w-100" alt="Ảnh 5">
+              <div class="carousel-item" th:each="product : ${similarProducts}">
+                <img th:src="${product.imageUrl}" class="d-block w-100" alt="Ảnh 2">
               </div>
             </div>
 
@@ -77,21 +75,10 @@
           <!-- Thumbnail -->
           <div class="row mt-3">
             <div class="col-2">
-              <img src="assets/images/products/iphone-14-pro-max-main-0.webp" class="img-fluid thumbnail-img"
-                   onclick="gotoSlide(0)" />
+              <img th:src="${product.imageUrl}" class="img-fluid thumbnail-img" onclick="gotoSlide(0)" />
             </div>
-            <div class="col-2">
-              <img src="assets/images/products/ip14.webp" class="img-fluid thumbnail-img" onclick="gotoSlide(1)" />
-            </div>
-            <div class="col-2">
-              <img src="assets/images/products/ip14x.webp" class="img-fluid thumbnail-img" onclick="gotoSlide(2)" />
-            </div>
-            <div class="col-2">
-              <img src="assets/images/products/ip14xx.webp" class="img-fluid thumbnail-img" onclick="gotoSlide(3)" />
-            </div>
-            <div class="col-2">
-              <img src="assets/images/products/iphone-14-pro_2__5.webp" class="img-fluid thumbnail-img"
-                   onclick="gotoSlide(4)" />
+            <div class="col-2" th:each="product, iterStat : ${similarProducts}">
+              <img th:src="${product.imageUrl}" class="img-fluid thumbnail-img" th:attr="onclick=|gotoSlide(${iterStat.index + 1})|" />
             </div>
           </div>
         </div>
@@ -100,7 +87,7 @@
       <!-- Thông tin sản phẩm -->
       <div class="col-lg-6 col-md-6">
         <div class="product-info">
-          <h1 class="product-title">iPhone 14 Pro</h1>
+          <h1 class="product-title" th:text="${product.name}">iPhone 14 Pro</h1>
           <div class="product-rating mb-3">
             <div class="stars">
               <i class="fas fa-star"></i>
@@ -113,53 +100,53 @@
           </div>
 
           <div class="product-price mb-4">
-            <span class="current-price">24.990.000₫</span>
-            <span class="original-price">27.990.000₫</span>
-            <span class="discount-percentage">-11%</span>
+            <span class="current-price" id="price"
+                  th:text="${#numbers.formatDecimal(currentPrice, 0, 'POINT', 0, 'POINT') + 'đ'}">24.990.000₫</span>
+            <span class="original-price d-none">27.990.000₫</span>
+            <span class="discount-percentage d-none">-11%</span>
           </div>
 
-          <!-- <div class="product-highlights mb-4">
+          <div class="product-highlights mb-4">
               <ul>
-                  <li><i class="fas fa-check text-success me-2"></i>Màn hình 6.1" Super Retina XDR với ProMotion</li>
-                  <li><i class="fas fa-check text-success me-2"></i>Chip A16 Bionic siêu mạnh</li>
-                  <li><i class="fas fa-check text-success me-2"></i>Camera chính 48MP với Photographic Styles</li>
-                  <li><i class="fas fa-check text-success me-2"></i>Dynamic Island thay đổi cách tương tác</li>
-                  <li><i class="fas fa-check text-success me-2"></i>Pin lên đến 23 giờ phát video</li>
+                  <li><i class="fas fa-check text-success me-2"></i><p class="mb-0" th:text="${'Màn hình ' + product.specification.screenSize + ' inch hiển thị màu sắc đẹp đẽ'}"></p></li>
+                  <li><i class="fas fa-check text-success me-2"></i><p class="mb-0" th:text="${'Chip ' + product.specification.chipset + ' siêu mạnh'}"></p></li>
+                  <li><i class="fas fa-check text-success me-2"></i><p class="mb-0" th:text="${'Camera chính ' + product.specification.rearCamera}"></p></li>
+                  <li><i class="fas fa-check text-success me-2"></i><p class="mb-0" th:text="${'CPU ' + product.specification.cpu + ' mạnh mẽ'}"></p></li>
+                  <li><i class="fas fa-check text-success me-2"></i><p class="mb-0" th:text="${'Sạc ' + (#strings.startsWith(product.specification.charging, 'Sạc') or #strings.startsWith(product.specification.charging, 'sạc') ? #strings.substring(product.specification.charging, 4) : product.specification.charging)}"></p></li>
               </ul>
-          </div> -->
+          </div>
 
           <!-- Lựa chọn màu sắc -->
           <div class="product-options mb-4">
             <h5>Màu sắc:</h5>
             <div class="color-options" id="colorOptions">
-              <div class="color-item" data-color="Titan Tự Nhiên" data-price="25.390.000" onclick="selectColor(this)">
-                <img src="assets/images/colors/titan-tu-nhien.jpg" alt="Titan Tự Nhiên" class="color-image">
+              <div class="color-item selected" th:data-color="${product.color}"
+                   th:data-price="${#numbers.formatDecimal(currentPrice, 0, 'POINT', 0, 'POINT') + 'đ'}"
+                   th:data-product-id="${product.productId}"
+                   onclick="selectColor(this)">
+                <img th:src="${product.imageUrl}" th:alt="${product.color}" class="color-image">
                 <div class="color-details">
-                  <span class="color-name">Titan Tự Nhiên</span>
-                  <span class="color-price">25.390.000₫</span>
+                  <span class="color-name" th:text="${product.color}">Titan Tự Nhiên</span>
+                  <span class="color-price" th:text="${#numbers.formatDecimal(currentPrice, 0, 'POINT', 0, 'POINT') + 'đ'}">25.390.000₫</span>
                 </div>
               </div>
-              <div class="color-item" data-color="Titan Đen" data-price="25.090.000" onclick="selectColor(this)">
-                <img src="assets/images/colors/titan-den.jpg" alt="Titan Đen" class="color-image">
-                <div class="color-details">
-                  <span class="color-name">Titan Đen</span>
-                  <span class="color-price">25.090.000₫</span>
+              <div th:each="p : ${similarProducts}">
+                <div class="color-item"
+                     th:data-color="${p.color}"
+                     th:data-price="${#numbers.formatDecimal(priceByProductId[p.productId], 0, 'POINT', 0, 'POINT') + 'đ'}"
+                     th:data-product-id="${p.productId}"
+                     >
+                  <img th:src="${p.imageUrl}" th:alt="${p.color}" class="color-image">
+                  <div class="color-details">
+                    <span class="color-name" th:text="${p.color}">Màu khác</span>
+                    <span class="color-price"
+                          th:text="${#numbers.formatDecimal(priceByProductId[p.productId], 0, 'POINT', 0, 'POINT') + 'đ'}">
+                      25.090.000₫
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div class="color-item" data-color="Titan Trắng" data-price="25.090.000" onclick="selectColor(this)">
-                <img src="assets/images/colors/titan-trang.jpg" alt="Titan Trắng" class="color-image">
-                <div class="color-details">
-                  <span class="color-name">Titan Trắng</span>
-                  <span class="color-price">25.090.000₫</span>
-                </div>
-              </div>
-              <div class="color-item" data-color="Titan Sà Mạc" data-price="24.990.000" onclick="selectColor(this)">
-                <img src="assets/images/colors/titan-sa-mac.jpg" alt="Titan Sà Mạc" class="color-image">
-                <div class="color-details">
-                  <span class="color-name">Titan Sà Mạc</span>
-                  <span class="color-price">24.990.000₫</span>
-                </div>
-              </div>
+
             </div>
           </div>
 
@@ -167,36 +154,38 @@
           <div class="product-options mb-4">
             <h5>Dung lượng:</h5>
             <div class="storage-options">
-              <input type="radio" id="storage-128" name="storage" value="128" checked>
-              <label for="storage-128" class="storage-option">128GB</label>
+              <div th:each="rom : ${roms}">
+                <input type="radio"
+                       th:id="'storage-' + ${rom}"
+                       name="storage"
+                       th:value="${rom}"
+                       th:checked="${rom == defaultRom}">
+                <label th:for="'storage-' + ${rom}" class="storage-option"
+                       th:text="${(rom >= 1000) ? #numbers.formatDecimal(rom / 1000, 1, 1) + 'TB' : rom + 'GB'}">128GB</label>
+              </div>
 
-              <input type="radio" id="storage-256" name="storage" value="256">
-              <label for="storage-256" class="storage-option">256GB</label>
-
-              <input type="radio" id="storage-512" name="storage" value="512">
-              <label for="storage-512" class="storage-option">512GB</label>
-
-              <input type="radio" id="storage-1tb" name="storage" value="1024">
-              <label for="storage-1tb" class="storage-option">1TB</label>
             </div>
           </div>
 
           <!-- Số lượng -->
           <div class="quantity-section mb-4">
             <h5>Số lượng:</h5>
+            <div class="mb-3">
+              <strong>Còn lại:</strong> <span id="availableQuantity" th:text="${availableQuantity}">--</span> sản phẩm
+            </div>
             <div class="quantity-controls">
               <button type="button" class="btn-quantity" id="btnDecrease">-</button>
-              <input type="number" id="quantity" value="1" min="1" max="10" readonly>
+              <input type="number" id="quantity" th:value="${availableQuantity > 0 ? '1' : '0'}" th:min="${availableQuantity > 0 ? '1' : '0'}" th:max="${availableQuantity}" readonly>
               <button type="button" class="btn-quantity" id="btnIncrease">+</button>
             </div>
           </div>
 
           <!-- Nút hành động -->
           <div class="product-actions mb-4">
-            <button class="btn btn-primary btn-lg me-3 add-to-cart-btn" data-product-id="iphone14pro" data-product-name="iPhone 14 Pro" data-product-price="24990000">
+            <button class="btn btn-primary btn-lg me-3 add-to-cart-btn" th:data-product-id="${product.productId}" th:data-product-name="${product.name}" th:data-product-price="${currentPrice}">
               <i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ hàng
             </button>
-            <button class="btn btn-outline-primary btn-lg me-3">
+            <button class="btn btn-outline-primary btn-lg me-3 buy-now" id="buyNowBtn">
               <i class="fas fa-bolt me-2"></i>Mua ngay
             </button>
             <!-- <button class="btn btn-success btn-lg">
@@ -235,7 +224,7 @@
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">Thông số kỹ thuật</button>
       </li>
-      <li class="nav-item" role="presentation">
+      <li class="nav-item d-none" role="presentation">
         <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Đánh giá (128)</button>
       </li>
     </ul>
@@ -244,10 +233,10 @@
       <!-- Mô tả sản phẩm -->
       <div class="tab-pane fade show active" id="description" role="tabpanel">
         <div class="tab-content-wrapper">
-          <h3>iPhone 14 Pro - Siêu phẩm công nghệ đỉnh cao</h3>
-          <p>iPhone 14 Pro là chiếc smartphone cao cấp nhất trong dòng iPhone 14 series, mang đến trải nghiệm hoàn toàn mới với Dynamic Island và camera chính 48MP.</p>
+          <h3 th:text="${product.name}">iPhone 14 Pro - Siêu phẩm công nghệ đỉnh cao</h3>
+          <p th:text="${product.description}">iPhone 14 Pro là chiếc smartphone cao cấp nhất trong dòng iPhone 14 series, mang đến trải nghiệm hoàn toàn mới với Dynamic Island và camera chính 48MP.</p>
 
-          <div class="row">
+          <div class="row d-none">
             <div class="col-md-6">
               <h4>Thiết kế cao cấp</h4>
               <p>Được chế tác từ thép không gỉ và kính cường lực Ceramic Shield, iPhone 14 Pro không chỉ đẹp mà còn bền bỉ theo thời gian.</p>
@@ -274,43 +263,48 @@
               <tbody>
               <tr>
                 <td><strong>Màn hình</strong></td>
-                <td>6.1" Super Retina XDR OLED, 2556 x 1179 pixels, 120Hz ProMotion</td>
+                <td th:text="${product.specification.screenSize + ' inch'}"></td>
               </tr>
               <tr>
                 <td><strong>Chip xử lý</strong></td>
-                <td>Apple A16 Bionic (4nm)</td>
+                <td th:text="${product.specification.chipset}"></td>
               </tr>
               <tr>
                 <td><strong>RAM</strong></td>
-                <td>6GB</td>
+                <td th:text="${product.specification.ram + 'GB'}"></td>
               </tr>
               <tr>
                 <td><strong>Bộ nhớ trong</strong></td>
-                <td>128GB / 256GB / 512GB / 1TB</td>
+                  <td>
+                    <span th:each="rom,iterStat : ${allRoms}">
+                      <span th:text="${rom >= 1000 ? (rom / 1000) + 'TB' : rom + 'GB'}"></span>
+                      <span th:if="${!iterStat.last}"> / </span>
+                    </span>
+                  </td>
               </tr>
               <tr>
                 <td><strong>Camera sau</strong></td>
-                <td>48MP (chính) + 12MP (góc siêu rộng) + 12MP (telephoto 3x)</td>
+                <td th:text="${product.specification.rearCamera}"></td>
               </tr>
               <tr>
                 <td><strong>Camera trước</strong></td>
-                <td>12MP TrueDepth với autofocus</td>
+                <td th:text="${product.specification.frontCamera}"></td>
               </tr>
               <tr>
-                <td><strong>Pin</strong></td>
-                <td>3200 mAh, sạc nhanh 20W, sạc không dây 15W MagSafe</td>
+                <td><strong>Công nghệ sạc</strong></td>
+                <td th:text="${product.specification.charging}"></td>
               </tr>
               <tr>
                 <td><strong>Hệ điều hành</strong></td>
-                <td>iOS 16</td>
+                <td th:text="${product.specification.operatingSystem}"></td>
               </tr>
               <tr>
-                <td><strong>Kích thước</strong></td>
-                <td>147.5 x 71.5 x 7.85 mm</td>
+                <td><strong>SIM</strong></td>
+                <td th:text="${product.specification.sim}"></td>
               </tr>
               <tr>
-                <td><strong>Trọng lượng</strong></td>
-                <td>206g</td>
+                <td><strong>CPU</strong></td>
+                <td th:text="${product.specification.cpu}"></td>
               </tr>
               </tbody>
             </table>
@@ -319,7 +313,7 @@
       </div>
 
       <!-- Đánh giá -->
-      <div class="tab-pane fade" id="reviews" role="tabpanel">
+      <div class="tab-pane fade d-none" id="reviews" role="tabpanel">
         <div class="tab-content-wrapper">
           <div class="reviews-summary mb-4">
             <div class="row">
@@ -379,7 +373,7 @@
           </div>
 
           <!-- Danh sách đánh giá -->
-          <div class="reviews-list">
+          <div class="reviews-list ">
             <div class="review-item">
               <div class="reviewer-info">
                 <img src="https://via.placeholder.com/50x50" alt="User" class="reviewer-avatar">
@@ -434,86 +428,30 @@
       <p>Những sản phẩm tương tự bạn có thể quan tâm</p>
     </div>
     <div class="product-grid">
-      <div class="product-card">
-        <div class="badge">Best Seller</div>
-        <div class="product-thumb">
-          <img src="https://via.placeholder.com/300x400" alt="iPhone 14">
-        </div>
-        <div class="product-details">
-          <h3>iPhone 14</h3>
-          <div class="product-specs">
-            <span>6.1" Super Retina XDR</span>
-            <span>128GB</span>
+      <div class="product-card" th:each="product : ${suggestedProducts}">
+        <a th:href="@{'/product-detail/product/' + ${product.productId}}" class="product-link">
+          <div class="badge">Hot</div>
+          <div class="product-thumb">
+            <img th:src="${product.imageUrl}" th:alt="${product.name}">
           </div>
-          <div class="product-price">
-            <span class="price">21.990.000₫</span>
-            <span class="discount">23.990.000₫</span>
+          <div class="product-details">
+            <h3 th:text="${product.name}">Tên sản phẩm</h3>
+            <div class="product-specs">
+              <span>Chipset: <span th:text="${product.chipset}">Chipset</span></span>
+              <span>Hệ điều hành: <span th:text="${product.operatingSystem}">Hệ điều hành</span></span>
+              <span>Màu: <span th:text="${product.color}">Màu sắc</span></span>
+            </div>
+            <div class="product-price">
+              <span class="price" th:text="${#numbers.formatDecimal(product.sellingPrice, 0, 'POINT', 0, 'POINT') + 'đ'}">$799</span>
+<!--              <span class="discount">23.990.000₫</span>-->
+            </div>
+            <div class="product-actions product-action-btn">
+              <button class="btn btn-primary add-to-cart-btn me-0" th:attr="data-product-id=${product.productId}, data-product-name=${product.name}, data-product-price=${product.sellingPrice}">
+                Xem chi tiết sản phẩm &gt;&gt;
+              </button>
+            </div>
           </div>
-          <div class="product-actions">
-            <button class="btn btn-primary add-to-cart-btn"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="product-card">
-        <div class="badge">New</div>
-        <div class="product-thumb">
-          <img src="https://via.placeholder.com/300x400" alt="iPhone 14 Pro Max">
-        </div>
-        <div class="product-details">
-          <h3>iPhone 14 Pro Max</h3>
-          <div class="product-specs">
-            <span>6.7" Super Retina XDR</span>
-            <span>128GB</span>
-          </div>
-          <div class="product-price">
-            <span class="price">27.990.000₫</span>
-            <span class="discount">30.990.000₫</span>
-          </div>
-          <div class="product-actions">
-            <button class="btn btn-primary add-to-cart-btn"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="product-card">
-        <div class="product-thumb">
-          <img src="https://via.placeholder.com/300x400" alt="Samsung Galaxy S23">
-        </div>
-        <div class="product-details">
-          <h3>Samsung Galaxy S23</h3>
-          <div class="product-specs">
-            <span>6.1" Dynamic AMOLED</span>
-            <span>256GB</span>
-          </div>
-          <div class="product-price">
-            <span class="price">18.990.000₫</span>
-          </div>
-          <div class="product-actions">
-            <button class="btn btn-primary add-to-cart-btn"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="product-card">
-        <div class="badge">Sale</div>
-        <div class="product-thumb">
-          <img src="https://via.placeholder.com/300x400" alt="Xiaomi 13">
-        </div>
-        <div class="product-details">
-          <h3>Xiaomi 13</h3>
-          <div class="product-specs">
-            <span>6.36" AMOLED</span>
-            <span>256GB</span>
-          </div>
-          <div class="product-price">
-            <span class="price">15.990.000₫</span>
-            <span class="discount">17.990.000₫</span>
-          </div>
-          <div class="product-actions">
-            <button class="btn btn-primary add-to-cart-btn"><i class="fas fa-shopping-cart"></i> Thêm giỏ hàng</button>
-          </div>
-        </div>
+        </a>
       </div>
     </div>
   </div>

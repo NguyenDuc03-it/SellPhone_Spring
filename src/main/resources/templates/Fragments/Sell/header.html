@@ -1,5 +1,6 @@
 <!-- header.html -->
 <th:block th:fragment="headerSellFragment">
+  <div class="wrapper-header">
   <div class="top-bar">
     <div class="container">
       <div class="contact-info">
@@ -7,11 +8,15 @@
         <span><i class="fas fa-envelope"></i> info@tdmobile.com</span>
       </div>
       <div class="user-actions">
-        <a href="/cart/cart.html"><i class="fas fa-shopping-cart"></i> Giỏ hàng <span class="cart-count">0</span></a>
+        <a href="/cart/cart.html">
+          <i class="fas fa-shopping-cart"></i>
+          Giỏ hàng
+          <span class="cart-count" th:text="${cartItemCount}">0</span>
+        </a>
       </div>
     </div>
   </div>
-  <nav>
+  <nav class="header-nav">
     <div class="container">
       <div class="logo">
         <h1 class="mb-0"><a href="/">TD Mobile</a></h1>
@@ -20,7 +25,7 @@
         <i class="fas fa-bars"></i>
       </div>
       <ul class="nav-menu mb-0">
-        <li><a href="/index.html">Trang chủ</a></li>
+        <li><a href="/">Trang chủ</a></li>
         <li><a href="/product-detail.html">Điện thoại</a></li>
         <li><a href="#">Phụ kiện</a></li>
         <li><a href="#">Liên hệ</a></li>
@@ -61,4 +66,5 @@
       </div>
     </div>
   </nav>
+  </div>
 </th:block>

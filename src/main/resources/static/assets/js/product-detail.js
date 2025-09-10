@@ -1,394 +1,3 @@
-// Component loader - tự động load CSS theo component
-class ComponentLoader {
-    static async loadComponent(componentName, containerId) {
-        try {
-            // Load CSS trước
-            await this.loadCSS(`../${componentName}.css`);
-
-            // Load HTML sau
-            const response = await fetch(`../${componentName}.html`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const htmlContent = await response.text();
-
-            // Parse HTML và lấy nội dung body
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlContent, 'text/html');
-            const bodyContent = doc.body.innerHTML;
-
-            // Insert vào container
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.innerHTML = bodyContent;
-            }
-
-            // Initialize component sau khi load
-            await this.initializeComponent(componentName);
-
-            return true;
-        } catch (error) {
-            console.warn(`Không thể load ${componentName}:`, error);
-            return false;
-        }
-    }
-
-    static loadCSS(href) {
-        return new Promise((resolve, reject) => {
-            if (document.querySelector(`link[href="${href}"]`)) {
-                resolve();
-                return;
-            }
-
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = href;
-            link.onload = () => resolve();
-            link.onerror = () => resolve(); // Không reject để không block
-            document.head.appendChild(link);
-        });
-    }
-
-    static async initializeComponent(componentName) {
-        if (componentName === 'header') {
-            await this.initializeHeader();
-        } else if (componentName === 'footer') {
-            this.initializeFooter();
-        }
-    }
-
-    static async initializeHeader() {
-        await new Promise(resolve => setTimeout(resolve, 100));
-
-        // Mobile menu toggle
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navMenu = document.querySelector('.nav-menu');
-
-        if (menuToggle && navMenu) {
-            menuToggle.addEventListener('click', function() {
-                navMenu.classList.toggle('active');
-            });
-        }
-
-        // Search functionality
-        const searchButton = document.querySelector('.search-bar button');
-        const searchInput = document.querySelector('.search-bar input');
-
-        if (searchButton && searchInput) {
-            searchButton.addEventListener('click', function() {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    console.log('Searching for:', searchTerm);
-                    // window.location.href = `search.html?q=${encodeURIComponent(searchTerm)}`;
-                }
-            });
-
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchButton.click();
-                }
-            });
-        }
-
-        // Initialize login functionality
-        this.initializeLogin();
-    }
-
-    static initializeLogin() {
-        this.restoreLoginState();
-
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                const loginError = document.getElementById('loginError');
-
-                console.log('Login attempt:', { email, password });
-
-                const sampleAccount = {
-                    email: 'admin@tdmobile.com',
-                    password: '123456',
-                    name: 'Trung Đức'
-                };
-
-                if (email === sampleAccount.email && password === sampleAccount.password) {
-                    console.log('Login successful!');
-
-                    this.saveLoginState(sampleAccount);
-
-                    if (loginError) loginError.classList.add('d-none');
-
-                    const loginModal = document.getElementById('loginModal');
-                    if (loginModal) {
-                        const modal = bootstrap.Modal.getInstance(loginModal) || new bootstrap.Modal(loginModal);
-                        modal.hide();
-                    }
-
-                    this.showUserInfo();
-
-                    this.showNotification('Đăng nhập thành công!', 'success');
-
-                    loginForm.reset();
-                } else {
-                    console.log('Login failed - wrong credentials');
-                    if (loginError) {
-                        loginError.classList.remove('d-none');
-                    } else {
-                        this.showNotification('Email hoặc mật khẩu không đúng!', 'danger');
-                    }
-                }
-            }.bind(this));
-        }
-    }
-
-    static saveLoginState(user) {
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('currentUser', JSON.stringify(user));
-    }
-
-    static restoreLoginState() {
-        const savedLoginState = localStorage.getItem('isLoggedIn');
-        const savedUser = localStorage.getItem('currentUser');
-
-        if (savedLoginState === 'true' && savedUser) {
-            try {
-                const currentUser = JSON.parse(savedUser);
-                setTimeout(() => {
-                    this.showUserInfo(currentUser);
-                }, 200);
-            } catch (error) {
-                console.error('Error parsing saved user:', error);
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('currentUser');
-            }
-        }
-    }
-
-    static showUserInfo(user = null) {
-        const loginSection = document.querySelector('.login-section');
-        const userInfo = document.getElementById('userInfo');
-
-        if (!user) {
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                user = JSON.parse(savedUser);
-            }
-        }
-
-        if (!loginSection || !userInfo || !user) {
-            console.log('Missing elements or user data for showUserInfo');
-            return;
-        }
-
-        loginSection.classList.add('logged-in');
-
-        const userName = userInfo.querySelector('.user-name');
-        const userAvatar = userInfo.querySelector('.user-avatar');
-
-        if (userName && userAvatar) {
-            userName.textContent = user.name;
-            userAvatar.textContent = user.name.charAt(0).toUpperCase();
-            console.log('Updated user info:', {
-                name: user.name,
-                avatar: user.name.charAt(0).toUpperCase()
-            });
-        }
-    }
-
-    static logout() {
-        console.log('Logout called');
-
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('currentUser');
-
-        const loginSection = document.querySelector('.login-section');
-        if (loginSection) {
-            loginSection.classList.remove('logged-in');
-            console.log('Removed logged-in class');
-        }
-
-        this.showNotification('Đã đăng xuất thành công!', 'info');
-    }
-
-    static showNotification(message, type = 'success') {
-        const notification = document.createElement('div');
-        notification.className = `alert alert-${type} position-fixed`;
-        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        notification.innerHTML = `
-            <div class="d-flex align-items-center">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
-                ${message}
-                <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
-            </div>
-        `;
-
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 3000);
-    }
-
-    static initializeFooter() {
-        console.log('Footer initialized');
-    }
-}
-
-// Make logout function global
-window.logout = function() {
-    ComponentLoader.logout();
-};
-
-// Main initialization
-document.addEventListener('DOMContentLoaded', async function() {
-    console.log('DOM loaded - initializing product page');
-
-    try {
-        // Load header and footer
-        console.log('Loading header...');
-        await ComponentLoader.loadComponent('header', 'header-placeholder');
-        console.log('Header loaded successfully');
-
-        console.log('Loading footer...');
-        await ComponentLoader.loadComponent('footer', 'footer-placeholder');
-        console.log('Footer loaded successfully');
-    } catch (error) {
-        console.error('Error loading components:', error);
-    }
-
-    // Product images functionality
-    let currentImageIndex = 0;
-    const productImages = [
-        'assets/images/products/iphone-14-pro-max-main-0',
-        'assets/images/products/ip14',
-        'assets/images/products/ip14x',
-        'assets/images/products/ip14xx',
-        'assets/images/products/ip14',
-    ];
-
-    function changeMainImage(src, index) {
-        document.getElementById('mainProductImage').src = src;
-        currentImageIndex = index;
-        updateImageCounter();
-
-        document.querySelectorAll('.thumbnail-img').forEach(img => {
-            img.classList.remove('active');
-        });
-        event.target.classList.add('active');
-    }
-
-    function previousImage() {
-        currentImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : productImages.length - 1;
-        updateMainImage();
-    }
-
-    function nextImage() {
-        currentImageIndex = currentImageIndex < productImages.length - 1 ? currentImageIndex + 1 : 0;
-        updateMainImage();
-    }
-
-    function updateMainImage() {
-        const mainImg = document.getElementById('mainProductImage');
-        const thumbnails = document.querySelectorAll('.thumbnail-img');
-
-        mainImg.src = productImages[currentImageIndex];
-
-        thumbnails.forEach((thumb, index) => {
-            if (index === currentImageIndex) {
-                thumb.classList.add('active');
-            } else {
-                thumb.classList.remove('active');
-            }
-        });
-
-        updateImageCounter();
-    }
-
-    function updateImageCounter() {
-        document.getElementById('currentImageIndex').textContent = currentImageIndex + 1;
-        document.getElementById('totalImages').textContent = productImages.length;
-    }
-
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowLeft') {
-            previousImage();
-        } else if (e.key === 'ArrowRight') {
-            nextImage();
-        }
-    });
-
-    // Quantity controls
-
-        const quantityInput = document.getElementById('quantity');
-        const btnIncrease = document.getElementById('btnIncrease');
-        const btnDecrease = document.getElementById('btnDecrease');
-
-        btnIncrease.addEventListener('click', function () {
-            let currentValue = parseInt(quantityInput.value) || 1;
-            if (currentValue < 10) {
-                quantityInput.value = currentValue + 1;
-            }
-        });
-
-        btnDecrease.addEventListener('click', function () {
-            let currentValue = parseInt(quantityInput.value) || 1;
-            if (currentValue > 1) {
-                quantityInput.value = currentValue - 1;
-            }
-        });
-
-
-    function formatPrice(price) {
-        return new Intl.NumberFormat('vi-VN').format(price);
-    }
-
-    // Price update based on storage selection
-    const storageOptions = document.querySelectorAll('input[name="storage"]');
-    const currentPriceElement = document.querySelector('.current-price');
-    const originalPriceElement = document.querySelector('.original-price');
-
-    const basePrices = {
-        '128': { current: 24990000, original: 27990000 },
-        '256': { current: 27990000, original: 30990000 },
-        '512': { current: 32990000, original: 35990000 },
-        '1024': { current: 37990000, original: 40990000 }
-    };
-
-    storageOptions.forEach(option => {
-        option.addEventListener('change', function() {
-            const storage = this.value;
-            const prices = basePrices[storage];
-
-            if (prices) {
-                currentPriceElement.textContent = new Intl.NumberFormat('vi-VN').format(prices.current) + '₫';
-                originalPriceElement.textContent = new Intl.NumberFormat('vi-VN').format(prices.original) + '₫';
-
-                const addToCartBtn = document.querySelector('.add-to-cart-btn');
-                if (addToCartBtn) {
-                    addToCartBtn.setAttribute('data-product-price', prices.current);
-                }
-            }
-        });
-    });
-
-    console.log('Product page initialized successfully');
-});
-
-// Function to select color and update price
-function selectColor(element) {
-    document.querySelectorAll('.color-item').forEach(item => {
-        item.classList.remove('selected');
-    });
-    element.classList.add('selected');
-    const price = element.getAttribute('data-price');
-    document.querySelector('.current-price').textContent = price + '₫';
-}
-
 // Hàm quản lý carousel và thumbnails
 const thumbnails = document.querySelectorAll('.thumbnail-img');
 const carousel = document.querySelector('#productImageCarousel');
@@ -423,3 +32,341 @@ function gotoSlide(index) {
     const carousel = bootstrap.Carousel.getOrCreateInstance(document.querySelector('#productImageCarousel'));
     carousel.to(index);
 }
+
+function formatCurrency(value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function updatePrice() {
+    const selectedColor = document.querySelector('.color-item.selected');
+    const productId = selectedColor.getAttribute('data-product-id');
+
+    const selectedRomRadio = document.querySelector('input[name="storage"]:checked');
+    const rom = selectedRomRadio ? selectedRomRadio.value : null;
+
+    if (!productId || !rom) return;
+
+    fetch(`/product-detail/product-price?productId=${productId}&rom=${rom}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          console.error(data.error);
+          return;
+        }
+
+        // Cập nhật giá
+        const priceElement = document.getElementById('price');
+        priceElement.textContent = formatCurrency(data.price) + 'đ';
+
+        // Cập nhật ảnh nếu có
+        if (data.imageUrl) {
+          const mainImage = document.querySelector('.carousel-inner .carousel-item.active img');
+          if (mainImage) {
+            mainImage.src = data.imageUrl;
+          }
+
+        }
+
+        const quantityEl = document.getElementById('availableQuantity');
+        if (typeof data.quantity !== 'undefined') {
+          updateMaxQuantity(data.quantity);
+        }
+      })
+      .catch(err => console.error(err));
+}
+
+// Hàm xử lý khi chọn màu mới
+function handleColorSelect(colorItem) {
+// Bỏ class selected ở các màu khác
+document.querySelectorAll('.color-item').forEach(el => el.classList.remove('selected'));
+colorItem.classList.add('selected');
+
+const productId = colorItem.getAttribute('data-product-id');
+
+fetch(`/product-detail/product-price?productId=${productId}`)
+  .then(response => response.json())
+  .then(data => {
+    if (data.error) {
+      console.error(data.error);
+      return;
+    }
+
+    // Cập nhật giá
+    const priceElement = document.getElementById('price');
+    priceElement.textContent = formatCurrency(data.price) + 'đ';
+
+    // Cập nhật ảnh
+    if (data.imageUrl) {
+      const mainImage = document.querySelector('.carousel-inner .carousel-item.active img');
+      if (mainImage) {
+        mainImage.src = data.imageUrl;
+      }
+    }
+
+    const carouselEl = document.getElementById('productImageCarousel');
+    const carousel = bootstrap.Carousel.getInstance(carouselEl);
+    if (carousel) {
+      carousel.pause(); // Dừng auto-slide khi người dùng chọn màu
+    }
+
+    // Cập nhật danh sách ROM
+    const storageContainer = document.querySelector('.storage-options');
+    storageContainer.innerHTML = ''; // Xoá radio cũ
+
+    data.roms.forEach(rom => {
+      // Tạo input radio
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'storage';
+      input.id = 'storage-' + rom;
+      input.value = rom;
+      if (rom === data.defaultRom) input.checked = true;
+
+      // Tạo label
+      const label = document.createElement('label');
+      label.className = 'storage-option';
+      label.htmlFor = input.id;
+      label.textContent = formatRom(rom);
+
+      // Gắn sự kiện khi đổi ROM
+      input.addEventListener('change', updatePrice);
+
+      // Thêm vào giao diện
+      storageContainer.appendChild(input);
+      storageContainer.appendChild(label);
+    });
+
+    // Gọi cập nhật giá cho ROM mặc định
+    updatePrice();
+
+    const quantityEl = document.getElementById('availableQuantity');
+      if (quantityEl && typeof data.quantity !== 'undefined') {
+        quantityEl.textContent = data.quantity;
+    }
+  })
+  .catch(err => console.error(err));
+}
+
+// Gắn sự kiện khi chọn màu sắc
+document.querySelectorAll('.color-item').forEach(item => {
+item.addEventListener('click', function () {
+  handleColorSelect(this);
+});
+});
+
+// Gắn sự kiện ban đầu cho các radio (trường hợp không chọn lại màu)
+document.querySelectorAll('input[name="storage"]').forEach(radio => {
+radio.addEventListener('change', updatePrice);
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Tự động khởi tạo carousel khi trang load
+    const carouselEl = document.getElementById('productImageCarousel');
+    if (carouselEl) {
+      new bootstrap.Carousel(carouselEl, {
+        interval: 3000, // Tự động chuyển ảnh mỗi 3s
+        ride: 'carousel'
+      });
+    }
+    // Gọi hàm cập nhật số lượng và xem xét disable nút khi trang load
+    const quantityValue = parseInt(document.getElementById("availableQuantity").textContent || "0", 10);
+    updateMaxQuantity(quantityValue);
+
+    // Thêm sản phẩm vào giỏ hàng và hiển thị thông báo thành công start
+    const addToCartBtn = document.querySelector(".add-to-cart-btn");
+
+    function showSuccessNotification(message) {
+    const successNotification = document.getElementById('successNotification');
+    const successMessageText = document.getElementById('successMessageText');
+    const successProgressBar = document.getElementById('progress');
+
+    successMessageText.textContent = message;
+    successNotification.style.display = 'block';
+
+    let successProgress = 100;
+    successProgressBar.style.width = '100%';
+
+    // Animation progress bar giảm dần
+    const successInterval = setInterval(() => {
+      if (successProgress > 0) {
+        successProgress -= 1;
+        successProgressBar.style.width = successProgress + '%';
+      } else {
+        clearInterval(successInterval);
+        setTimeout(() => {
+          successNotification.style.display = 'none';
+        }, 500);
+      }
+    }, 30);
+
+    // Tự ẩn sau 5 giây
+    setTimeout(() => {
+      if (successProgress > 0) {
+        clearInterval(successInterval);
+        successProgressBar.style.width = '0%';
+        successNotification.style.display = 'none';
+      }
+    }, 5000);
+    }
+
+    addToCartBtn.addEventListener("click", function () {
+    const productId = this.dataset.productId;
+    const quantity = document.getElementById("quantity").value;
+
+    fetch("/cart/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        productId: productId,
+        quantity: quantity
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          // Người dùng chưa đăng nhập -> redirect tới trang login với redirect param
+          const currentUrl = window.location.pathname + window.location.search;
+          window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}`;
+        } else {
+          throw new Error("Lỗi khi thêm vào giỏ hàng");
+        }
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Cập nhật số lượng ở header
+      const cartCount = document.querySelector(".cart-count");
+      cartCount.textContent = data.totalItems;
+
+      // Thông báo
+      showSuccessNotification("Đã thêm sản phẩm vào giỏ hàng!");
+    })
+    .catch(error => {
+      console.error(error);
+      const currentUrl = window.location.pathname + window.location.search;
+      window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}`;
+    });
+    });
+});
+// Thêm sản phẩm vào giỏ hàng và hiển thị thông báo thành công end
+
+function formatRom(rom) {
+    if (rom >= 1000) {
+     return (rom / 1000).toFixed(rom % 1000 === 0 ? 0 : 1) + 'TB';
+    } else {
+     return rom + 'GB';
+    }
+}
+
+// Quantity controls
+const quantityInput = document.getElementById('quantity');
+const btnIncrease = document.getElementById('btnIncrease');
+const btnDecrease = document.getElementById('btnDecrease');
+
+function updateMaxQuantity(newMax) {
+    quantityInput.setAttribute('max', newMax.toString());
+
+    const availableQuantitySpan = document.getElementById("availableQuantity");
+    if (availableQuantitySpan) {
+        availableQuantitySpan.textContent = newMax;
+    }
+
+    // Nếu người dùng chọn số vượt quá max mới thì reset
+    if (parseInt(quantityInput.value) > newMax) {
+        quantityInput.value = newMax;
+    }
+
+    // Bật/tắt nút tùy theo số lượng
+    const addToCartBtn = document.querySelector('.add-to-cart-btn');
+    const buyNowBtn = document.querySelector('.buy-now');
+
+    const shouldDisable = newMax <= 0;
+
+    if (addToCartBtn) addToCartBtn.disabled = shouldDisable;
+    if (buyNowBtn) buyNowBtn.disabled = shouldDisable;
+}
+
+btnIncrease.addEventListener('click', function () {
+    let currentValue = parseInt(quantityInput.value) || 1;
+    let maxValue = parseInt(quantityInput.max) || 10;  // Lấy max từ thuộc tính max của input
+    if (currentValue < maxValue) {
+        quantityInput.value = currentValue + 1;
+    }
+});
+
+btnDecrease.addEventListener('click', function () {
+    let currentValue = parseInt(quantityInput.value) || 1;
+    let minValue = parseInt(quantityInput.min) || 1;
+    if (currentValue > minValue) {
+        quantityInput.value = currentValue - 1;
+    }
+});
+
+// Xử lý khi người dùng nhấn nút 'Mua ngay'
+document.addEventListener("DOMContentLoaded", function () {
+    const buyNowBtn = document.getElementById("buyNowBtn");
+
+    buyNowBtn.addEventListener("click", function () {
+      // Lấy dữ liệu từ giao diện
+      const selectedColorItem = document.querySelector(".color-item.selected");
+      const selectedColor = selectedColorItem?.dataset.color;
+      const productId = selectedColorItem?.dataset.productId;
+      const rawPrice = selectedColorItem?.dataset.price ?? "";
+      const price = parseInt(rawPrice.replace(/[^\d]/g, ''), 10);
+
+      const romRadio = document.querySelector("input[name='storage']:checked");
+      const rom = romRadio?.value;
+
+      const quantity = document.getElementById("quantity").value;
+
+      const productName = document.querySelector(".product-title").textContent.trim();
+
+      // Tạo dữ liệu gửi đi
+      const checkoutData = {
+        productId: productId,
+        productName: productName,
+        color: selectedColor,
+        rom: rom,
+        price: price,
+        quantity: quantity
+      };
+
+      // Gửi POST đến /checkout
+      fetch("/user/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(checkoutData)
+      })
+        .then(response => {
+          if (response.status === 401) {
+            // Chưa đăng nhập -> redirect đến trang đăng nhập
+            const currentUrl = window.location.pathname + window.location.search;
+            window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}`;
+            return;
+          }
+
+          if (!response.ok) {
+            throw new Error("Đã có lỗi xảy ra khi chuyển đến trang thanh toán.");
+          }
+
+          // Nếu thành công: chuyển hướng sang trang thanh toán
+          return response.json();
+        })
+        .then(data => {
+          if (data && data.redirectUrl) {
+            window.location.href = data.redirectUrl;
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          const currentUrl = window.location.pathname + window.location.search;
+          window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}`;
+        });
+    });
+});

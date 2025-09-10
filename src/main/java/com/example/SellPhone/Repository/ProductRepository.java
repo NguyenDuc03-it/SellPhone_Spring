@@ -25,7 +25,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     boolean existsByNameAndColorAndProductIdNot(String name, String color, Long productId);
 
-    Optional<Product> findByName(String name);
+    List<Product> findByNameAndProductIdNot(String name, Long id);
 
     Optional<Product> findTopByNameOrderByProductIdDesc(String name);
 
@@ -56,28 +56,74 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     """, nativeQuery = true)
     List<BestSellingProductResponse> getLowSellingProductsInPeriod(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
-    @Query(
-            value = """
-            WITH ranked_products AS (
-                SELECT
-                    pd.product_id,
-                    pd.name,
-                    pd.image_url,
-                    pd.color,
-                    spe.chipset,
-                    spe.operating_system,
-                    spv.selling_price,
-                    ROW_NUMBER() OVER (PARTITION BY pd.name ORDER BY spv.selling_price ASC) AS rn
-                FROM products pd
-                JOIN specifications spe ON spe.specification_id = pd.specification_id
-                JOIN specification_variants spv ON spv.specification_id = spe.specification_id
-            )
+    @Query(value = """
+        WITH ranked_products AS (
             SELECT
-                product_id as productId, name, image_url as imageUrl, color, chipset, operating_system as operatingSystem, selling_price as sellingPrice
-            FROM ranked_products
-            WHERE rn = 1
+                pd.product_id,
+                pd.name,
+                pd.image_url,
+                pd.color,
+                spe.chipset,
+                spe.operating_system,
+                spv.selling_price,
+                ROW_NUMBER() OVER (PARTITION BY pd.name ORDER BY spv.selling_price ASC) AS rn
+            FROM products pd
+            JOIN specifications spe ON spe.specification_id = pd.specification_id
+            JOIN specification_variants spv ON spv.specification_id = spe.specification_id
+            WHERE pd.product_id <> :excludedProductId AND pd.name <> :productName
+        )
+        SELECT
+            product_id AS productId,
+            name,
+            image_url AS imageUrl,
+            color,
+            chipset,
+            operating_system AS operatingSystem,
+            selling_price AS sellingPrice
+        FROM ranked_products
+        WHERE rn = 1
+        LIMIT 12
         """,
-            nativeQuery = true
-    )
-    List<ProductSummaryRespone> getProductSummary();
+            nativeQuery = true)
+    List<ProductSummaryRespone> findSuggestedProducts(@Param("excludedProductId") Long productId , @Param("productName") String productName);
+
+    // Hiển thị danh sách sản phẩm lên trang bán hàng, có pageable để xem thêm sản phẩm
+    @Query(value = """
+        WITH ranked_products AS (
+            SELECT
+                pd.product_id,
+                pd.name,
+                pd.image_url,
+                pd.color,
+                spe.chipset,
+                spe.operating_system,
+                spv.selling_price,
+                ROW_NUMBER() OVER (PARTITION BY pd.name ORDER BY spv.selling_price ASC) AS rn
+            FROM products pd
+            JOIN specifications spe ON spe.specification_id = pd.specification_id
+            JOIN specification_variants spv ON spv.specification_id = spe.specification_id
+        )
+        SELECT
+            product_id as productId,
+            name,
+            image_url as imageUrl,
+            color,
+            chipset,
+            operating_system as operatingSystem,
+            selling_price as sellingPrice
+        FROM ranked_products
+        WHERE rn = 1
+        """,
+            countQuery = """
+        SELECT COUNT(*) FROM (
+            SELECT 1
+            FROM products pd
+            JOIN specifications spe ON spe.specification_id = pd.specification_id
+            JOIN specification_variants spv ON spv.specification_id = spe.specification_id
+            GROUP BY pd.name
+        ) AS counted
+        """,
+            nativeQuery = true)
+    Page<ProductSummaryRespone> getProductSummaryWithPaging(Pageable pageable);
+
 }

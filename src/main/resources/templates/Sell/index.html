@@ -40,7 +40,7 @@
   }
 </style>
 <body>
-<!--<div id="header-placeholder"></div>-->
+
 <!-- Gọi fragment vào file index.html -->
 <div th:replace="~{Fragments/Sell/header :: headerSellFragment}"></div>
 
@@ -111,7 +111,7 @@
 <!-- Featured Products with Related Products Slider -->
 <section id="featured" class="featured-products">
   <div class="container">
-<!--Các sản phẩm nổi bật start-->
+    <!--Các sản phẩm nổi bật start-->
     <div th:if="${bestSellingProducts != null and !#lists.isEmpty(bestSellingProducts)}">
       <div class="section-title">
         <h2>Các sản phẩm nổi bật</h2>
@@ -120,99 +120,35 @@
       <div class="product-grid">
 
         <div class="product-card" th:each="product : ${bestSellingProducts}">
-          <div class="badge">Best Seller</div>
-          <div class="product-thumb">
-            <img th:src="${product.imageUrl}" th:alt="${product.name}">
-          </div>
-          <div class="product-details">
-            <h3 th:text="${product.name}">Tên sản phẩm</h3>
-            <div class="product-specs">
-              <span>Chipset: <span th:text="${product.chipset}">Chipset</span></span>
-              <span>Hệ điều hành: <span th:text="${product.operatingSystem}">Hệ điều hành</span></span>
-              <span>Màu: <span th:text="${product.color}">Màu sắc</span></span>
+          <a th:href="@{'/product-detail/product/' + ${product.productId}}" class="product-link">
+            <div class="badge">Best Seller</div>
+            <div class="product-thumb">
+              <img th:src="${product.imageUrl}" th:alt="${product.name}">
             </div>
-            <div class="product-price">
-              <span class="price" th:text="${#numbers.formatDecimal(product.sellingPrice, 0, 'POINT', 0, 'POINT') + 'đ'}">$999</span>
-<!--              <span class="discount">$1099</span>-->
+            <div class="product-details">
+              <h3 th:text="${product.name}">Tên sản phẩm</h3>
+              <div class="product-specs">
+                <span>Chipset: <span th:text="${product.chipset}">Chipset</span></span>
+                <span>Hệ điều hành: <span th:text="${product.operatingSystem}">Hệ điều hành</span></span>
+                <span>Màu: <span th:text="${product.color}">Màu sắc</span></span>
+              </div>
+              <div class="product-price">
+                <span class="price" th:text="${#numbers.formatDecimal(product.sellingPrice, 0, 'POINT', 0, 'POINT') + 'đ'}">$999</span>
+  <!--              <span class="discount">$1099</span>-->
+              </div>
+              <div class="product-actions">
+                <button class="btn btn-primary add-to-cart-btn" th:attr="data-product-id=${product.productId}, data-product-name=${product.name}, data-product-price=${product.sellingPrice}">
+                  Xem chi tiết sản phẩm &gt;&gt;
+                </button>
+                <button class="btn btn-outline"><i class="fas fa-heart"></i></button>
+              </div>
             </div>
-            <div class="product-actions">
-              <button class="btn btn-primary add-to-cart-btn" th:attr="data-product-id=${product.productId}, data-product-name=${product.name}, data-product-price=${product.sellingPrice}">
-                <i class="fas fa-shopping-cart"></i>
-                Thêm vào giỏ hàng
-              </button>
-              <button class="btn btn-outline"><i class="fas fa-heart"></i></button>
-            </div>
-          </div>
+          </a>
         </div>
 
-        <div class="product-card">
-          <div class="badge">Best Seller</div>
-          <div class="product-thumb">
-            <img src="https://via.placeholder.com/300x400" alt="Samsung Galaxy S23">
-          </div>
-          <div class="product-details">
-            <h3>Samsung Galaxy S23</h3>
-            <div class="product-specs">
-              <span>6.8" Dynamic AMOLED</span>
-              <span>256GB</span>
-              <span>Phantom Black</span>
-            </div>
-            <div class="product-price">
-              <span class="price">$899</span>
-              <span class="discount">$999</span>
-            </div>
-            <div class="product-actions">
-              <button class="btn btn-primary add-to-cart-btn" data-product-id="2" data-product-name="Samsung Galaxy S23" data-product-price="899"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
-              <button class="btn btn-outline"><i class="fas fa-heart"></i></button>
-            </div>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="badge">Sale</div>
-          <div class="product-thumb">
-            <img src="https://via.placeholder.com/300x400" alt="Google Pixel 7">
-          </div>
-          <div class="product-details">
-            <h3>Google Pixel 7</h3>
-            <div class="product-specs">
-              <span>6.3" OLED</span>
-              <span>128GB</span>
-              <span>Snow</span>
-            </div>
-            <div class="product-price">
-              <span class="price">$599</span>
-              <span class="discount">$699</span>
-            </div>
-            <div class="product-actions">
-              <button class="btn btn-primary add-to-cart-btn" data-product-id="3" data-product-name="Google Pixel 7" data-product-price="599"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
-              <button class="btn btn-outline"><i class="fas fa-heart"></i></button>
-            </div>
-          </div>
-        </div>
-        <div class="product-card">
-          <div class="product-thumb">
-            <img src="https://via.placeholder.com/300x400" alt="Xiaomi 13">
-          </div>
-          <div class="product-details">
-            <h3>Xiaomi 13</h3>
-            <div class="product-specs">
-              <span>6.36" AMOLED</span>
-              <span>256GB</span>
-              <span>Black</span>
-            </div>
-            <div class="product-price">
-              <span class="price">$749</span>
-              <span class="discount">$799</span>
-            </div>
-            <div class="product-actions">
-              <button class="btn btn-primary add-to-cart-btn" data-product-id="4" data-product-name="Xiaomi 13" data-product-price="749"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
-              <button class="btn btn-outline"><i class="fas fa-heart"></i></button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
-<!--Các sản phẩm nổi bật end-->
+    <!--Các sản phẩm nổi bật end-->
 
     <!-- Related Products Slider -->
     <div class="related-products mt-5 d-none">
@@ -343,7 +279,7 @@
       </div>
     </div>
 
-<!--Danh sách các sản phẩm start-->
+    <!--Danh sách các sản phẩm start-->
     <div class="product-listing"
          th:classappend="${bestSellingProducts != null and !#lists.isEmpty(bestSellingProducts)} ? ' border-top mt-5'">
       <div class="section-title"
@@ -352,37 +288,36 @@
         <p>Khám phá các sản phẩm đa dạng của chúng tôi</p>
       </div>
       <div class="product-grid">
-
         <div class="product-card" th:each="product : ${productSummary}">
-          <div class="badge">Hot</div>
-          <div class="product-thumb">
-            <img th:src="${product.imageUrl}" th:alt="${product.name}">
-          </div>
+          <a th:href="@{'/product-detail/product/' + ${product.productId}}" class="product-link">
+            <div class="badge">Hot</div>
+            <div class="product-thumb">
+              <img th:src="${product.imageUrl}" th:alt="${product.name}">
+            </div>
 
-          <div class="product-details">
-            <h3 th:text="${product.name}">Tên sản phẩm</h3>
-            <div class="product-specs">
-              <span>Chipset: <span th:text="${product.chipset}">Chipset</span></span>
-              <span>Hệ điều hành: <span th:text="${product.operatingSystem}">Hệ điều hành</span></span>
-              <span>Màu: <span th:text="${product.color}">Màu sắc</span></span>
+            <div class="product-details">
+              <h3 th:text="${product.name}">Tên sản phẩm</h3>
+              <div class="product-specs">
+                <span>Chipset: <span th:text="${product.chipset}">Chipset</span></span>
+                <span>Hệ điều hành: <span th:text="${product.operatingSystem}">Hệ điều hành</span></span>
+                <span>Màu: <span th:text="${product.color}">Màu sắc</span></span>
+              </div>
+              <div class="product-price">
+                <span class="price" th:text="${#numbers.formatDecimal(product.sellingPrice, 0, 'POINT', 0, 'POINT') + 'đ'}">$799</span>
+  <!--              <span class="discount">$899</span>-->
+              </div>
+              <div class="product-actions">
+                <button class="btn btn-primary add-to-cart-btn" th:attr="data-product-id=${product.productId}, data-product-name=${product.name}, data-product-price=${product.sellingPrice}">
+                  Xem chi tiết sản phẩm &gt;&gt;
+                </button>
+                <button class="btn btn-outline"><i class="fas fa-heart"></i></button>
+              </div>
             </div>
-            <div class="product-price">
-              <span class="price" th:text="${#numbers.formatDecimal(product.sellingPrice, 0, 'POINT', 0, 'POINT') + 'đ'}">$799</span>
-<!--              <span class="discount">$899</span>-->
-            </div>
-            <div class="product-actions">
-              <button class="btn btn-primary add-to-cart-btn" th:attr="data-product-id=${product.productId}, data-product-name=${product.name}, data-product-price=${product.sellingPrice}">
-                <i class="fas fa-shopping-cart"></i>
-                Thêm vào giỏ hàng
-              </button>
-              <button class="btn btn-outline"><i class="fas fa-heart"></i></button>
-            </div>
-          </div>
+          </a>
         </div>
-
       </div>
       <div class="text-center mt-3">
-        <button class="btn-load-more">
+        <button class="btn-load-more" th:if="${hasMore}">
           Xem thêm sản phẩm <i class="fas fa-chevron-down"></i>
         </button>
       </div>
@@ -487,6 +422,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 
+<script src="assets/js/index.js" th:src="@{/assets/js/index.js}"></script>
 
 </body>
 </html>
