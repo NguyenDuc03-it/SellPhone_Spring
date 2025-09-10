@@ -288,6 +288,7 @@ public class ProductController {
                 .importPrice(variant.getImportPrice())
                 .sellingPrice(variant.getSellingPrice())
                 .quantity(variant.getQuantity())
+                .importDate(variant.getImportDate())
                 .build()).toList();
 
         specDTO.setVariants(variantDTOs);

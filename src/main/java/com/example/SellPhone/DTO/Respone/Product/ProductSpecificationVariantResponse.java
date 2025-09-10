@@ -14,4 +14,5 @@ public class ProductSpecificationVariantResponse {
     Long importPrice;
     Long sellingPrice;
     Integer quantity;
+    String importDate;
 }
