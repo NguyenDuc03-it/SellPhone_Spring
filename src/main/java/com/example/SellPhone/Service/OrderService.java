@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -66,7 +68,11 @@ public class OrderService {
     public void updateOrderStatus(@Valid OrderUpdateRequest request) {
         Order order = orderRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng"));
-
+        if(request.getStatus().equals("Đã hoàn thành")){
+            LocalDate today = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            order.setDeliveryTimeEnd(today.format(formatter));
+        }
         order.setOrderStatus(request.getStatus());
         orderRepository.save(order);
     }
