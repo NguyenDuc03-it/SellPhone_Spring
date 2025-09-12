@@ -127,10 +127,10 @@
                 <img th:src="${product.imageUrl}" th:alt="${product.color}" class="color-image">
                 <div class="color-details">
                   <span class="color-name" th:text="${product.color}">Titan Tự Nhiên</span>
-                  <span class="color-price" th:text="${#numbers.formatDecimal(currentPrice, 0, 'POINT', 0, 'POINT') + 'đ'}">25.390.000₫</span>
+                  <span class="color-price" th:text="${#numbers.formatDecimal(currentPrice, 0, 'POINT', 0, 'POINT') + 'đ'}" id="color-price-default">25.390.000₫</span>
                 </div>
               </div>
-              <div th:each="p : ${similarProducts}">
+              <th:block th:each="p : ${similarProducts}">
                 <div class="color-item"
                      th:data-color="${p.color}"
                      th:data-price="${#numbers.formatDecimal(priceByProductId[p.productId], 0, 'POINT', 0, 'POINT') + 'đ'}"
@@ -145,7 +145,7 @@
                     </span>
                   </div>
                 </div>
-              </div>
+              </th:block>
 
             </div>
           </div>

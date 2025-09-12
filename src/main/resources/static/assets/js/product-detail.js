@@ -58,6 +58,18 @@ function updatePrice() {
         const priceElement = document.getElementById('price');
         priceElement.textContent = formatCurrency(data.price) + 'đ';
 
+        // Tìm phần tử .color-item đang được chọn
+        const selectedColorItem = document.querySelector('.color-item.selected');
+
+        if (selectedColorItem) {
+            // Tìm phần tử con có class .color-price bên trong
+            const selectedColorPrice = selectedColorItem.querySelector('.color-price');
+
+            if (selectedColorPrice) {
+                selectedColorPrice.textContent = formatCurrency(data.price) + 'đ';
+            }
+        }
+
         // Cập nhật ảnh nếu có
         if (data.imageUrl) {
           const mainImage = document.querySelector('.carousel-inner .carousel-item.active img');
@@ -211,47 +223,53 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     addToCartBtn.addEventListener("click", function () {
-    const productId = this.dataset.productId;
-    const quantity = document.getElementById("quantity").value;
 
-    fetch("/cart/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        productId: productId,
-        quantity: quantity
-      })
-    })
-    .then(response => {
-      if (!response.ok) {
-        if (response.status === 401) {
-          // Người dùng chưa đăng nhập -> redirect tới trang login với redirect param
+        const selectedColorItem = document.querySelector(".color-item.selected");
+
+        const productId = selectedColorItem?.dataset.productId;
+        const quantity = document.getElementById("quantity").value;
+        const romRadio = document.querySelector("input[name='storage']:checked");
+        const rom = romRadio?.value;
+
+        fetch("/user/cart/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            productId: productId,
+            quantity: quantity,
+            rom : rom
+          })
+        })
+        .then(response => {
+          if (!response.ok) {
+            if (response.status === 401) {
+              // Người dùng chưa đăng nhập -> redirect tới trang login với redirect param
+              const currentUrl = window.location.pathname + window.location.search;
+              window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}`;
+            } else {
+              throw new Error("Lỗi khi thêm vào giỏ hàng");
+            }
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Cập nhật số lượng ở header
+          const cartCount = document.querySelector(".cart-count");
+          cartCount.textContent = data.totalItems;
+
+          // Thông báo
+          showSuccessNotification("Đã thêm sản phẩm vào giỏ hàng!");
+        })
+        .catch(error => {
+          console.error(error);
           const currentUrl = window.location.pathname + window.location.search;
           window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}`;
-        } else {
-          throw new Error("Lỗi khi thêm vào giỏ hàng");
-        }
-      }
-      return response.json();
-    })
-    .then(data => {
-      // Cập nhật số lượng ở header
-      const cartCount = document.querySelector(".cart-count");
-      cartCount.textContent = data.totalItems;
-
-      // Thông báo
-      showSuccessNotification("Đã thêm sản phẩm vào giỏ hàng!");
-    })
-    .catch(error => {
-      console.error(error);
-      const currentUrl = window.location.pathname + window.location.search;
-      window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}`;
+        });
     });
-    });
+    // Thêm sản phẩm vào giỏ hàng và hiển thị thông báo thành công end
 });
-// Thêm sản phẩm vào giỏ hàng và hiển thị thông báo thành công end
 
 function formatRom(rom) {
     if (rom >= 1000) {

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - TD Mobile</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" th:href="@{/assets/css/font-awesome.min.css}">
+    <link rel="stylesheet" href="assets/css/themify-icons.css" th:href="@{/assets/css/themify-icons.css}">
+    <link rel="stylesheet" href="assets/css/styles.css" th:href="@{/assets/css/styles.css}">
+    <link rel="stylesheet" href="assets/css/elements.css" th:href="@{/assets/css/elements.css}">
+    <link rel="stylesheet" href="assets/css/cart.css" th:href="@{/assets/css/cart.css}">
+    <link rel="stylesheet" href="assets/css/headerSell.css" th:href="@{/assets/css/headerSell.css}">
+    <link rel="stylesheet" href="assets/css/footerSell.css" th:href="@{/assets/css/footerSell.css}">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script th:src="@{/assets/js/cart.js}" src="assets/js/cart.js" defer></script>
+</head>
+<body>
+<!-- Gọi fragment vào file index.html -->
+<div th:replace="~{Fragments/Sell/header :: headerSellFragment}"></div>
+
+<!-- Breadcrumb -->
+<section class="breadcrumb-section mb-3 mt-3">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb m-0">
+                <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Giỏ hàng của bạn</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Thông báo thất bại với thanh tiến trình -->
+<div id="errorNotification" class="alert alert-danger" style="display:none;">
+    <strong>Thất bại!</strong><br>
+    <span id="errorMessageText"></span>
+    <div id="progressBar" class="progress mt-2" style="height: 5px;">
+        <div id="progress" class="progress-bar bg-danger" role="progressbar" style="width: 100%;"></div>
+    </div>
+</div>
+
+
+<div class="cart-container">
+    <!-- Cart Header -->
+    <div class="cart-header">
+        <div class="container">
+            <h1><i class="fas fa-shopping-cart"></i> Giỏ hàng của bạn</h1>
+        </div>
+    </div>
+
+    <!-- Cart Content -->
+    <div class="cart-content">
+        <div class="container">
+            <div class="cart-layout">
+                <!-- Cart Items Section -->
+                <div class="cart-items-section">
+                    <!-- Select All Header -->
+                    <div class="cart-header-controls">
+                        <div class="select-all">
+                            <input type="checkbox" id="selectAll" class="custom-checkbox">
+                            <label for="selectAll" class="mb-0">Chọn tất cả (3 sản phẩm)</label>
+                        </div>
+                        <div class="cart-actions">
+                            <button class="btn-text" id="deleteSelected">Xóa</button>
+                            <!-- <button class="btn-text" id="saveForLater">Lưu vào mục đã thích</button> -->
+                        </div>
+                    </div>
+
+                    <!-- Cart Items -->
+                    <div class="cart-items">
+                        <!-- Item -->
+                        <th:block th:each="item : ${cartItems}">
+                            <div class="cart-item" th:data-product-id="${item.productId}" th:data-cart-item-id="${item.cartItemId}" th:data-stock="${item.stock}">
+                            <div class="item-select">
+                                <input type="checkbox" class="item-checkbox custom-checkbox" th:data-price="${item.sellingPrice}" th:disabled="${item.stock <= 0}">
+                            </div>
+                            <div class="item-image">
+                                <img th:src="${item.imageUrl}" th:alt="${item.name}">
+                            </div>
+                            <div class="item-details">
+                                <h3 class="item-name mb-0" th:text="${item.name}">iPhone 14 Pro 128GB - Đen</h3>
+                                <span class="item-rom" th:text="${item.rom >= 1000 ? (item.rom % 1000 == 0 ? (item.rom / 1000) + 'TB' : (item.rom / 1000.0) + 'TB') : item.rom + 'GB'}">256GB</span>
+                                <span> - </span>
+                                <span class="item-color" th:text="${item.color}"></span>
+                                <p class="item-stock mb-0" th:text="${'Còn lại: ' + item.stock + ' sản phẩm'}" th:classappend="${item.stock == 0} ? ' text-danger' : ''"></p>
+                            </div>
+                            <div class="item-price">
+                                <span class="current-price" th:text="${#numbers.formatInteger(item.sellingPrice, 0, 'POINT') + '₫'}">24.990.000₫</span>
+                                <span class="original-price d-none">27.990.000₫</span>
+                            </div>
+                            <div class="item-quantity">
+                                <div class="quantity-controls">
+                                    <button class="qty-btn decrease">-</button>
+                                    <input type="text" class="qty-input" th:value="${item.quantity}" readonly>
+                                    <button class="qty-btn increase">+</button>
+                                </div>
+                            </div>
+                            <div class="item-total">
+                                <span class="total-price" th:text="${#numbers.formatInteger(item.quantity * item.sellingPrice, 0, 'POINT') + '₫'}">24.990.000₫</span>
+                            </div>
+                            <div class="item-actions">
+                                <button class="btn-action" title="Xóa">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        </th:block>
+                        <!-- End Item -->
+                    </div>
+                </div>
+
+                <!-- Cart Summary Section -->
+                <div class="cart-summary-section">
+                    <div class="summary-card">
+                        <div class="summary-header">
+                            <h3>Tóm tắt đơn hàng</h3>
+                        </div>
+
+                        <div class="voucher-section d-none">
+                            <div class="voucher-header">
+                                <i class="fas fa-ticket-alt"></i>
+                                <span>Voucher của Shop</span>
+                            </div>
+                            <div class="voucher-input">
+                                <input type="text" placeholder="Nhập mã voucher">
+                                <button class="btn-apply">Áp dụng</button>
+                            </div>
+                        </div>
+
+                        <div class="summary-details">
+                            <div class="summary-row">
+                                <span>Tạm tính (<span id="selectedCount">0</span> sản phẩm):</span>
+                                <span id="subtotal">0₫</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Phí vận chuyển:</span>
+                                <span id="shipping">Miễn phí</span>
+                            </div>
+                            <div class="summary-row discount-row">
+                                <span>Giảm giá voucher:</span>
+                                <span id="discount">-0₫</span>
+                            </div>
+                            <div class="summary-total">
+                                <span>Tổng thanh toán:</span>
+                                <span id="total">0₫</span>
+                            </div>
+                        </div>
+
+                        <button class="checkout-btn" id="checkoutBtn" disabled>
+                            Mua hàng (<span id="checkoutCount">0</span>)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal xác nhận xóa -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4>Xác nhận xóa</h4>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel">Hủy</button>
+            <button class="btn-confirm">Xóa</button>
+        </div>
+    </div>
+</div>
+
+<!-- Footer sẽ được load vào đây -->
+<div th:replace="~{Fragments/Sell/footer :: footerSellFragment}"></div>
+</body>
+</html>

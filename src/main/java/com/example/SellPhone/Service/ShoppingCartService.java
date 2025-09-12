@@ -1,8 +1,7 @@
 package com.example.SellPhone.Service;
 
-import com.example.SellPhone.Entity.CartItem;
-import com.example.SellPhone.Entity.ShoppingCart;
-import com.example.SellPhone.Entity.User;
+import com.example.SellPhone.DTO.Respone.ShoppingCart.CartItemRespone;
+import com.example.SellPhone.Entity.*;
 import com.example.SellPhone.Repository.ProductRepository;
 import com.example.SellPhone.Repository.ShoppingCartRepository;
 import com.example.SellPhone.Repository.UserRepository;
@@ -11,8 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +31,8 @@ public class ShoppingCartService {
     }
 
     // Thêm sản phẩm vào giỏ hàng
-    public void addItemToCart(Long userId, Long productId, int quantity) {
+    @Transactional
+    public void addItemToCart(Long userId, Long productId, int quantity, int rom) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
@@ -43,7 +44,7 @@ public class ShoppingCartService {
                 });
 
         Optional<CartItem> existingItem = cart.getItems().stream()
-                .filter(item -> item.getProduct().getProductId().equals(productId))
+                .filter(item -> item.getProduct().getProductId().equals(productId) && Objects.equals(item.getRom(), rom))
                 .findFirst();
 
         if (existingItem.isPresent()) {
@@ -52,10 +53,88 @@ public class ShoppingCartService {
             CartItem newItem = new CartItem();
             newItem.setProduct(productRepository.findById(productId).orElseThrow());
             newItem.setQuantity(quantity);
+            newItem.setRom(rom);
             newItem.setShoppingCart(cart);
             cart.getItems().add(newItem);
         }
 
+        shoppingCartRepository.save(cart);
+    }
+
+    public List<CartItemRespone> getCartItemsByUserId(Long userId) {
+         ShoppingCart cart = shoppingCartRepository.findByUser_UserId(userId);
+        if (cart == null) {
+            return Collections.emptyList();
+        }
+
+        List<CartItemRespone> cartItemDtos = new ArrayList<>();
+
+        for (CartItem item : cart.getItems()) {
+            Product product = item.getProduct();
+            Specification spec = product.getSpecification();
+
+            // Tìm variant phù hợp rom + specificationId
+            SpecificationVariant variant = spec.getVariants().stream()
+                    .filter(v -> v.getRom().equals(item.getRom())
+                            && v.getSpecification().getSpecificationId().equals(product.getSpecification().getSpecificationId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (variant != null) {
+                CartItemRespone dto = new CartItemRespone(
+                        item.getCartItemId(),
+                        product.getProductId(),
+                        product.getName(),
+                        product.getImageUrl(),
+                        item.getRom(),
+                        product.getColor(),
+                        variant.getSellingPrice(),
+                        item.getQuantity(),
+                        variant.getQuantity()
+                );
+                cartItemDtos.add(dto);
+            }
+        }
+
+        return cartItemDtos;
+    }
+
+    // Cập nhật số lượng sản phẩm trong giỏ hàng
+    @Transactional
+    public void updateCartItemQuantity(Long userId, Long cartItemId, int newQuantity) {
+        ShoppingCart cart = shoppingCartRepository.findByUser_UserId(userId);
+        if(cart == null) {
+            throw new NoSuchElementException("Không tìm thấy giỏ hàng của người dùng");
+        }
+        else{
+            Optional<CartItem> itemOpt = cart.getItems().stream()
+                    .filter(item -> item.getCartItemId().equals(cartItemId))
+                    .findFirst();
+
+            if (itemOpt.isPresent()) {
+                CartItem item = itemOpt.get();
+                item.setQuantity(newQuantity);
+                shoppingCartRepository.save(cart);
+            } else {
+                throw new NoSuchElementException("Không tìm thấy sản phẩm trong giỏ hàng");
+            }
+        }
+    }
+
+    @Transactional
+    public void deleteCartItemById(Long userId, Long cartItemId) {
+        ShoppingCart cart = shoppingCartRepository.findByUser_UserId(userId);
+        if (cart == null) {
+            throw new NoSuchElementException("Không tìm thấy giỏ hàng của người dùng");
+        }
+
+        boolean removed = cart.getItems().removeIf(item -> item.getCartItemId().equals(cartItemId));
+
+        if (!removed) {
+            throw new NoSuchElementException("Không tìm thấy sản phẩm trong giỏ hàng");
+        }
+
+        // Do trong ShoppingCart entity đã có orphanRemoval = true nên chỉ cần save lại cart
         shoppingCartRepository.save(cart);
     }
 }

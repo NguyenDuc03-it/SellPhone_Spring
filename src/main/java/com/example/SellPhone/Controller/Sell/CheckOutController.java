@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -36,8 +37,31 @@ public class CheckOutController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("redirectUrl", redirect));
         }
 
+        // chuyển thành danh sách để dùng chung trong /view
+        List<CheckOutRequest> requestList = List.of(request);
+
         // Có thể lưu vào session hoặc redirect luôn đến trang thanh toán với dữ liệu
-        session.setAttribute("checkoutData", request);
+        session.setAttribute("checkoutData", requestList);
+        return ResponseEntity.ok(Map.of("redirectUrl", "/user/checkout/view"));
+    }
+
+    @PostMapping("/from-cart")
+    public ResponseEntity<?> handleCartCheckout(
+            @RequestBody List<CheckOutRequest> requestList,
+            Principal principal,
+            HttpServletRequest httpRequest,
+            HttpSession session
+    ) {
+        if (principal == null) {
+            String redirect = "/login?redirect=" + httpRequest.getRequestURI();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("redirectUrl", redirect));
+        }
+
+        if (requestList == null || requestList.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Danh sách sản phẩm không hợp lệ"));
+        }
+
+        session.setAttribute("checkoutData", requestList);
         return ResponseEntity.ok(Map.of("redirectUrl", "/user/checkout/view"));
     }
 
@@ -47,7 +71,7 @@ public class CheckOutController {
             return "redirect:/login?redirect=/checkout/view";
         }
 
-        CheckOutRequest data = (CheckOutRequest) session.getAttribute("checkoutData");
+        List<CheckOutRequest> data = (List<CheckOutRequest>) session.getAttribute("checkoutData");
         if (data == null) {
             return "redirect:/"; // Hoặc show lỗi
         }

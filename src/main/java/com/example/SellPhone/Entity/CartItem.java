@@ -27,4 +27,7 @@ public class CartItem {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
+    @Column(name = "rom")
+    private Integer rom;
 }
