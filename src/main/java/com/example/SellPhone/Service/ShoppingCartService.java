@@ -137,4 +137,21 @@ public class ShoppingCartService {
         // Do trong ShoppingCart entity đã có orphanRemoval = true nên chỉ cần save lại cart
         shoppingCartRepository.save(cart);
     }
+
+    @Transactional
+    public void deleteCartItemById(Long userId, List<Long> cartItemIds) {
+        ShoppingCart cart = shoppingCartRepository.findByUser_UserId(userId);
+        if (cart == null) {
+            throw new NoSuchElementException("Không tìm thấy giỏ hàng của người dùng");
+        }
+
+        boolean removedAny = cart.getItems().removeIf(item -> cartItemIds.contains(item.getCartItemId()));
+
+        if (!removedAny) {
+            throw new NoSuchElementException("Không tìm thấy sản phẩm trong giỏ hàng để xóa");
+        }
+
+        // orphanRemoval = true -> tự động xóa CartItem tương ứng
+        shoppingCartRepository.save(cart);
+    }
 }

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -20,9 +22,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long orderId;
-
-//    @Column(name = "user_id")
-//    private Long userId;
 
     @Column(name = "delivery_adress")
     private String deliveryAdress;
@@ -49,4 +48,14 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @PrePersist
+    protected void onCreate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate now = LocalDate.now();
+        LocalDate deliveryDate = now.plusDays(5);
+
+        this.orderTime = now.format(formatter);
+        this.deliveryTimeEnd = deliveryDate.format(formatter);
+    }
 }

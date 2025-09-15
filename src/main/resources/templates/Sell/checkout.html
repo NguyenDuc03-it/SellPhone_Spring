@@ -21,7 +21,7 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-<!--  <script src="checkout.js" defer></script>-->
+  <script src="assets/js/checkout.js" th:src="@{/assets/js/checkout.js}" defer></script>
 </head>
 <body>
 
@@ -33,10 +33,8 @@
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb m-0">
-        <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
-        <li class="breadcrumb-item"><a href="#">Điện thoại</a></li>
-        <li class="breadcrumb-item"><a href="#">iPhone</a></li>
-        <li class="breadcrumb-item active">iPhone 14 Pro</li>
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Thanh toán</li>
       </ol>
     </nav>
   </div>
@@ -57,31 +55,27 @@
         <!-- Product Table Header -->
         <div class="product-table-header">
           <div class="col-name">Tên sản phẩm</div>
+          <div class="col-rom">ROM</div>
+          <div class="col-color">Màu</div>
           <div class="col-price">Giá</div>
           <div class="col-quantity">Số lượng</div>
           <div class="col-total">Tổng</div>
         </div>
 
         <!-- Product Row -->
-        <div class="product-row">
-          <div class="col-name">iPhone 14 Pro 128GB - Đen</div>
-          <div class="col-price">20.000.000₫</div>
-          <div class="col-quantity">2</div>
-          <div class="col-total">40.000.000₫</div>
-        </div>
-
-        <!-- Product Row 2 -->
-        <div class="product-row">
-          <div class="col-name">Samsung Galaxy S23 Ultra 256GB</div>
-          <div class="col-price">15.000.000₫</div>
-          <div class="col-quantity">1</div>
-          <div class="col-total">15.000.000₫</div>
+        <div class="product-row" th:each="item : ${checkoutData}">
+          <div class="col-name" th:text="${item.productName}">iPhone 14 Pro 128GB - Đen</div>
+          <div class="col-rom" th:text="${item.rom >= 1000 ? (item.rom % 1000 == 0 ? (item.rom / 1000) + 'TB' : (item.rom / 1000.0) + 'TB') : item.rom + 'GB'}">256GB</div>
+          <div class="col-color" th:text="${item.color}">Đỏ</div>
+          <div class="col-price" th:text="${item.price}">20.000.000₫</div>
+          <div class="col-quantity" th:text="${item.quantity}">2</div>
+          <div class="col-total" th:text="${#numbers.formatInteger(item.quantity * item.price, 0, 'POINT') + '₫'}">40.000.000₫</div>
         </div>
 
         <div class="summary-section">
           <div class="summary-row">
             <span>Tổng tiền sản phẩm:</span>
-            <span>55.000.000 ₫</span>
+            <span th:text="${#numbers.formatInteger(totalPrice, 0, 'POINT') + ' ₫'}">55.000.000 ₫</span>
           </div>
           <div class="summary-row">
             <span>Phí vận chuyển:</span>
@@ -89,7 +83,7 @@
           </div>
           <div class="summary-row total">
             <span>Tổng cộng:</span>
-            <span>55.000.000 ₫</span>
+            <span th:text="${#numbers.formatInteger(totalPrice, 0, 'POINT') + ' ₫'}">55.000.000 ₫</span>
           </div>
         </div>
       </div>
@@ -102,18 +96,18 @@
         </h3>
 
         <div class="form-group">
-          <label>Họ và tên *</label>
-          <input type="text" class="form-control" value="Ngo Van Nam" required>
+          <label class="text-danger">Họ và tên *</label>
+          <input type="text" class="form-control" th:value="${customer.fullname != null ? customer.fullname : 'Không xác định'}" required readonly>
         </div>
 
         <div class="form-group">
-          <label>Số điện thoại *</label>
-          <input type="tel" class="form-control" value="0854128229" required>
+          <label class="text-danger">Số điện thoại *</label>
+          <input type="tel" class="form-control" th:value="${customer.phone != null ? customer.phone : 'Không xác định'}" required readonly>
         </div>
 
         <div class="form-group">
-          <label>Địa chỉ *</label>
-          <input type="text" class="form-control" value="Bến Hổ, Phường Hổ, Thị xã Thuận Thành, Tỉnh Bắc Ninh" required>
+          <label class="text-danger">Địa chỉ *</label>
+          <input type="text" id="customer-address" class="form-control" th:value="${customer.address != null ? customer.address : 'Không xác định'}" required readonly>
         </div>
       </div>
 
@@ -124,8 +118,8 @@
           Phương thức thanh toán
         </h3>
 
-        <div class="payment-methods">
-          <div class="payment-option active">
+        <div class="payment-methods-order">
+          <div class="payment-option active" data-value="cod">
             <input type="radio" name="payment" value="cod" checked>
             <div class="payment-info">
               <div class="payment-title">Thanh toán khi nhận hàng (COD)</div>
@@ -134,13 +128,13 @@
             <i class="fas fa-money-bill-wave"></i>
           </div>
 
-          <div class="payment-option">
+          <div class="payment-option" data-value="vnpay">
             <input type="radio" name="payment" value="vnpay">
             <div class="payment-info">
               <div class="payment-title">VNPAY</div>
               <div class="payment-desc">Thanh toán qua ví điện tử VNPAY</div>
             </div>
-            <i class="fab fa-cc-visa"></i>
+            <i class="fa fa-credit-card"></i>
           </div>
         </div>
       </div>
@@ -164,7 +158,7 @@
 
       <div class="summary-row">
         <span>Tổng tiền sản phẩm:</span>
-        <span>55.000.000 ₫</span>
+        <span th:text="${#numbers.formatInteger(totalPrice, 0, 'POINT') + ' ₫'}">55.000.000 ₫</span>
       </div>
 
       <div class="summary-row">
@@ -174,10 +168,10 @@
 
       <div class="summary-row total">
         <span>Tổng thanh toán:</span>
-        <span>55.000.000 ₫</span>
+        <span th:text="${#numbers.formatInteger(totalPrice, 0, 'POINT') + ' ₫'}">55.000.000 ₫</span>
       </div>
 
-      <button class="checkout-btn">
+      <button class="checkout-btn" id="checkout-btn">
         <i class="fas fa-check"></i>
         Đặt hàng
       </button>

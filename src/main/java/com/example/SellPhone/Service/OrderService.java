@@ -1,10 +1,9 @@
 package com.example.SellPhone.Service;
 
+import com.example.SellPhone.DTO.Request.CheckOut.CheckOutRequest;
 import com.example.SellPhone.DTO.Request.Order.OrderUpdateRequest;
 import com.example.SellPhone.Entity.*;
-import com.example.SellPhone.Repository.OrderItemRepository;
-import com.example.SellPhone.Repository.OrderRepository;
-import com.example.SellPhone.Repository.SpecificationVariantRepository;
+import com.example.SellPhone.Repository.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +29,12 @@ public class OrderService {
 
     @Autowired
     private SpecificationVariantRepository variantRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // Kiểm tra xem khách hàng có đơn hàng nào chưa 'Đã giao' hoặc 'Đã hủy'
     public boolean hasPendingOrders(Long userId) {
@@ -112,5 +118,67 @@ public class OrderService {
     // Tính tổng doanh thu trong khoảng thời gian từ ngày bắt đầu đến ngày kết thúc
     public Long calculateTotalRevenue(String startDate, String endDate) {
         return orderRepository.calculateTotalRevenue(startDate, endDate);
+    }
+
+    // Tạo đơn hàng mới
+    public Order createOrder(List<CheckOutRequest> checkoutList, Long userId, String address, String paymentMethod) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+
+        long total = checkoutList.stream()
+                .mapToLong(item -> item.getPrice() * item.getQuantity())
+                .sum();
+
+        Order order = new Order();
+        order.setUser(user);
+        order.setDeliveryAdress(address);
+        order.setTotalPrice(total);
+        order.setPaymentMethod(paymentMethod.equals("cod") ? "Thanh toán khi nhận hàng" : paymentMethod);
+        order.setOrderStatus(paymentMethod.equals("cod") ? "Chờ xử lý" : "Chờ thanh toán");
+
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (CheckOutRequest item : checkoutList) {
+            Product product = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm ID: " + item.getProductId()));
+
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setProduct(product);
+            orderItem.setPrice(item.getPrice().longValue());
+            orderItem.setQuantity(item.getQuantity());
+            orderItem.setRom(item.getRom());
+            orderItems.add(orderItem);
+        }
+
+        order.setOrderItems(orderItems);
+        return orderRepository.save(order); // Save luôn cả Order + OrderItems
+    }
+
+    // Kiểm tra số lượng trước khi tạo đơn
+    public void validateStockBeforeOrder(List<CheckOutRequest> items) {
+        for (CheckOutRequest item : items) {
+            SpecificationVariant variant = variantRepository.findByProductIdAndRom(
+                    item.getProductId(), item.getRom())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy biến thể sản phẩm"));
+
+            if (variant.getQuantity() < item.getQuantity()) {
+                throw new RuntimeException("Sản phẩm trong đơn hàng không đủ số lượng trong kho.");
+            }
+        }
+    }
+
+    // Trừ số lượng khi đặt hàng thành công
+    public void reduceStockAfterOrder(Order order) {
+        for (OrderItem item : order.getOrderItems()) {
+            SpecificationVariant variant = variantRepository.findByProductIdAndRom(
+                    item.getProduct().getProductId(), item.getRom())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy biến thể sản phẩm"));
+
+            int newQuantity = variant.getQuantity() - item.getQuantity();
+            if (newQuantity < 0) throw new RuntimeException("Sản phẩm bị âm kho!"); // Lỗi logic
+
+            variant.setQuantity(newQuantity);
+            variantRepository.save(variant);
+        }
     }
 }

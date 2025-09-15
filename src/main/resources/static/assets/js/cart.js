@@ -322,6 +322,7 @@ checkoutBtn.addEventListener('click', function () {
     const selectedItems = Array.from(checkedBoxes).map(checkbox => {
         const cartItem = checkbox.closest('.cart-item');
         return {
+            cartItemId: parseInt(cartItem.getAttribute('data-cart-item-id')),
             productId: parseInt(cartItem.getAttribute('data-product-id')),
             productName: cartItem.querySelector('.item-name').textContent.trim(),
             color: cartItem.querySelector('.item-color').textContent.trim(),

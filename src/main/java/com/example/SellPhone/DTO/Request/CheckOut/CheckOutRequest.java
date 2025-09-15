@@ -16,10 +16,12 @@ public class CheckOutRequest  implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    Long cartItemId;
     Long productId;
     String productName;
     String color;
     Integer rom;
     Integer price;
     Integer quantity;
+    String paymentMethod;
 }

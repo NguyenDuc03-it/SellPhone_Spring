@@ -1,0 +1,75 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9f9f9;
+    color: #333;
+}
+
+/* Khung kết quả */
+.result-container {
+    max-width: 600px;
+    margin: 80px auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 40px 30px;
+    text-align: center;
+}
+
+.result-container h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #1762e8;
+    /* màu chủ đạo */
+}
+
+.result-container .status-success {
+    color: #2a9d8f;
+    font-weight: 700;
+}
+
+.result-container .status-fail {
+    color: #e63946;
+    font-weight: 700;
+}
+
+/* Nút bấm */
+.btn {
+    display: inline-block;
+    padding: 12px 30px;
+    margin: 10px 15px 0 15px;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #1762e8;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0f46b3;
+}
+
+.btn-secondary {
+    background-color: white;
+    color: #1762e8;
+    border: 2px solid #1762e8;
+}
+
+.btn-secondary:hover {
+    background-color: #dce6f9;
+    color:  #1762e8;
+    border-color:  #1762e8;
+
+}
