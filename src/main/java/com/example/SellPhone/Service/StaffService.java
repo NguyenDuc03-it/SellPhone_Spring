@@ -2,9 +2,11 @@ package com.example.SellPhone.Service;
 
 import com.example.SellPhone.Config.CustomUserDetails;
 import com.example.SellPhone.DTO.Request.User.UserCreationRequest;
+import com.example.SellPhone.DTO.Request.User.UserProfileUpdateRequest;
 import com.example.SellPhone.DTO.Request.User.UserUpdateRequest;
 import com.example.SellPhone.Entity.User;
 import com.example.SellPhone.Repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +28,7 @@ public class StaffService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Lấy thông tin khách hàng theo ID
+    // Lấy thông tin theo ID
     public User getStaffById(Long userId){
         return userRepository.findById(userId).orElseThrow(()-> new RuntimeException("Không tìm thấy người dùng"));
     }
@@ -174,5 +176,29 @@ public class StaffService {
         return userRepository.findById(userId)
                 .map(User::getFullname)
                 .orElse("Không xác định");
+    }
+
+    public void updateInfo(@Valid UserProfileUpdateRequest request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+
+        user.setFullname(request.getFullname());
+        user.setPhone(request.getPhone());
+        user.setCCCD(request.getCCCD());
+        user.setDob(convertDateFormat(request.getDob()));
+        user.setGender(request.getGender());
+        user.setAddress(request.getAddress());
+        user.setUpdatedBy(request.getUserId());
+        userRepository.save(user);
+    }
+
+    public void changePassword(Long userId, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+        user.setUpdatedBy(userId);
+        userRepository.save(user);
     }
 }

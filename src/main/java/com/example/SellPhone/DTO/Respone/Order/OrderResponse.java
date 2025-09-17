@@ -1,6 +1,7 @@
 package com.example.SellPhone.DTO.Respone.Order;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;

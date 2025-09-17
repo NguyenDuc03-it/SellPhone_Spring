@@ -181,4 +181,8 @@ public class OrderService {
             variantRepository.save(variant);
         }
     }
+
+    public List<Order> findOrdersByUserId(Long userId) {
+        return orderRepository.findByUser_UserId(userId);
+    }
 }

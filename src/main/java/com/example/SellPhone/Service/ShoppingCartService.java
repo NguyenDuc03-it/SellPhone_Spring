@@ -69,7 +69,11 @@ public class ShoppingCartService {
 
         List<CartItemRespone> cartItemDtos = new ArrayList<>();
 
-        for (CartItem item : cart.getItems()) {
+        List<CartItem> items = cart.getItems().stream()
+                .sorted(Comparator.comparing(CartItem::getCartItemId).reversed())
+                .toList();
+
+        for (CartItem item : items) {
             Product product = item.getProduct();
             Specification spec = product.getSpecification();
 

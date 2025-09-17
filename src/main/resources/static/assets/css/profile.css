@@ -62,6 +62,150 @@ body {
 .alphabet-name{
     font-size: 3rem;
 }
+/* Style áp dụng cho thông báo thành công */
+#successNotification {
+
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    width: 300px;
+    padding: 15px;
+    background-color: #eafaf1; /* Nền sáng hơn */
+    color: #28a745; /* Chữ xanh lá */
+    border-radius: 8px;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    animation: slideIn 0.5s ease-in-out;
+}
+
+#successNotification strong {
+    font-weight: bold;
+}
+
+#successNotification span {
+    display: block;
+    margin-top: 5px;
+    word-wrap: break-word;  /* Đảm bảo chữ không vượt ra ngoài */
+}
+
+#progressBar {
+    height: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    margin-top: 10px;
+}
+
+#progress {
+    width: 100%;
+    height: 5px;
+    background-color: #5cb85c;
+    border-radius: 3px;
+}
+
+/* Animation for sliding in */
+@keyframes slideIn {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* Style áp dụng cho thông báo thất bại */
+#errorNotification {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    width: 300px;
+    padding: 15px;
+    background-color: #f8d7da; /* Nền màu đỏ nhạt */
+    color: #dc3545; /* Chữ đỏ */
+    border-radius: 8px;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    animation: slideIn 0.5s ease-in-out;
+}
+
+#errorNotification strong {
+    font-weight: bold;
+}
+
+#errorNotification span {
+    display: block;
+    margin-top: 5px;
+    word-wrap: break-word;  /* Đảm bảo chữ không vượt ra ngoài */
+}
+
+#errorProgressBar {
+    height: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    margin-top: 10px;
+}
+
+#errorProgress {
+    width: 100%;
+    height: 5px;
+    background-color: #dc3545;
+    border-radius: 3px;
+}
+
+/* Style áp dụng cho thông báo thất bại (trường hợp lỗi không trả về từ BE) */
+#errorNotificationn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    width: 300px;
+    padding: 15px;
+    background-color: #f8d7da; /* Nền màu đỏ nhạt */
+    color: #dc3545; /* Chữ đỏ */
+    border-radius: 8px;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    animation: slideIn 0.5s ease-in-out;
+}
+
+#errorNotificationn strong {
+    font-weight: bold;
+}
+
+#errorNotificationn span {
+    display: block;
+    margin-top: 5px;
+    word-wrap: break-word;  /* Đảm bảo chữ không vượt ra ngoài */
+}
+
+#errorProgressBarr {
+    height: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    margin-top: 10px;
+}
+
+#errorProgresss {
+    width: 100%;
+    height: 5px;
+    background-color: #dc3545;
+    border-radius: 3px;
+}
+
+/* Animation for sliding in */
+@keyframes slideIn {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
 /* Profile Section */
 .profile-section {
     padding: 40px 0;
@@ -172,7 +316,7 @@ body {
 .menu-item {
     display: flex;
     align-items: center;
-    padding: 15px 20px;
+    padding: 20px;
     color: #4b5563;
     text-decoration: none;
     transition: all 0.3s ease;
@@ -390,7 +534,22 @@ body {
     color: #92400e;
 }
 
-.status-confirmed {
+.status-processing {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-pending-payment {
+    background-color: #e2e3e5;
+    color: #6c757d;
+}
+
+.status-canceled {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-completed {
     background-color: #d1fae5;
     color: #065f46;
 }
@@ -398,16 +557,6 @@ body {
 .status-shipping {
     background-color: #dbeafe;
     color: #1e40af;
-}
-
-.status-completed {
-    background-color: #dcfce7;
-    color: #166534;
-}
-
-.status-cancelled {
-    background-color: #fee2e2;
-    color: #991b1b;
 }
 
 .order-products {
@@ -418,6 +567,12 @@ body {
     display: flex;
     align-items: center;
     gap: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+}
+
+.product-item:last-child {
+    border-bottom: none;
 }
 
 .product-item img {
@@ -519,6 +674,52 @@ body {
     font-size: 24px;
     margin-left: 10px;
     color: #9ca3af;
+}
+
+/* Modal hủy đơn hàng */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9000;
+}
+
+.modal-profile {
+    background: #fff;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-header, .modal-footer {
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-body {
+    padding: 16px;
+}
+.modal-footer {
+    border-top: none;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.modal-close {
+    cursor: pointer;
+    font-size: 20px;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
 }
 
 /* Responsive Design */

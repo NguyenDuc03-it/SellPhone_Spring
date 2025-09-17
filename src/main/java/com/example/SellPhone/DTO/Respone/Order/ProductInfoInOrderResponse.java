@@ -11,9 +11,11 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductInfoInOrderResponse {
+    Long productId;
     String name;
     String color;
     int rom;
     Long price;
     int quantity;
+    String imageUrl;
 }

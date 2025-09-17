@@ -202,4 +202,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
       AND STR_TO_DATE(order_time, '%d/%m/%Y') BETWEEN STR_TO_DATE(:startDate, '%d/%m/%Y') AND STR_TO_DATE(:endDate, '%d/%m/%Y')
     """, nativeQuery = true)
     Double getAverageOrderPerCustomerByDate(@Param("startDate") String fromDate, @Param("endDate") String toDate);
+
+    List<Order> findByUser_UserId(Long userId);
 }

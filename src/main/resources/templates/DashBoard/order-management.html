@@ -227,10 +227,11 @@
                                     <td>
                                         <span class="badge"
                                               th:classappend="${order.orderStatus == 'Chờ xử lý' ? 'badge-secondary' :
+                                                              (order.orderStatus == 'Chờ thanh toán' ? 'badge-primary' :
                                                               (order.orderStatus == 'Đang xử lý' ? 'badge-warning' :
                                                               (order.orderStatus == 'Đang giao hàng' ? 'badge-info' :
                                                               (order.orderStatus == 'Đã hoàn thành' ? 'badge-success' :
-                                                              (order.orderStatus == 'Đã hủy' ? 'badge-danger' : 'badge-light'))))}"
+                                                              (order.orderStatus == 'Đã hủy' ? 'badge-danger' : 'badge-light')))))}"
                                               th:text="${order.orderStatus}">
                                         </span>
                                     </td>
@@ -351,6 +352,7 @@
                             <div class="form-group">
                                 <label>Trạng thái đơn hàng</label>
                                 <select class="form-control" id="updateOrderStatus" th:field="*{status}">
+                                    <option value="Chờ thanh toán">Chờ thanh toán</option>
                                     <option value="Chờ xử lý">Chờ xử lý</option>
                                     <option value="Đang xử lý">Đang xử lý</option>
                                     <option value="Đang giao hàng">Đang giao hàng</option>

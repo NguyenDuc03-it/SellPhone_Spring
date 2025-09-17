@@ -177,6 +177,7 @@ body {
     padding: 20px;
     border-bottom: 1px solid #f3f4f6;
     align-items: center;
+    cursor: pointer;
 }
 
 .cart-item:last-child {
@@ -614,7 +615,7 @@ body {
 
 .modal-header h4 {
     margin: 0;
-    color: #111827;
+    color: white;
 }
 
 .modal-close {
@@ -622,17 +623,13 @@ body {
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: #6b7280;
+    color: white;
     padding: 0;
     width: 24px;
     height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.modal-close:hover {
-    color: #111827;
 }
 
 .modal-body {

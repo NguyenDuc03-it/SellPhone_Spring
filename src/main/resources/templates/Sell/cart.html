@@ -79,7 +79,7 @@
                     <div class="cart-items">
                         <!-- Item -->
                         <th:block th:each="item : ${cartItems}">
-                            <div class="cart-item" th:data-product-id="${item.productId}" th:data-cart-item-id="${item.cartItemId}" th:data-stock="${item.stock}">
+                            <div class="cart-item" th:data-product-id="${item.productId}" th:data-cart-item-id="${item.cartItemId}" th:data-stock="${item.stock}" th:attr="onclick=|window.location.href='/product-detail/product/${item.productId}'|">
                             <div class="item-select">
                                 <input type="checkbox" class="item-checkbox custom-checkbox" th:data-price="${item.sellingPrice}" th:disabled="${item.stock <= 0}">
                             </div>

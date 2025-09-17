@@ -150,7 +150,8 @@ document.querySelectorAll('.qty-btn').forEach(btn => {
 // Hàm xóa một item trong giỏ hàng
 document.querySelectorAll('.btn-action').forEach(btn => {
     if (btn.querySelector('.fa-trash')) {
-        btn.addEventListener('click', function () {
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation(); // Ngăn sự kiện onclick lan lên phần tử cha khiến sự kiện onclick của cart-item bị kích hoạt
             const modal = document.getElementById('deleteModal');
             const cartItem = this.closest('.cart-item');
             const cartItemId = cartItem.getAttribute('data-cart-item-id');
