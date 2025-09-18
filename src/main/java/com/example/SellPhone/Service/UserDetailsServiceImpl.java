@@ -4,6 +4,7 @@ import com.example.SellPhone.Config.CustomUserDetails;
 import com.example.SellPhone.Entity.User;
 import com.example.SellPhone.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,20 +29,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Người dùng không tồn tại"));
 
-        if("Hoạt động".equals(user.getStatus())){
-            return new CustomUserDetails(
-                    user.getUserId(),
-                    user.getEmail(),
-                    user.getPassword(),
-                    user.getFullname(),
-                    getAuthorities(user)
-            );
-        }
-        else{
-            System.out.println("Tài khoản đã bị khóa");
-            throw new UsernameNotFoundException("Tài khoản đã bị khóa");
+        boolean isEnabled = "Hoạt động".equals(user.getStatus());
 
-        }
+        return new CustomUserDetails(
+                user.getUserId(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getFullname(),
+                getAuthorities(user),
+                isEnabled // truyền trạng thái hoạt động
+        );
 
     }
 

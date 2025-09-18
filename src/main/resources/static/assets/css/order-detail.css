@@ -48,9 +48,24 @@ body {
     font-size: 13px;
 }
 
-.status-shipping {
-    background-color: #dbeafe;
-    color: #1e40af;
+.status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-processing {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-pending-payment {
+    background-color: #e2e3e5;
+    color: #6c757d;
+}
+
+.status-canceled {
+    background-color: #f8d7da;
+    color: #721c24;
 }
 
 .status-completed {
@@ -58,14 +73,9 @@ body {
     color: #065f46;
 }
 
-.status-pending {
-    background-color: #fef3c7;
-    color: #92400e;
-}
-
-.status-cancelled {
-    background-color: #f8d7da;
-    color: #721c24;
+.status-shipping {
+    background-color: #dbeafe;
+    color: #1e40af;
 }
 
 .back-to-orders-link {

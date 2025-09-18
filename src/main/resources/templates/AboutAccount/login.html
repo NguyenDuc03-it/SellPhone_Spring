@@ -193,7 +193,7 @@
         <input type="hidden" name="redirect" th:value="${param.redirect}" />
         <!-- Hiển thị thông báo lỗi nếu có -->
         <div th:if="${param.error}" class="error-message">
-            <p style="color: red;">Tài khoản hoặc mật khẩu không đúng. Hoặc đã bị khóa.</p>
+            <p style="color: red;" th:text="${param.error}">Tài khoản hoặc mật khẩu không đúng. Hoặc đã bị khóa.</p>
         </div>
 
         <div class="options">

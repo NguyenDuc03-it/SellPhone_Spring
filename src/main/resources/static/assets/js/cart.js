@@ -369,5 +369,12 @@ deleteModal.addEventListener('click', function(e) {
 // Initialize summary
 updateSummary();
 
+// Ngăn click checkbox gây chuyển trang
+document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+  checkbox.addEventListener('click', e => {
+    e.stopPropagation();
+  });
+});
+
 console.log('Các hàm js giỏ hàng đã được khởi tạo thành công');
 });

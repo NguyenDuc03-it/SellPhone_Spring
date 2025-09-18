@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleViewOrderDetails(orderId) {
         console.log(`Viewing details for order ${orderId}`);
-        window.location.href = `/user/profile/order-history/order-detail`;
+        window.location.href = `/user/profile/order-history/order-detail/${orderId}`;
         // Implement order details modal
     }
 

@@ -118,7 +118,8 @@ public class ProfileController {
                     user.getEmail(),
                     user.getPassword(),
                     user.getFullname(),
-                    authorities
+                    authorities,
+                    "Hoạt động".equals(user.getStatus()) // Kiểm tra trạng thái hoạt động
             );
 
             // Lấy authentication hiện tại

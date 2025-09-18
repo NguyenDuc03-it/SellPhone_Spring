@@ -39,11 +39,24 @@
   <div class="order-detail-container">
     <!-- Order Detail Header -->
     <div class="order-detail-header">
-      <h1 class="order-title">Chi tiết đơn hàng #DH001234</h1>
+      <h1 class="order-title" th:text="'Chi tiết đơn hàng #DH' + ${order.orderId}">Chi tiết đơn hàng #DH</h1>
       <div class="order-meta">
-        <span class="order-date">Ngày đặt: 20/12/2024</span>
-        <span class="order-status status-shipping">
-                        <i class="fas fa-truck"></i> Đang giao hàng
+        <span class="order-date" th:text="'Ngày đặt: ' + ${order.orderTime}">Ngày đặt:</span>
+        <span class="order-status"
+        th:classappend="${order.orderStatus == 'Đang giao hàng'} ? 'status-shipping' :
+                        (${order.orderStatus == 'Đã hoàn thành'} ? 'status-completed' :
+                        (${order.orderStatus == 'Đã hủy'} ? 'status-canceled' :
+                        (${order.orderStatus == 'Chờ xử lý'} ? 'status-pending' :
+                        (${order.orderStatus == 'Chờ thanh toán'} ? 'status-pending-payment' :
+                        (${order.orderStatus == 'Đang xử lý'} ? 'status-processing' :'status-other')))))"
+        >
+                        <i class=""
+                           th:classappend="${order.orderStatus == 'Đang giao hàng'} ? 'fas fa-truck' :
+                        (${order.orderStatus == 'Đã hoàn thành'} ? 'fas fa-check-circle' :
+                        (${order.orderStatus == 'Đã hủy'} ? 'fas fa-times-circle' :
+                        (${order.orderStatus == 'Chờ xử lý'} ? 'fas fa-hourglass-half' :
+                        (${order.orderStatus == 'Chờ thanh toán'} ? 'fas fa-clock' :
+                        (${order.orderStatus == 'Đang xử lý'} ? 'fas fa-check-circle' :'fas fa-question-circle')))))"></i> <span th:text=" ${order.orderStatus != null ? order.orderStatus : 'Không xác định'}" class="ms-1">Đang giao hàng</span>
                     </span>
       </div>
       <a href="/user/profile?section=orders" class="back-to-orders-link">
@@ -114,9 +127,9 @@
             </h3>
           </div>
           <div class="card-body">
-            <p><strong>Nguyễn Văn An</strong></p>
-            <p>Số điện thoại: (+84) 123 456 789</p>
-            <p>Địa chỉ: 123 Đường ABC, Phường 1, Quận 1, TP. Hồ Chí Minh</p>
+            <p><strong th:text="${order.fullname}">Nguyễn Văn An</strong></p>
+            <p th:text="'Số điện thoại: ' + ${order.phone}">Số điện thoại:</p>
+            <p th:text="'Địa chỉ: ' + ${order.address}">Địa chỉ: 123 Đường ABC, Phường 1, Quận 1, TP. Hồ Chí Minh</p>
           </div>
         </div>
 
@@ -128,7 +141,7 @@
             </h3>
           </div>
           <div class="card-body">
-            <p>Thanh toán khi nhận hàng (COD)</p>
+            <p th:text="${order.paymentMethod == 'vnpay' ? 'Thanh toán trực tuyến (VNPAY)' : order.paymentMethod}">Thanh toán khi nhận hàng (COD)</p>
           </div>
         </div>
       </div>
@@ -145,7 +158,7 @@
           <div class="card-body">
             <div class="summary-row">
               <span>Tổng tiền sản phẩm:</span>
-              <span>29.990.000₫</span>
+              <span th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'POINT', 0, 'POINT') + 'đ'}">29.990.000₫</span>
             </div>
             <div class="summary-row">
               <span>Phí vận chuyển:</span>
@@ -157,7 +170,7 @@
             </div>
             <div class="summary-total">
               <span>Tổng cộng:</span>
-              <span class="total-price">29.890.000₫</span>
+              <span class="total-price" th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'POINT', 0, 'POINT') + 'đ'}">29.890.000₫</span>
             </div>
           </div>
         </div>
@@ -172,17 +185,17 @@
         </h3>
       </div>
       <div class="card-body">
-        <div class="product-list">
+        <div class="product-list" th:each="item : ${order.productInfos}">
           <!-- Product Item 1 -->
           <div class="product-item">
-            <img src="https://via.placeholder.com/80x80" alt="Product Image" class="product-image">
+            <img th:src="${item.imageUrl}" th:alt="${item.name}" class="product-image">
             <div class="product-info">
-              <h4 class="product-name">iPhone 15 Pro Max 256GB</h4>
-              <p class="product-meta">Màu: Titan Tự Nhiên</p>
-              <p class="product-quantity">Số lượng: 1</p>
+              <h4 class="product-name" th:text="${item.name}">iPhone 15 Pro Max 256GB</h4>
+              <p class="product-meta" th:text="'Màu: ' + ${item.color} + ' - '+ ${item.rom >= 1000 ? (item.rom % 1000 == 0 ? (item.rom / 1000) + 'TB' : (item.rom / 1000.0) + 'TB') : item.rom + 'GB'}">Màu: Titan Tự Nhiên</p>
+              <p class="product-quantity" th:text="'Số lượng: ' + ${item.quantity}">Số lượng: 1</p>
             </div>
             <div class="product-price-info">
-              <span class="product-price">29.990.000₫</span>
+              <span class="product-price" th:text="${#numbers.formatDecimal(item.price, 0, 'POINT', 0, 'POINT') + 'đ'}">29.990.000₫</span>
             </div>
           </div>
           <!-- Add more product items as needed -->
