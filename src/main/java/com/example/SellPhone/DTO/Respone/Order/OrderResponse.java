@@ -18,6 +18,7 @@ public class OrderResponse {
     String address;
     String orderTime;
     String orderStatus;
+    String deliveryTimeEnd;
     String paymentMethod;
     Long totalPrice;
     List<ProductInfoInOrderResponse> productInfos;

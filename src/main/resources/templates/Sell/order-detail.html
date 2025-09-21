@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chi tiết đơn hàng - TD Mobile</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
@@ -67,50 +66,57 @@
     <!-- Order Tracking -->
     <div class="order-tracking-section">
       <h3 class="section-title">Theo dõi đơn hàng</h3>
-      <div class="tracking-timeline step-3">
-        <div class="timeline-item completed">
+      <div class="tracking-timeline"
+           th:if="${order.orderStatus != 'Đã hủy'}"
+           th:classappend="
+            ${order.orderStatus == 'Chờ thanh toán'} ? 'step-1' :
+            (${order.orderStatus == 'Chờ xử lý'} ? 'step-2' :
+            (${order.orderStatus == 'Đang xử lý'} ? 'step-3' :
+            (${order.orderStatus == 'Đang giao hàng'} ? 'step-4' :
+            (${order.orderStatus == 'Đã hoàn thành'} ? 'step-5' : 'step-0'))))">
+        <div class="timeline-item" th:classappend="${order.orderStatus == 'Chờ thanh toán'} ? 'completed active' : '' ">
           <div class="timeline-icon"><i class="fas fa-clock"></i></div>
           <div class="timeline-content">
             <strong>Chờ thanh toán</strong>
-            <p>20/12/2024 10:30</p>
+            <p>Hãy thanh toán để đơn hàng được giao tới bạn sớm nhất có thể</p>
           </div>
         </div>
-        <div class="timeline-item completed">
+        <div class="timeline-item" th:classappend="${order.orderStatus == 'Chờ xử lý'} ? 'completed active' : '' ">
           <div class="timeline-icon"><i class="fas fa-hourglass-half"></i></div>
           <div class="timeline-content">
             <strong>Chờ xử lý</strong>
-            <p>20/12/2024 11:00</p>
+            <p>Đợi người bán xác nhận đơn hàng...</p>
           </div>
         </div>
-        <div class="timeline-item completed">
+        <div class="timeline-item" th:classappend="${order.orderStatus == 'Đang xử lý'} ? 'completed active' : '' ">
           <div class="timeline-icon"><i class="fas fa-spinner"></i></div>
           <div class="timeline-content">
             <strong>Đang xử lý</strong>
-            <p>20/12/2024 14:00</p>
+            <p>Người bán đang chuẩn bị hàng...</p>
           </div>
         </div>
-        <div class="timeline-item active">
+        <div class="timeline-item" th:classappend="${order.orderStatus == 'Đang giao hàng'} ? 'completed active' : '' ">
           <div class="timeline-icon"><i class="fas fa-truck"></i></div>
           <div class="timeline-content">
             <strong>Đang giao hàng</strong>
-            <p>Đơn hàng của bạn đang được giao</p>
+            <p>Đơn hàng của bạn đang được giao...</p>
           </div>
         </div>
-        <div class="timeline-item">
+        <div class="timeline-item" th:classappend="${order.orderStatus == 'Đã hoàn thành'} ? 'successed success-active' : '' ">
           <div class="timeline-icon"><i class="fas fa-check-circle"></i></div>
           <div class="timeline-content">
             <strong>Đã hoàn thành</strong>
-            <p>Dự kiến: 22/12/2024</p>
+            <p th:text="${order.orderStatus != 'Đã hoàn thành' ? 'Dự kiến: '+ order.deliveryTimeEnd: 'Đã giao: ' + order.deliveryTimeEnd}"></p>
           </div>
         </div>
       </div>
       <!-- Cancelled Status -->
-      <div class="tracking-timeline-cancelled" style="display: none;">
+      <div class="tracking-timeline" th:if="${order.orderStatus == 'Đã hủy'}">
         <div class="timeline-item cancelled">
           <div class="timeline-icon"><i class="fas fa-times-circle"></i></div>
           <div class="timeline-content">
-            <strong>Đã hủy</strong>
-            <p>Đơn hàng đã bị hủy vào 21/12/2024</p>
+            <strong class="text-danger">Đã hủy</strong>
+            <p class="text-danger">Đơn hàng đã bị hủy</p>
           </div>
         </div>
       </div>
@@ -164,7 +170,7 @@
               <span>Phí vận chuyển:</span>
               <span>Miễn phí</span>
             </div>
-            <div class="summary-row discount">
+            <div class="summary-row discount d-none">
               <span>Giảm giá voucher:</span>
               <span>-100.000₫</span>
             </div>

@@ -1,102 +1,76 @@
 <!doctype html>
-<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" class="no-js">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Đăng ký - TĐ Mobile</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/png" href="assets/images/icon/favicon.ico" th:href="@{assets/images/icon/favicon.ico}">
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css" th:href="@{assets/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="assets/css/font-awesome.min.css" th:href="@{assets/css/font-awesome.min.css}">
-    <link rel="stylesheet" href="assets/css/themify-icons.css" th:href="@{assets/css/themify-icons.css}">
-    <link rel="stylesheet" href="assets/css/metisMenu.css" th:href="@{assets/css/metisMenu.css}">
-    <link rel="stylesheet" href="assets/css/owl.carousel.min.css" th:href="@{assets/css/owl.carousel.min.css}">
-    <link rel="stylesheet" href="assets/css/slicknav.min.css" th:href="@{assets/css/slicknav.min.css}">
-    <!-- amchart css -->
-    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
-    <!-- others css -->
-    <link rel="stylesheet" href="assets/css/typography.css" th:href="@{assets/css/typography.css}">
-    <link rel="stylesheet" href="assets/css/default-css.css" th:href="@{assets/css/default-css.css}">
-    <link rel="stylesheet" href="assets/css/styles.css" th:href="@{assets/css/styles.css}">
-    <link rel="stylesheet" href="assets/css/responsive.css" th:href="@{assets/css/responsive.css}">
-    <!-- modernizr css -->
-    <script src="assets/js/vendor/modernizr-2.8.3.min.js" th:src="@{assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/register.css" th:href="@{/assets/css/register.css}">
+
 </head>
 
 <body>
-    <!--[if lt IE 8]>
-           <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>-->
-        <![endif]-->
-    <!-- preloader area start -->
-    <div id="preloader">
-        <div class="loader"></div>
+<a href="/" class="back-button"><i class="fas fa-arrow-left"></i> Trang chủ</a>
+<div class="regis-box">
+    <!-- Logo -->
+    <div class="logo">
+        <span>TĐ</span><span>Mobile</span>
     </div>
-    <!-- preloader area end -->
-    <!-- login area start -->
-    <div class="login-area">
-        <div class="container">
-            <div class="login-box ptb--100">
-                <form>
-                    <div class="login-form-head">
-                        <h4>Đăng ký</h4>
-                        <p>Xin chào, hãy đăng ký để có thể truy cập vào trang với tư cách khách hàng</p>
-                    </div>
-                    <div class="login-form-body">
-                        <div class="form-gp">
-                            <label for="exampleInputName1">Họ tên</label>
-                            <input type="text" id="exampleInputName1">
-                            <i class="ti-user"></i>
-                        </div>
-                        <div class="form-gp">
-                            <label for="exampleInputEmail1">Email</label>
-                            <input type="email" id="exampleInputEmail1">
-                            <i class="ti-email"></i>
-                        </div>
-                        <div class="form-gp">
-                            <label for="exampleInputPassword1">Mật khẩu</label>
-                            <input type="password" id="exampleInputPassword1">
-                            <i class="ti-lock"></i>
-                        </div>
-                        <div class="form-gp">
-                            <label for="exampleInputPassword2">Xác nhận mật khẩu</label>
-                            <input type="password" id="exampleInputPassword2">
-                            <i class="ti-lock"></i>
-                        </div>
-                        <div class="submit-btn-area">
-                            <button id="form_submit" type="submit">Đăng ký <i class="ti-arrow-right"></i></button>
-                            <div class="login-other row mt-4">
-                                <div class="col-6">
-                                    <a class="fb-login" href="#">Đăng nhập với <i class="fa fa-facebook"></i></a>
-                                </div>
-                                <div class="col-6">
-                                    <a class="google-login" href="#">Đăng nhập với <i class="fa fa-google"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-footer text-center mt-5">
-                            <p class="text-muted">Đã có tài khoản? <a href="/login">Đăng nhập</a></p>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- login area end -->
 
-    <!-- jquery latest version -->
-    <script src="assets/js/vendor/jquery-2.2.4.min.js" th:src="@{assets/js/vendor/jquery-2.2.4.min.js}"></script>
-    <!-- bootstrap 4 js -->
-    <script src="assets/js/popper.min.js" th:src="@{assets/js/popper.min.js}"></script>
-    <script src="assets/js/bootstrap.min.js" th:src="@{assets/js/bootstrap.min.js}"></script>
-    <script src="assets/js/owl.carousel.min.js" th:src="@{assets/js/owl.carousel.min.js}"></script>
-    <script src="assets/js/metisMenu.min.js" th:src="@{assets/js/metisMenu.min.js}"></script>
-    <script src="assets/js/jquery.slimscroll.min.js" th:src="@{assets/js/jquery.slimscroll.min.js}"></script>
-    <script src="assets/js/jquery.slicknav.min.js" th:src="@{assets/js/jquery.slicknav.min.js}"></script>
-    
-    <!-- others plugins -->
-    <script src="assets/js/plugins.js" th:src="@{assets/js/plugins.js}"></script>
-    <script src="assets/js/scripts.js" th:src="@{assets/js/scripts.js}"></script>
+    <h2 class="title">Đăng ký</h2>
+    <p>Chào mừng bạn! Hãy điền thông tin để tạo tài khoản mới.</p>
+    <form>
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Họ và tên">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" placeholder="Email">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="tel" placeholder="Số điện thoại">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Mật khẩu">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Xác nhận mật khẩu">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-id-card"></i>
+            <input type="text" placeholder="Số CCCD">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-map-marker-alt"></i>
+            <input type="text" placeholder="Địa chỉ">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-calendar-alt"></i>
+            <input type="text" placeholder="Ngày sinh" onfocus="(this.type='date')" onblur="(this.type='text')">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-venus-mars"></i>
+            <select>
+                <option value="" disabled selected>Chọn giới tính</option>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+            </select>
+        </div>
+        <button type="submit">Đăng ký →</button>
+    </form>
+    <div class="footer">
+        Đã có tài khoản? <a href="dang-nhap.html">Đăng nhập</a>
+    </div>
+</div>
+
 </body>
 
 </html>

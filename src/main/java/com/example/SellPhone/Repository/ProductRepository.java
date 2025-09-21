@@ -126,4 +126,122 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             nativeQuery = true)
     Page<ProductSummaryRespone> getProductSummaryWithPaging(Pageable pageable);
 
+
+
+//    @Query("""
+//        SELECT new com.example.SellPhone.DTO.Respone.Product.ProductSummaryRespone(
+//            p.productId, p.name, p.imageUrl, p.color, s.chipset, s.operatingSystem, sv.sellingPrice
+//        )
+//        FROM Product p
+//        JOIN p.category c
+//        JOIN p.specification s
+//        JOIN s.variants sv
+//        WHERE (:searchQuery IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :searchQuery, '%')))
+//          AND (:categories IS NULL OR c.name IN :categories)
+//          AND (:storages IS NULL OR sv.rom IN :storages)
+//          AND (:minPrice IS NULL OR sv.sellingPrice >= :minPrice)
+//          AND (:maxPrice IS NULL OR sv.sellingPrice <= :maxPrice)
+//        GROUP BY p.productId, p.name, p.imageUrl, p.color, s.chipset, s.operatingSystem, sv.sellingPrice
+//    """)
+//    Page<ProductSummaryRespone> searchProductsWithFilters(
+//        @Param("searchQuery") String searchQuery,
+//        @Param("categories") List<String> categories,
+//        @Param("storages") List<String> storages,
+//        @Param("minPrice") Long minPrice,
+//        @Param("maxPrice") Long maxPrice,
+//        Pageable pageable
+//    );
+
+
+    @Query("""
+        SELECT new com.example.SellPhone.DTO.Respone.Product.ProductSummaryRespone(
+            MIN(p.productId),
+            p.name,
+            MIN(p.imageUrl),
+            MIN(p.color),
+            MIN(spec.chipset),
+            MIN(spec.operatingSystem),
+            MIN(sv.sellingPrice)
+        )
+        FROM Product p
+        JOIN p.specification spec
+        JOIN spec.variants sv
+        JOIN p.category c
+        WHERE (:searchQuery IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :searchQuery, '%')))
+          AND (:categories IS NULL OR c.name IN :categories)
+          AND (:storages IS NULL OR sv.rom IN :storages)
+          AND (:minPrice IS NULL OR sv.sellingPrice >= :minPrice)
+          AND (:maxPrice IS NULL OR sv.sellingPrice <= :maxPrice)
+        GROUP BY p.name
+        ORDER BY MIN(sv.sellingPrice) DESC
+    """)
+    Page<ProductSummaryRespone> searchProductsOrderByPriceDesc(
+            @Param("searchQuery") String searchQuery,
+            @Param("categories") List<String> categories,
+            @Param("storages") List<String> storages,
+            @Param("minPrice") Long minPrice,
+            @Param("maxPrice") Long maxPrice,
+            Pageable pageable
+    );
+
+    @Query("""
+        SELECT new com.example.SellPhone.DTO.Respone.Product.ProductSummaryRespone(
+            MIN(p.productId),
+            p.name,
+            MIN(p.imageUrl),
+            MIN(p.color),
+            MIN(spec.chipset),
+            MIN(spec.operatingSystem),
+            MIN(sv.sellingPrice)
+        )
+        FROM Product p
+        JOIN p.specification spec
+        JOIN spec.variants sv
+        JOIN p.category c
+        WHERE (:searchQuery IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :searchQuery, '%')))
+          AND (:categories IS NULL OR c.name IN :categories)
+          AND (:storages IS NULL OR sv.rom IN :storages)
+          AND (:minPrice IS NULL OR sv.sellingPrice >= :minPrice)
+          AND (:maxPrice IS NULL OR sv.sellingPrice <= :maxPrice)
+        GROUP BY p.name
+        ORDER BY MIN(sv.sellingPrice) ASC
+    """)
+    Page<ProductSummaryRespone> searchProductsOrderByPriceAsc(
+            @Param("searchQuery") String searchQuery,
+            @Param("categories") List<String> categories,
+            @Param("storages") List<String> storages,
+            @Param("minPrice") Long minPrice,
+            @Param("maxPrice") Long maxPrice,
+            Pageable pageable
+    );
+
+    @Query("""
+        SELECT new com.example.SellPhone.DTO.Respone.Product.ProductSummaryRespone(
+            MIN(p.productId),
+            p.name,
+            MIN(p.imageUrl),
+            MIN(p.color),
+            MIN(spec.chipset),
+            MIN(spec.operatingSystem),
+            MIN(sv.sellingPrice)
+        )
+        FROM Product p
+        JOIN p.specification spec
+        JOIN spec.variants sv
+        JOIN p.category c
+        WHERE (:searchQuery IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :searchQuery, '%')))
+          AND (:categories IS NULL OR c.name IN :categories)
+          AND (:storages IS NULL OR sv.rom IN :storages)
+          AND (:minPrice IS NULL OR sv.sellingPrice >= :minPrice)
+          AND (:maxPrice IS NULL OR sv.sellingPrice <= :maxPrice)
+        GROUP BY p.name
+    """)
+    Page<ProductSummaryRespone> searchProductsWithFilters(
+        @Param("searchQuery") String searchQuery,
+        @Param("categories") List<String> categories,
+        @Param("storages") List<String> storages,
+        @Param("minPrice") Long minPrice,
+        @Param("maxPrice") Long maxPrice,
+        Pageable pageable
+    );
 }

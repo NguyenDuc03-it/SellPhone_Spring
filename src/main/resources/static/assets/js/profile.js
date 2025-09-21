@@ -147,18 +147,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 case 'view-detail':
                     handleViewOrderDetails(orderId);
                     break;
-                case 'buy-again':
-                    handleTrackOrder(orderId);
-                    break;
             }
         }
     });
-
-    // Order action handlers
-    function handleTrackOrder(orderId) {
-        showNotification(`Đang theo dõi đơn hàng ${orderId}`, 'info');
-        // Implement tracking logic
-    }
 
     function handleCancelOrder(orderId, orderElement) {
         const modal = document.getElementById('cancelOrderModal');
@@ -297,7 +288,6 @@ function renderActionButtons(statusKey) {
     if (statusKey === 'completed' || statusKey === 'canceled') {
         return `
             <button class="btn btn-outline" data-action="view-detail">Xem chi tiết</button>
-            <button class="btn btn-primary" data-action="buy-again">Mua lại</button>
         `;
     } else {
         return `

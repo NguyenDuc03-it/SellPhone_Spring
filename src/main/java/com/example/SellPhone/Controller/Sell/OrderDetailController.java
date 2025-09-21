@@ -38,6 +38,7 @@ public class OrderDetailController {
             orderDTO.setPhone(order.getUser().getPhone());
             orderDTO.setAddress(order.getUser().getAddress());
             orderDTO.setOrderTime(order.getOrderTime());
+            orderDTO.setDeliveryTimeEnd(order.getDeliveryTimeEnd());
             orderDTO.setOrderStatus(order.getOrderStatus());
             orderDTO.setPaymentMethod(order.getPaymentMethod());
             orderDTO.setTotalPrice(order.getTotalPrice());

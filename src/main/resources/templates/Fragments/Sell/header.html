@@ -26,15 +26,17 @@
       </div>
       <ul class="nav-menu mb-0">
         <li><a href="/">Trang chủ</a></li>
-        <li><a href="/product-detail.html">Điện thoại</a></li>
+        <li><a href="/product-search">Điện thoại</a></li>
         <li><a href="#">Phụ kiện</a></li>
         <li><a href="#">Liên hệ</a></li>
       </ul>
       <div class="right-section">
-        <div class="search-bar">
-          <input type="text" placeholder="Tìm kiếm...">
-          <button><i class="fas fa-search"></i></button>
-        </div>
+        <form th:action="@{/product-search/find}" method="get">
+          <div class="search-bar">
+            <input type="text" name="searchQuery" placeholder="Tìm kiếm..." id="header-search-uery">
+            <button type="submit"><i class="fas fa-search"></i></button>
+          </div>
+        </form>
         <div class="login-section">
           <!-- Login Button - Hiển thị khi chưa đăng nhập -->
           <a href="/login" class="login-btn" th:if="${username == null}">

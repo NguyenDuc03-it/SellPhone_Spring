@@ -319,4 +319,19 @@ public class ProductService {
     public List<ProductSummaryRespone> getSuggestedProducts(Long currentProductId, String currentProductName) {
         return productRepository.findSuggestedProducts(currentProductId, currentProductName);
     }
+
+    // Tìm kiếm sản phẩm với các bộ lọc (trang bán hàng)
+    public Page<ProductSummaryRespone> searchProducts(String searchQuery, List<String> categoryList, List<String> storageList,Long minPrice, Long maxPrice,  Pageable pageable) {
+        return productRepository.searchProductsWithFilters(searchQuery, categoryList, storageList, minPrice, maxPrice, pageable);
+    }
+
+    // Tìm kiếm sản phẩm với các bộ lọc và sắp xếp theo giá tăng dần
+    public Page<ProductSummaryRespone> searchProductsOrderByPriceAsc(String searchQuery, List<String> categoryList, List<String> storageList, Long minPriceVal, Long maxPriceVal, PageRequest of) {
+        return productRepository.searchProductsOrderByPriceAsc(searchQuery, categoryList, storageList, minPriceVal, maxPriceVal, of);
+    }
+
+    // Tìm kiếm sản phẩm với các bộ lọc và sắp xếp theo giá giảm dần
+    public Page<ProductSummaryRespone> searchProductsOrderByPriceDesc(String searchQuery, List<String> categoryList, List<String> storageList, Long minPriceVal, Long maxPriceVal, PageRequest of) {
+        return productRepository.searchProductsOrderByPriceDesc(searchQuery, categoryList, storageList, minPriceVal, maxPriceVal, of);
+    }
 }
