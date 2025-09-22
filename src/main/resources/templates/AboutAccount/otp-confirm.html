@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Mật Khẩu Mới - TD Mobile</title>
+    <title>Xác nhận OTP</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/reset-pass.css" th:href="@{/assets/css/reset-pass.css}">
-    <script th:src="@{/assets/js/reset-pass.js}" src="assets/js/reset-pass.js" defer></script>
+    <link rel="stylesheet" href="assets/css/otp-confirm.css" th:href="@{/assets/css/otp-confirm.css}">
+    <script th:src="@{/assets/js/otp-confirm.js}" src="assets/js/otp-confirm.js" defer></script>
 </head>
 <body>
 <a href="/" class="back-button"><i class="fas fa-arrow-left"></i> Trang chủ</a>
@@ -21,25 +21,34 @@
     </div>
 </div>
 
-<div class="reset-container">
-    <h2>Tạo mật khẩu mới</h2>
-    <p>Hãy nhật mật khẩu mới cho email<br><span class="user-email" th:text="${session.otpEmail}">emailcuaban@example.com</span></p>
+<!-- Thông báo thất bại với thanh tiến trình, lỗi được gửi từ client (JS)-->
+<div id="errorNotificationn" class="alert alert-danger" style="display:none;">
+    <strong>Thất bại!</strong><br>
+    <span id="errorMessageText"></span>
+    <div id="progressBarr" class="progress mt-2" style="height: 5px;">
+        <div id="progresss" class="progress-bar bg-danger" role="progressbar" style="width: 100%;"></div>
+    </div>
+</div>
 
-    <form th:action="@{/forgot-password/reset-password/change}" method="post" id="reset-form">
-        <div class="input-group">
-            <input type="password" id="new_password" name="newPassword" placeholder="Nhập mật khẩu mới" required>
-            <i class="fas fa-eye-slash toggle-password" id="toggle_new_password"></i>
-        </div>
-        <div class="input-group" id="confirmPasswordGroup">
-            <input type="password" id="confirm_password" name="confirmPassword" placeholder="Xác nhận mật khẩu mới" required>
-            <i class="fas fa-eye-slash toggle-password" id="toggle_confirm_password"></i>
-        </div>
-        <div id="passwordError" style="font-size: 12px; display: none; color: red; text-align: start; margin-left: 5px">
-            Mật khẩu và xác nhận mật khẩu không khớp!
+<div class="otp-container">
+    <h2>Xác nhận OTP</h2>
+    <p>Mã OTP đã được chúng tôi gửi đến email <br><span class="user-email" th:text="${session.otpEmail}">emailcuaban@example.com</span></p>
+
+    <form th:action="@{/forgot-password/verify-otp}" method="post" id="otp-form" >
+        <div class="otp-inputs">
+            <input type="number" maxlength="1" name="otp" oninput="this.value=this.value.slice(0,1)">
+            <input type="number" maxlength="1" name="otp" oninput="this.value=this.value.slice(0,1)" disabled>
+            <input type="number" maxlength="1" name="otp" oninput="this.value=this.value.slice(0,1)" disabled>
+            <input type="number" maxlength="1" name="otp" oninput="this.value=this.value.slice(0,1)" disabled>
+            <input type="number" maxlength="1" name="otp" oninput="this.value=this.value.slice(0,1)" disabled>
+            <input type="number" maxlength="1" name="otp" oninput="this.value=this.value.slice(0,1)" disabled>
         </div>
 
-        <button type="submit">Lưu mật khẩu</button>
+        <button type="submit" id="submitBtn" disabled>Xác nhận</button>
     </form>
+    <div class="resend-link">
+        Chưa nhận được mã? <a href="#" id="resendBtn">Gửi lại (<span id="countdown">60</span>s)</a>
+    </div>
 </div>
 
 <!-- Script for error notification -->

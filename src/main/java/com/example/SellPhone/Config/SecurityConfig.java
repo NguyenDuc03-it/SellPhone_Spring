@@ -32,7 +32,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login", "/register", "/").permitAll()
+                        .requestMatchers("/login", "/register/**", "/", "/forgot-password/**").permitAll()
                         .requestMatchers("/assets/**").permitAll() // Cho phép truy cập tài nguyên tĩnh (css, js, img)
                         .requestMatchers("/static/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()

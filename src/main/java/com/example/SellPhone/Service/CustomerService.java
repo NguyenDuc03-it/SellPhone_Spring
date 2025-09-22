@@ -78,6 +78,50 @@ public class CustomerService {
         return savedUser;
     }
 
+    // Tạo khách hàng mới trang register
+    public User createNewCustomer(UserCreationRequest request){
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setFullname(request.getFullname());
+        user.setPhone(request.getPhone());
+        user.setCCCD(request.getCCCD());
+        user.setAddress(request.getAddress());
+        user.setRole("Khách hàng");
+
+        // Chuyển đổi ngày sinh từ yyyy-MM-dd thành dd/MM/yyyy
+        String formattedDob = convertDateFormat(request.getDob());
+        user.setDob(formattedDob);
+
+        user.setGender(request.getGender());
+        user.setStatus("Hoạt động");
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        user.setPassword(encodedPassword);
+
+        // Lưu khách hàng vào cơ sở dữ liệu
+        User savedUser = null;
+        try {
+            // Lưu khách hàng vào cơ sở dữ liệu
+            savedUser = userRepository.save(user);
+        } catch (Exception e) {
+            // Log lỗi khi tạo khách hàng và ném ngoại lệ
+            throw new RuntimeException("Lỗi khi tạo khách hàng");
+        }
+
+        // Nếu tạo khách hàng thành công, thực hiện tạo giỏ hàng
+        try {
+            // Tạo giỏ hàng
+            ShoppingCart shoppingCart = new ShoppingCart();
+            shoppingCart.setUser(savedUser);
+            shoppingCartRepository.save(shoppingCart);
+        } catch (Exception e) {
+            // Log lỗi khi tạo giỏ hàng và ném ngoại lệ
+            throw new RuntimeException("Lỗi khi tạo giỏ hàng cho khách hàng: ");
+        }
+
+        return savedUser;
+    }
+
     // Hiển thị danh sách user có role là 'Khách hàng'
     public Page<User> getCustomer(Pageable pageable){
         return userRepository.findByRole("Khách hàng", pageable);
@@ -227,5 +271,18 @@ public class CustomerService {
         user.setPassword(encodedPassword);
         user.setUpdatedBy(userId);
         userRepository.save(user);
+    }
+
+    public boolean updateCustomerPasswordByEmail(String email, String newPassword) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if(user.isEmpty()){
+            throw new RuntimeException("Không tìm thấy người dùng");
+        }
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.get().setPassword(encodedPassword);
+        user.get().setUpdatedBy(user.get().getUserId());
+        userRepository.save(user.get());
+        return true;
     }
 }

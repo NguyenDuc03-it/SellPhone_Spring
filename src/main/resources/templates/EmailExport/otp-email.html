@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" class="no-js">
+
+<head>
+  <meta charset="UTF-8">
+  <title>OTP Xác nhận</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body style="margin: 0; padding: 0; background-color: #e0e7ff; font-family: 'Poppins', sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: #e0e7ff; padding: 30px 0;">
+  <tr>
+    <td align="center">
+      <table width="600" cellpadding="0" cellspacing="0"
+             style="background-color: #ffffff; border-radius: 12px; padding: 30px; text-align: left;">
+
+        <!-- Thanh gradient -->
+        <tr>
+          <td
+                  style="height: 5px; background: linear-gradient(135deg, #6a11cb, #2575fc); border-radius: 8px 8px 0 0;">
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding-top: 20px; font-size: 28px; font-weight: 800; letter-spacing: 1.5px;">
+            <span style="color: #2575fc; margin-right: 5px;">TĐ</span><span
+                  style="color: #444; font-weight: 600;">Mobile</span>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding-top: 20px;">
+            <h2 style="color: #333; margin: 0;">Xác nhận quên mật khẩu</h2>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="color: #444; font-size: 15px; line-height: 1.6;">
+            <p>Xin chào,</p>
+            <p>Bạn vừa yêu cầu đặt lại mật khẩu. Đây là mã OTP để xác nhận:</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td align="center" style="padding: 20px 0;">
+            <div
+                    style="font-size: 32px; font-weight: bold; color: #1e88e5; background: #e3f2fd; padding: 12px 20px; border-radius: 10px; display: inline-block; letter-spacing: 6px;"
+                    th:text="${otp}">
+              [[OTP]]
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="color: #444; font-size: 15px; line-height: 1.6;">
+            <p>Vui lòng sử dụng mã này trong vòng <strong>5 phút</strong>. Không chia sẻ mã với bất kỳ ai để đảm bảo bảo
+              mật.</p>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding-top: 30px; font-size: 12px; color: #888; text-align: center;">
+            Email được gửi tự động từ hệ thống TĐ Mobile. Vui lòng không trả lời email này.<br>
+            © 2025 TĐ Mobile. All rights reserved.
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+
+</html>

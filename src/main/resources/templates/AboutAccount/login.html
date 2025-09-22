@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập</title>
+    <title>Đăng nhập - TD Mobile</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/font-awesome.min.css">
@@ -172,9 +172,19 @@
 <!--<div id="preloader">-->
 <!--    <div class="loader"></div>-->
 <!--</div>-->
+
+<!-- Thông báo thành công với thanh tiến trình -->
+<div id="successNotification" class="alert alert-success" th:if="${successMessage}">
+    <strong>Thành công!</strong><br>
+    <span th:text="${successMessage}"></span>
+    <div id="progressBar" class="progress mt-2" style="height: 5px;">
+        <div id="progress" class="progress-bar bg-success" role="progressbar" style="width: 100%;"></div>
+    </div>
+</div>
+
 <div class="login-box">
     <!-- Logo -->
-    <div class="logo">
+    <div class="logo" onclick="window.location.href='/'" style="cursor: pointer;">
         <span>TĐ</span><span>Mobile</span>
     </div>
 
@@ -198,14 +208,68 @@
 
         <div class="options">
             <label class="d-flex align-items-center mr-3 show-pass"><input type="checkbox" id="showPasswordCheckbox"> Hiện mật khẩu</label>
-            <a href="#">Quên mật khẩu?</a>
+            <a href="/forgot-password">Quên mật khẩu?</a>
         </div>
         <button type="submit">Đăng nhập →</button>
     </form>
     <div class="footer">
-        Chưa có tài khoản? <a href="#">Đăng ký</a>
+        Chưa có tài khoản? <a href="/register">Đăng ký</a>
     </div>
 </div>
+
+<!--Style áp dụng cho thông báo thành công-->
+<style>
+    #successNotification {
+
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    width: 300px;
+    padding: 15px;
+    background-color: #eafaf1; /* Nền sáng hơn */
+    color: #28a745; /* Chữ xanh lá */
+    border-radius: 8px;
+    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    animation: slideIn 0.5s ease-in-out;
+    }
+
+    #successNotification strong {
+    font-weight: bold;
+    }
+
+    #successNotification span {
+    display: block;
+    margin-top: 5px;
+    word-wrap: break-word;  /* Đảm bảo chữ không vượt ra ngoài */
+    }
+
+    #progressBar {
+    height: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    margin-top: 10px;
+    }
+
+    #progress {
+    width: 100%;
+    height: 5px;
+    background-color: #5cb85c;
+    border-radius: 3px;
+    }
+
+    /* Animation for sliding in */
+    @keyframes slideIn {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+    }
+</style>
 
 <!-- Font Awesome -->
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
@@ -219,6 +283,42 @@
             passwordInput.setAttribute('type', 'password');
         }
     });
+</script>
+<!-- Script for success notification -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var successMessage = /*[[${successMessage}]]*/ 'null';
+    if (successMessage !== 'null') {
+        var successNotification = document.getElementById('successNotification');
+        var successProgressBar = document.getElementById('progress');
+        var successProgress = 100; // Initial value of the progress bar
+
+        // Display the notification
+        successNotification.style.display = 'block';
+
+        // Progress bar decreases from 100% to 0%
+        var successInterval = setInterval(function() {
+            if (successProgress > 0) {
+                successProgress -= 1;
+                successProgressBar.style.width = successProgress + '%';
+            } else {
+                clearInterval(successInterval); // Stop the progress when it reaches 0%
+                setTimeout(function() {
+                    successNotification.style.display = 'none'; // Hide the notification after completion
+                }, 500); // Wait 500ms for the progress bar to disappear gradually
+            }
+        }, 30); // Every 30ms, decrease the progress bar by 1%
+
+        // Hide the notification after 5 seconds (along with the progress bar)
+        setTimeout(function() {
+            if (successProgress > 0) { // If the progress bar is not yet completed
+                clearInterval(successInterval); // Stop the progress bar
+                successProgressBar.style.width = '0%'; // Set the progress bar to 0%
+                successNotification.style.display = 'none'; // Hide the notification
+            }
+        }, 5000); // 5000 ms = 5 seconds
+    }
+    /*]]>*/
 </script>
 </body>
 

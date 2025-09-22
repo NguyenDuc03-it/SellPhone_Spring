@@ -1,6 +1,7 @@
 package com.example.SellPhone.Controller.Account;
 
 
+import com.example.SellPhone.DTO.Request.User.UserCreationRequest;
 import com.example.SellPhone.DTO.Respone.Product.BestSellingProductResponse;
 import com.example.SellPhone.DTO.Respone.Product.ProductSummaryRespone;
 import com.example.SellPhone.Service.DashboardService;
@@ -64,9 +65,14 @@ public class AccountController {
 
     // Mở trang đăng ký
     @GetMapping("/register")
-    public String register_(Model model){ return "AboutAccount/register";}
+    public String register_(Model model){
+        model.addAttribute("customer", new UserCreationRequest());
+        return "AboutAccount/register";
+    }
 
     // Mở trang quên mật khẩu
     @GetMapping("/forgot-password")
-    public String forgotPassword_(Model model){ return "AboutAccount/forgot-password";}
+    public String forgotPassword_(Model model){
+        return "AboutAccount/forgot-password";
+    }
 }
