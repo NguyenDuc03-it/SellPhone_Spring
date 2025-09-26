@@ -101,7 +101,7 @@
                     <div class="user-profile pull-right">
                         <img class="avatar user-thumb" src="../../static/assets/images/author/avatar.png" alt="avatar" th:src="@{/assets/images/author/avatar.png}">
                         <h4 class="user-name dropdown-toggle" data-toggle="dropdown" th:text="${username}"><i class="fa fa-angle-down"></i></h4>
-                        <div class="dropdown-menu">
+                        <div class="dropdown-menu" style="right: 0px !important; left: 0px !important;">
                             <a class="dropdown-item" href="/management/profile">Thông tin cá nhân</a>
                             <a class="dropdown-item" href="/logout">Đăng xuất</a>
                         </div>
@@ -119,7 +119,7 @@
                             <div class="card">
                                 <div class="seo-fact sbg1">
                                     <div class="p-4 d-flex justify-content-between flex-column" style="gap: 0.5rem;">
-                                        <div class="seofct-icon"><i class="ti-thumb-up"></i> Tổng số nhân viên</div>
+                                        <div class="seofct-icon"><i class="ti-user"></i> Tổng số nhân viên</div>
                                         <h2 th:text="${totalStaff}">2,315</h2>
                                     </div>
 <!--                                    <canvas id="seolinechart1" height="50"></canvas>-->
@@ -130,7 +130,7 @@
                             <div class="card">
                                 <div class="seo-fact sbg1">
                                     <div class="p-4 d-flex justify-content-between flex-column" style="gap: 0.5rem;">
-                                        <div class="seofct-icon"><i class="ti-thumb-up"></i> Tổng số khách hàng</div>
+                                        <div class="seofct-icon"><i class="ti-user"></i> Tổng số khách hàng</div>
                                         <h2 th:text="${totalCustomers}">2,315</h2>
                                     </div>
 <!--                                    <canvas id="seolinechart2" height="50"></canvas>-->
@@ -141,7 +141,7 @@
                             <div class="card">
                                 <div class="seo-fact sbg1">
                                     <div class="p-4 d-flex justify-content-between flex-column" style="gap: 0.5rem;">
-                                        <div class="seofct-icon"><i class="ti-thumb-up"></i> Tổng số sản phẩm</div>
+                                        <div class="seofct-icon"><i class="fa fa-mobile"></i> Tổng số sản phẩm</div>
                                         <h2 th:text="${totalProducts}">2,315</h2>
                                     </div>
 <!--                                    <canvas id="seolinechart3" height="50"></canvas>-->
@@ -152,7 +152,7 @@
                             <div class="card">
                                 <div class="seo-fact sbg1">
                                     <div class="p-4 d-flex justify-content-between flex-column" style="gap: 0.5rem;">
-                                        <div class="seofct-icon"><i class="ti-thumb-up"></i> Lợi nhuận tháng này</div>
+                                        <div class="seofct-icon"><i class="ti-money"></i> Lợi nhuận tháng này</div>
                                         <h2 th:text="${#numbers.formatDecimal(monthlyRevenue, 0, 'POINT', 0, 'POINT') + 'đ'}">100.000.000đ</h2>
                                     </div>
 <!--                                    <canvas id="seolinechart4" height="50"></canvas>-->
@@ -163,7 +163,7 @@
                             <div class="card">
                                 <div class="seo-fact sbg1">
                                     <div class="p-4 d-flex justify-content-between flex-column" style="gap: 0.5rem;">
-                                        <div class="seofct-icon"><i class="ti-thumb-up"></i> Đơn hàng đang chờ xử lý</div>
+                                        <div class="seofct-icon"><i class="ti-timer"></i> Đơn hàng đang chờ xử lý</div>
                                         <h2 th:text="${totalPendingOrders}">2,315</h2>
                                     </div>
 <!--                                    <canvas id="seolinechart5" height="50"></canvas>-->
@@ -174,7 +174,7 @@
                             <div class="card">
                                 <div class="seo-fact sbg1">
                                     <div class="p-4 d-flex justify-content-between flex-column" style="gap: 0.5rem;">
-                                        <div class="seofct-icon"><i class="ti-thumb-up"></i> Đơn hàng đang xử lý</div>
+                                        <div class="seofct-icon"><i class="fa fa-hourglass-half"></i> Đơn hàng đang xử lý</div>
                                         <h2 th:text="${totalProcessingOrders}">2,315</h2>
                                     </div>
 <!--                                    <canvas id="seolinechart6" height="50"></canvas>-->

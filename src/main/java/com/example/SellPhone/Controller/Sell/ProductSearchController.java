@@ -1,6 +1,7 @@
 package com.example.SellPhone.Controller.Sell;
 
 import com.example.SellPhone.DTO.Respone.Product.ProductSummaryRespone;
+import com.example.SellPhone.Service.CategoryService;
 import com.example.SellPhone.Service.ProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,15 +27,16 @@ import java.util.List;
 public class ProductSearchController {
 
     ProductService productService;
+    CategoryService categoryService;
 
-    @GetMapping
-    public String productSearch(@RequestParam(value = "page", defaultValue = "0") int page, Model model) {
-        Pageable firstPage = PageRequest.of(page, 8);
-        Page<ProductSummaryRespone> firstProducts = productService.getProductSummary(firstPage);
-
-        model.addAttribute("productSummary", firstProducts);
-        return "Sell/product-search";
-    }
+//    @GetMapping
+//    public String productSearch(@RequestParam(value = "page", defaultValue = "0") int page, Model model) {
+//        Pageable firstPage = PageRequest.of(page, 8);
+//        Page<ProductSummaryRespone> firstProducts = productService.getProductSummary(firstPage);
+//
+//        model.addAttribute("productSummary", firstProducts);
+//        return "Sell/product-search";
+//    }
 
     @GetMapping("/search")
     @ResponseBody
@@ -66,15 +68,49 @@ public class ProductSearchController {
     @GetMapping("/find")
     public String productSearch(@RequestParam(value = "page", defaultValue = "0") int page,
                                               Model model,
+                                              @RequestParam(value = "minPrice", required = false) String minPrice,
+                                              @RequestParam(value = "maxPrice", required = false) String maxPrice,
                                               @RequestParam(value = "searchQuery", required = false) String searchQuery,
                                               @RequestParam(value = "sort", required = false) String sort) {
 
         Pageable pageable = PageRequest.of(page, 8, getSort(sort));
-        Page<ProductSummaryRespone> products = productService.searchProducts(searchQuery, null, null, null, null, pageable);
+        Long minPriceVal = (minPrice == null || minPrice.isEmpty()) ? null : Long.valueOf(minPrice);
+        Long maxPriceVal = (maxPrice == null || maxPrice.isEmpty()) ? null : Long.valueOf(maxPrice);
+        Page<ProductSummaryRespone> products = productService.searchProducts(searchQuery, null, null, minPriceVal, maxPriceVal, pageable);
 
         model.addAttribute("productSummary", products);
         return "Sell/product-search";
     }
+
+    @GetMapping
+    public String productSearch(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "minPrice", required = false) String minPrice,
+            @RequestParam(value = "maxPrice", required = false) String maxPrice,
+            Model model) {
+
+        Pageable firstPage = PageRequest.of(page, 8);
+        Page<ProductSummaryRespone> firstProducts;
+
+        // Lấy danh sách category dưới dạng List<String> (do service cần)
+        List<String> categoryList = (category != null && !category.isEmpty()) ? List.of(category) : null;
+
+        Long minPriceVal = (minPrice == null || minPrice.isEmpty()) ? null : Long.valueOf(minPrice);
+        Long maxPriceVal = (maxPrice == null || maxPrice.isEmpty()) ? null : Long.valueOf(maxPrice);
+
+        // Gọi service để tìm sản phẩm theo category
+        firstProducts = productService.searchProducts(null, categoryList, null, minPriceVal, maxPriceVal, firstPage);
+
+        model.addAttribute("productSummary", firstProducts);
+        model.addAttribute("selectedCategory", category);
+        model.addAttribute("minPriceVal", minPriceVal);
+        model.addAttribute("maxPriceVal", maxPriceVal);
+        model.addAttribute("listCategory", categoryService.findAll());
+
+        return "Sell/product-search";
+    }
+
 
     private Sort getSort(String sort) {
         if (sort == null || sort.equals("default")) return Sort.by("name").ascending();

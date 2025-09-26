@@ -275,7 +275,7 @@ public class CheckOutController {
 
         if ("cod".equalsIgnoreCase(method)) {
             orderService.reduceStockAfterOrder(order);
-            return ResponseEntity.ok(Map.of("redirectUrl", "/user/profile"));
+            return ResponseEntity.ok(Map.of("redirectUrl", "/user/profile?section=orders"));
         } else {
             // VNPay: Redirect đến URL thanh toán với orderId
             String redirectUrl = "/user/checkout/create?amount=" + order.getTotalPrice()

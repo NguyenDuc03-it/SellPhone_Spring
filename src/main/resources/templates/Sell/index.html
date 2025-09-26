@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TD Mobile - Phone Sales</title>
+  <title>TD Mobile - Trang chủ</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <!-- Bootstrap CSS -->
@@ -11,12 +11,11 @@
   <link rel="stylesheet" href="assets/css/font-awesome.min.css" th:href="@{/assets/css/font-awesome.min.css}">
   <link rel="stylesheet" href="assets/css/themify-icons.css" th:href="@{/assets/css/themify-icons.css}">
   <link rel="stylesheet" href="assets/css/styles.css" th:href="@{/assets/css/styles.css}">
-  <link rel="stylesheet" href="assets/css/elements.css" th:href="@{/assets/css/elements.css}">
-  <link rel="stylesheet" href="assets/css/index.css" th:href="@{/assets/css/index.css}">
   <link rel="stylesheet" href="assets/css/headerSell.css" th:href="@{/assets/css/headerSell.css}">
   <link rel="stylesheet" href="assets/css/footerSell.css" th:href="@{/assets/css/footerSell.css}">
-  <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-<!--  <script src="header.js"></script>-->
+  <link rel="stylesheet" href="assets/css/elements.css" th:href="@{/assets/css/elements.css}">
+  <link rel="stylesheet" href="assets/css/index.css" th:href="@{/assets/css/index.css}">
+  <script th:src="@{/assets/js/headerSell.js}" src="assets/js/headerSell.js" defer></script>
 </head>
 <style>
   .carousel-item img {
@@ -97,11 +96,13 @@
     <div class="brands-wrapper">
       <div class="brand-logos-wrapper">
         <div class="brand-logos">
-          <div class="brand"><img th:src="@{/assets/images/logo/logoApple.webp}" alt="Apple"></div>
-          <div class="brand"><img th:src="@{/assets/images/logo/logoSamSung.png}" alt="Samsung"></div>
-          <div class="brand"><img th:src="@{/assets/images/logo/xiaomi.svg}" alt="Xiaomi"></div>
-          <div class="brand"><img th:src="@{/assets/images/logo/logoOppo.webp}" alt="Oppo"></div>
-          <div class="brand"><img th:src="@{/assets/images/logo/logoVivo-s.png}" alt="Vivo"></div>
+          <div class="brand" onclick="window.location.href='/product-search?category=Apple'"><img th:src="@{/assets/images/logo/logoApple.webp}" alt="Apple"></div>
+          <div class="brand" onclick="window.location.href='/product-search?category=SamSung'"><img th:src="@{/assets/images/logo/logoSamSung.png}" alt="Samsung"></div>
+          <div class="brand" onclick="window.location.href='/product-search?category=Xiaomi'"><img th:src="@{/assets/images/logo/xiaomi.svg}" alt="Xiaomi"></div>
+          <div class="brand" onclick="window.location.href='/product-search?category=Oppo'"><img th:src="@{/assets/images/logo/logoOppo.webp}" alt="Oppo"></div>
+          <div class="brand" onclick="window.location.href='/product-search?category=Vivo'"><img th:src="@{/assets/images/logo/logoVivo-s.png}" alt="Vivo"></div>
+          <div class="brand" onclick="window.location.href='/product-search?category=OnePlus'"><img th:src="@{/assets/images/logo/logoOneplus.png}" alt="OnePlus"></div>
+          <div class="brand" onclick="window.location.href='/product-search?category=Realme'"><img th:src="@{/assets/images/logo/logoRealme.webp}" alt="Realme"></div>
         </div>
       </div>
     </div>
@@ -290,7 +291,6 @@
       <div class="product-grid">
         <div class="product-card" th:each="product : ${productSummary}">
           <a th:href="@{'/product-detail/product/' + ${product.productId}}" class="product-link">
-            <div class="badge">Hot</div>
             <div class="product-thumb">
               <img th:src="${product.imageUrl}" th:alt="${product.name}">
             </div>
@@ -310,7 +310,6 @@
                 <button class="btn btn-primary add-to-cart-btn" th:attr="data-product-id=${product.productId}, data-product-name=${product.name}, data-product-price=${product.sellingPrice}">
                   Xem chi tiết sản phẩm &gt;&gt;
                 </button>
-                <button class="btn btn-outline"><i class="fas fa-heart"></i></button>
               </div>
             </div>
           </a>
@@ -331,8 +330,8 @@
   <div class="container">
     <div class="promo-content">
       <h2>Ưu đãi đặc biệt</h2>
-      <h3>Giảm giá 15% cho tất cả phụ kiện</h3>
-      <p>Khi bạn mua bất kỳ chiếc điện thoại nào</p>
+      <h3>Miễn 100% phí vận chuyển cho tất cả đơn hàng</h3>
+      <p>Mua điện thoại ngay nào</p>
       <a href="#" class="btn btn-light">Mua điện thoại</a>
     </div>
   </div>
@@ -345,27 +344,27 @@
       <p>Tìm thiết bị hoàn hảo cho nhu cầu của bạn</p>
     </div>
     <div class="category-grid">
-      <div class="category-card">
+      <div class="category-card" data-min-price="25000000" data-max-price="" onclick="window.location.href='/product-search?minPrice=25000010&maxPrice='">
         <div class="category-thumb">
-          <img src="https://via.placeholder.com/400x300" alt="Flagship Phones">
+          <img th:src="@{/assets/images/product/flagship-phones-banner.png}" alt="Flagship Phones trên 25tr">
         </div>
         <div class="category-details">
           <h3>Điện thoại hàng đầu</h3>
           <a href="#" class="category-link">Xem chi tiết <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
-      <div class="category-card">
+      <div class="category-card" data-min-price="11000000" data-max-price="25000000" onclick="window.location.href='/product-search?minPrice=11000000&maxPrice=25000000'">
         <div class="category-thumb">
-          <img src="https://via.placeholder.com/400x300" alt="Mid-range Phones">
+          <img th:src="@{/assets/images/product/mid-ranges-phone-banner.png}" alt="Mid-range Phones trên 10tr đến 25tr">
         </div>
         <div class="category-details">
           <h3>Điện thoại tầm trung</h3>
           <a href="#" class="category-link">Xem chi tiết <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
-      <div class="category-card">
+      <div class="category-card" data-min-price="" data-max-price="10999999" onclick="window.location.href='/product-search?minPrice=&maxPrice=10999999'">
         <div class="category-thumb">
-          <img src="https://via.placeholder.com/400x300" alt="Budget Phones">
+          <img th:src="@{/assets/images/product/budget-phones-banner.png}" alt="Budget Phones 10tr trở xuống">
         </div>
         <div class="category-details">
           <h3>Điện thoại bình dân</h3>
@@ -403,7 +402,7 @@
   </div>
 </section>
 
-<section class="newsletter">
+<section class="newsletter d-none">
   <div class="container">
     <div class="newsletter-content">
       <h2>Đăng ký nhận bản tin của chúng tôi</h2>

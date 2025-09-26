@@ -15,7 +15,7 @@
     <script src="assets/js/profile.js" th:src="@{/assets/js/profile.js}" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-
+    <script th:src="@{/assets/js/headerSell.js}" src="assets/js/headerSell.js" defer></script>
 </head>
 <body>
 
@@ -106,12 +106,16 @@
 
                     <div class="account-info-grid">
                         <input type="hidden" name="userId" th:value="${user.userId}" />
+                        <input type="hidden" name="email" th:value="${user.email}" />
                         <div class="info-item">
                             <label>Họ và tên</label>
                             <input type="text" id="fullname" name="fullname" th:value="${user.fullname}" required
                                    class="form-control"
                                    oninvalid="this.setCustomValidity('Họ và tên không được để trống')"
                                    oninput="this.setCustomValidity('')" disabled>
+                            <div th:if="${#fields.hasErrors('fullname')}" class="error text-danger mb-2 text-start">
+                                <small th:errors="*{fullname}">Lỗi</small>
+                            </div>
                         </div>
                         <div class="info-item">
                             <label>CCCD</label>
@@ -119,6 +123,9 @@
                                    class="form-control"
                                    oninvalid="this.setCustomValidity('CCCD chỉ gồm 12 chữ số')"
                                    oninput="this.setCustomValidity('')" disabled>
+                            <div th:if="${#fields.hasErrors('CCCD')}" class="error text-danger mb-2 text-start">
+                                <small th:errors="*{CCCD}">Lỗi</small>
+                            </div>
                         </div>
                         <div class="info-item">
                             <label>Số điện thoại</label>
@@ -127,13 +134,20 @@
                                    pattern="^(\+84|0)[0-9]{9}$" required
                                    oninvalid="this.setCustomValidity('Số điện thoại không hợp lệ, bắt đầu +84 hoặc 0 và 10 chữ số')"
                                    oninput="this.setCustomValidity('')" disabled>
+                            <div th:if="${#fields.hasErrors('phone')}" class="error text-danger mb-2 text-start">
+                                <small th:errors="*{phone}">Lỗi</small>
+                            </div>
                         </div>
+
                         <div class="info-item date-input">
                             <label>Ngày sinh</label>
                             <input type="date" id="dob" name="dob" th:value="${user.dob}" required
                                    class="form-control"
                                    oninvalid="this.setCustomValidity('Ngày sinh không được để trống')"
                                    oninput="this.setCustomValidity('')" disabled>
+                            <div th:if="${#fields.hasErrors('dob')}" class="error text-danger mb-2 text-start">
+                                <small th:errors="*{dob}">Lỗi</small>
+                            </div>
                         </div>
                         <div class="info-item">
                             <label>Giới tính</label>
@@ -151,6 +165,9 @@
                                    pattern="^[\\p{L}\\s,\\.\\-0-9]+$"
                                    oninvalid="this.setCustomValidity('Địa chỉ không hợp lệ')"
                                    oninput="this.setCustomValidity('')" disabled>
+                            <div th:if="${#fields.hasErrors('fullname')}" class="error text-danger mb-2 text-start">
+                                <small th:errors="*{fullname}">Lỗi</small>
+                            </div>
                         </div>
                     </div>
                 </form>

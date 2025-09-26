@@ -1,6 +1,9 @@
 .brands {
-    padding: 40px 0;
+    padding: 15px 0;
     background-color: white;
+    user-select: none;
+    -webkit-user-select: none;     /* Safari */
+    -ms-user-select: none;
 }
 
 .brand img{
@@ -54,7 +57,7 @@
 }
 
 .brand {
-    flex: 1 1 150px;
+    flex: 0 0 150px;
     /* Mỗi logo chiếm ít nhất 150px, có thể co giãn */
     display: flex;
     justify-content: center;

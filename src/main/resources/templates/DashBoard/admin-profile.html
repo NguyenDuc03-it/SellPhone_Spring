@@ -81,7 +81,7 @@
           <div class="user-profile pull-right">
             <img class="avatar user-thumb" th:src="@{/assets/images/author/avatar.png}" alt="avatar">
             <h4 class="user-name dropdown-toggle" data-toggle="dropdown" th:text="${user.fullname}"><i class="fa fa-angle-down"></i></h4>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu" style="right: 0px !important; left: 0px !important;">
               <a class="dropdown-item" href="/management/profile">Thông tin cá nhân</a>
               <a class="dropdown-item" href="/logout">Đăng xuất</a>
             </div>
@@ -128,6 +128,7 @@
                     </div>
 
                       <input type="hidden" name="userId" th:value="${user.userId}" />
+                    <input type="hidden" name="email" th:value="${user.email}" />
                       <div class="form-row">
                         <div class="form-group col-md-6">
                           <label for="fullName">Họ và tên</label>
@@ -135,6 +136,9 @@
                                  class="form-control"
                                  oninvalid="this.setCustomValidity('Họ và tên không được để trống')"
                                  oninput="this.setCustomValidity('')" disabled>
+                          <div th:if="${#fields.hasErrors('fullname')}" class="error text-danger mb-2 text-start">
+                            <small th:errors="*{fullname}">Lỗi</small>
+                          </div>
                         </div>
                         <div class="form-group col-md-6">
                           <label for="staffId">Mã nhân viên</label>
@@ -149,6 +153,9 @@
                                  pattern="^(\+84|0)[0-9]{9}$" required
                                  oninvalid="this.setCustomValidity('Số điện thoại không hợp lệ, bắt đầu +84 hoặc 0 và 10 chữ số')"
                                  oninput="this.setCustomValidity('')" disabled>
+                          <div th:if="${#fields.hasErrors('phone')}" class="error text-danger mb-2 text-start">
+                            <small th:errors="*{phone}">Lỗi</small>
+                          </div>
                         </div>
                         <div class="form-group col-md-6">
                           <label for="dob">Ngày sinh</label>
@@ -156,6 +163,9 @@
                                  class="form-control"
                                  oninvalid="this.setCustomValidity('Ngày sinh không được để trống')"
                                  oninput="this.setCustomValidity('')" disabled>
+                          <div th:if="${#fields.hasErrors('dob')}" class="error text-danger mb-2 text-start">
+                            <small th:errors="*{dob}">Lỗi</small>
+                          </div>
                         </div>
                       </div>
                       <div class="form-row">
@@ -165,6 +175,9 @@
                                  class="form-control"
                                  oninvalid="this.setCustomValidity('CCCD chỉ gồm 12 chữ số')"
                                  oninput="this.setCustomValidity('')" disabled>
+                          <div th:if="${#fields.hasErrors('CCCD')}" class="error text-danger mb-2 text-start">
+                            <small th:errors="*{CCCD}">Lỗi</small>
+                          </div>
                         </div>
                         <div class="form-group col-md-6">
                           <label>Giới tính</label>
@@ -183,6 +196,9 @@
                                pattern="^[\\p{L}\\s,\\.\\-0-9]+$"
                                oninvalid="this.setCustomValidity('Địa chỉ không hợp lệ')"
                                oninput="this.setCustomValidity('')" disabled>
+                        <div th:if="${#fields.hasErrors('address')}" class="error text-danger mb-2 text-start">
+                          <small th:errors="*{address}">Lỗi</small>
+                        </div>
                       </div>
                   </form>
                 </div>

@@ -77,6 +77,11 @@ function updateProductList(data) {
                     <div class="product-price">
                         <span class="price">${formatCurrency(product.sellingPrice)}</span>
                     </div>
+                    <div class="product-actions">
+                        <button class="btn btn-primary add-to-cart-btn" th:attr="data-product-id=${product.productId}, data-product-name=${product.name}, data-product-price=${product.sellingPrice}">
+                            Xem chi tiết sản phẩm &gt;&gt;
+                        </button>
+                    </div>
                 </div>
             </a>
         `;

@@ -18,6 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="assets/js/product-search.js" th:src="@{/assets/js/product-search.js}" defer></script>
+    <script th:src="@{/assets/js/headerSell.js}" src="assets/js/headerSell.js" defer></script>
 </head>
 <body>
 <!-- Gọi fragment vào file index.html -->
@@ -80,25 +81,9 @@
                         <input type="checkbox" id="category-all" name="category" value="" checked>
                         <label for="category-all">Tất cả</label>
                     </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="category-iphone" name="category" value="Apple">
-                        <label for="category-iphone">iPhone</label>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="category-samsung" name="category" value="Samsung">
-                        <label for="category-samsung">Samsung</label>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="category-xiaomi" name="category" value="Xiaomi">
-                        <label for="category-xiaomi">Xiaomi</label>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="category-oppo" name="category" value="Oppo">
-                        <label for="category-oppo">Oppo</label>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="category-vivo" name="category" value="Vivo">
-                        <label for="category-vivo">Vivo</label>
+                    <div class="filter-option" th:each="category : ${listCategory}">
+                        <input type="checkbox" th:id="'category-'+${category.name}" name="category" th:value="${category.name}" th:checked="${selectedCategory} == ${category.name}">
+                        <label th:for="'category-'+${category.name}" th:text="${category.name}"></label>
                     </div>
                 </div>
             </div>
@@ -143,6 +128,10 @@
                     <div class="filter-option">
                         <input type="checkbox" id="storage-1tb" name="storage" value="1000">
                         <label for="storage-1tb">1TB</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="storage-2tb" name="storage" value="2000">
+                        <label for="storage-2tb">2TB</label>
                     </div>
                 </div>
             </div>
@@ -236,15 +225,15 @@
             <nav class="pagination-section" id="pagination-section">
                 <ul class="pagination justify-content-center" id="pagination">
                     <li class="page-item" th:classappend="${productSummary.hasPrevious()} ? '' : 'disabled'">
-                        <a class="page-link" href="?page=0"  th:href="@{/product-search(page=${productSummary.number - 1}, searchQuery=${searchQuery})}" tabindex="-1">Trước</a>
+                        <a class="page-link" href="?page=0"  th:href="@{/product-search(page=${productSummary.number - 1}, searchQuery=${searchQuery}, category=${selectedCategory}, minPrice=${minPriceVal}, maxPrice=${maxPriceVal})}" tabindex="-1">Trước</a>
                     </li>
                     <!-- Lặp qua các trang -->
                     <li class="page-item" th:each="i : ${#numbers.sequence(0, productSummary.totalPages - 1)}"
                         th:classappend="${i == productSummary.number ? 'active' : ''}">
-                        <a class="page-link" th:href="@{/product-search(page=${i}, searchQuery=${searchQuery})}">[[${i + 1}]]</a>
+                        <a class="page-link" th:href="@{/product-search(page=${i}, searchQuery=${searchQuery}, category=${selectedCategory}, minPrice=${minPriceVal}, maxPrice=${maxPriceVal})}">[[${i + 1}]]</a>
                     </li>
                     <li class="page-item" th:classappend="${productSummary.hasNext()} ? '' : 'disabled'">
-                        <a class="page-link" th:href="@{/product-search(page=${productSummary.number + 1}, searchQuery=${searchQuery})}" >Sau</a>
+                        <a class="page-link" th:href="@{/product-search(page=${productSummary.number + 1}, searchQuery=${searchQuery}, category=${selectedCategory}, minPrice=${minPriceVal}, maxPrice=${maxPriceVal})}" >Sau</a>
                     </li>
                 </ul>
             </nav>

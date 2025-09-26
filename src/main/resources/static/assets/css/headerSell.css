@@ -204,7 +204,7 @@ button.no-effect:hover {
   border-color: #e5e7eb !important;
 }
 .custom-menu {
-  width: 12rem;
+  width: 100%;
 }
 
 .user-info {
@@ -270,11 +270,31 @@ button.no-effect:hover {
     display: flex !important;
 }
 
+#searchBarMenu.active{
+    display: flex;
+}
+
+#searchBarMenu{
+    display: none;
+}
+
 /* Header Responsive */
+@media (min-width: 993px){
+    #searchBarMenu{
+        display: none !important;
+    }
+}
+
 @media (max-width: 992px) {
+    .logo,
+    .menu-toggle {
+        position: relative;
+        z-index: 1001;
+    }
+
     .nav-menu {
         position: fixed;
-        top: 80px;
+        top: 110px;
         left: -100%;
         background-color: white;
         width: 100%;
@@ -306,9 +326,6 @@ button.no-effect:hover {
 }
 
 @media (max-width: 768px) {
-    .top-bar .container {
-        flex-direction: column;
-    }
 
     .contact-info, .user-actions {
         margin: 5px 0;
@@ -318,5 +335,36 @@ button.no-effect:hover {
     .login-section .login-btn {
         padding: 6px 12px;
         font-size: 14px;
+    }
+}
+
+@media (max-width: 365px){
+    #searchBarMenu.active{
+        display: block !important;
+    }
+}
+
+@media (max-width: 213px){
+    nav .container{
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 460px){
+    .sell-user-name{
+        display: none;
+    }
+    .contact-info span:nth-child(2) {
+      display: none;
+    }
+}
+
+@media (max-width: 286px){
+    .contact-info span:nth-child(1) {
+      display: none;
+    }
+
+    .top-bar .container .user-actions{
+        justify-content: end;
     }
 }

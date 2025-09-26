@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
   const loadMoreBtn = document.querySelector(".btn-load-more");
-  const productGrid = document.querySelector(".product-grid");
+  const productGrid = document.querySelector(".product-listing .product-grid");
 
   let page = 1; // Trang 0 đã load ở server
-  const size = 6;
+  const size = 15;
 
   loadMoreBtn.addEventListener("click", function () {
     fetch(`/more-products?page=${page}&size=${size}`)
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const card = document.createElement("div");
           card.className = "product-card";
           card.innerHTML = `
-            <div class="badge">Hot</div>
+          <a href="/product-detail/product/${product.productId}" class="product-link">
             <div class="product-thumb">
               <img src="${product.imageUrl}" alt="${product.name}">
             </div>
@@ -35,15 +35,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 <span class="price">${new Intl.NumberFormat('vi-VN').format(product.sellingPrice)}đ</span>
               </div>
               <div class="product-actions">
-                <button class="btn btn-primary add-to-cart-btn"
-                        data-product-id="${product.productId}"
-                        data-product-name="${product.name}"
-                        data-product-price="${product.sellingPrice}">
-                  <i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
+                <button class="btn btn-primary add-to-cart-btn" th:attr="data-product-id=${product.productId}, data-product-name=${product.name}, data-product-price=${product.sellingPrice}">
+                      Xem chi tiết sản phẩm &gt;&gt;
                 </button>
-                <button class="btn btn-outline"><i class="fas fa-heart"></i></button>
               </div>
             </div>
+          </a>
           `;
           productGrid.appendChild(card);
         });
@@ -62,4 +59,43 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Lỗi khi tải thêm sản phẩm:", err);
       });
   });
+
+  enableHorizontalScroll('.brand-logos-wrapper');
 });
+
+
+function enableHorizontalScroll(containerSelector) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+
+    let isMouseDown = false;
+    let startX;
+    let scrollLeft;
+
+    container.addEventListener('mousedown', (e) => {
+        isMouseDown = true;
+        startX = e.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+        container.style.cursor = 'grabbing';
+        e.preventDefault();
+    });
+
+    container.addEventListener('mousemove', (e) => {
+        if (!isMouseDown) return;
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX) * 2.5;
+        container.scrollLeft = scrollLeft - walk;
+        e.preventDefault();
+    });
+
+    container.addEventListener('mouseup', () => {
+        isMouseDown = false;
+        container.style.cursor = 'grab';
+    });
+
+    container.addEventListener('mouseleave', () => {
+        isMouseDown = false;
+        container.style.cursor = 'grab';
+    });
+}
+

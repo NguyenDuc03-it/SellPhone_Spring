@@ -676,9 +676,15 @@ footer {
 
 /* Media Queries */
 @media (max-width: 992px) {
+    .logo,
+    .menu-toggle {
+        position: relative;
+        z-index: 1001;
+    }
+
     .nav-menu {
         position: fixed;
-        top: 80px;
+        top: 100px;
         left: -100%;
         background-color: white;
         width: 100%;
@@ -715,9 +721,6 @@ footer {
 }
 
 @media (max-width: 768px) {
-    .top-bar .container {
-        flex-direction: column;
-    }
 
     .contact-info, .user-actions {
         margin: 5px 0;

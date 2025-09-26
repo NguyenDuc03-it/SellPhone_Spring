@@ -75,4 +75,14 @@ public class AccountController {
     public String forgotPassword_(Model model){
         return "AboutAccount/forgot-password";
     }
+
+    @GetMapping("/accessory")
+    public String accessory_(Model model){
+        return "Sell/accessory";
+    }
+
+    @GetMapping("/contact")
+    public String contact_(Model model){
+        return "Sell/contact";
+    }
 }

@@ -1219,9 +1219,6 @@ footer {
 }
 
 @media (max-width: 768px) {
-    .top-bar .container {
-        flex-direction: column;
-    }
 
     .contact-info, .user-actions {
         margin: 5px 0;

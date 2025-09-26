@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TD Mobile - Phụ kiện</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/font-awesome.min.css" th:href="@{/assets/css/font-awesome.min.css}">
+  <link rel="stylesheet" href="assets/css/themify-icons.css" th:href="@{/assets/css/themify-icons.css}">
+  <link rel="stylesheet" href="assets/css/styles.css" th:href="@{/assets/css/styles.css}">
+  <link rel="stylesheet" href="assets/css/headerSell.css" th:href="@{/assets/css/headerSell.css}">
+  <link rel="stylesheet" href="assets/css/footerSell.css" th:href="@{/assets/css/footerSell.css}">
+  <script th:src="@{/assets/js/headerSell.js}" src="assets/js/headerSell.js" defer></script>
+
+  <style>
+    .announcement-box {
+      background-color: #f4f8ff;
+      border: 1px solid #cfe2ff;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .announcement-section {
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Gọi fragment vào file index.html -->
+<div th:replace="~{Fragments/Sell/header :: headerSellFragment}"></div>
+
+<section class="announcement-section py-5">
+  <div class="container text-center">
+    <div class="alert alert-info shadow-sm p-4 rounded announcement-box">
+      <div class="mb-3">
+        <i class="fas fa-info-circle fa-3x text-primary"></i>
+      </div>
+      <h2 class="mb-3 text-uppercase fw-bold">Thông báo</h2>
+      <p class="lead">
+        Chúng tôi hiện tại đã <strong>tạm dừng bán phụ kiện</strong> vì một số lý do.
+        <br>
+        Chúng tôi sẽ cố gắng bán lại sớm nhất có thể.
+      </p>
+      <hr>
+      <p class="mb-0">Trân trọng,<br><strong>Cửa hàng TD Mobile</strong></p>
+    </div>
+  </div>
+</section>
+
+<div th:replace="~{Fragments/Sell/footer :: footerSellFragment}"></div>
+</body>
+</html>

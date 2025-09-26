@@ -86,6 +86,12 @@ public class ProfileController {
             return "Sell/profile"; // Load lại trang với lỗi
         }
 
+        if (isInvalidPhoneNumber(request.getPhone())) {
+            result.rejectValue("phone", "error.phone", "Số điện thoại không hợp lệ hoặc không tồn tại tại Việt Nam");
+            model.addAttribute("user", request);
+            return "Sell/profile";
+        }
+
         // Đảm bảo userId trong form là chính chủ
         if (!request.getUserId().equals(userId)) {
             model.addAttribute("errorMessage", "Chỉ có thể sửa thông tin của chính bạn");
@@ -279,6 +285,40 @@ public class ProfileController {
         } catch (Exception e) {
             return false; // Nếu không thể parse ngày sinh, coi như không hợp lệ
         }
+    }
+
+    private boolean isInvalidPhoneNumber(String phone) {
+        // Normalize: +84xxx => 0xxx
+        String normalized = phone.startsWith("+84")
+                ? phone.replaceFirst("\\+84", "0")
+                : phone;
+
+        // Đúng độ dài 10 số
+        if (normalized.length() != 10) {
+            return true;
+        }
+
+        // Tách đầu số và phần còn lại
+        String prefix = normalized.substring(0, 3);
+        String numberPart = normalized.substring(3);
+
+        // Kiểm tra đầu số hợp lệ
+        Set<String> validPrefixes = Set.of(
+                "032", "033", "034", "035", "036", "037", "038", "039",  // Viettel
+                "070", "076", "077", "078", "079",                      // MobiFone
+                "081", "082", "083", "084", "085",                      // Vinaphone
+                "056", "058",                                           // Vietnamobile
+                "059",                                                  // Gmobile
+                "090", "093", "089",                                    // MobiFone cũ
+                "091", "094", "088"                                     // Vinaphone cũ
+        );
+
+        if (!validPrefixes.contains(prefix)) {
+            return true;
+        }
+
+        // Nếu phần còn lại là 7 số giống nhau (ví dụ 0000000, 9999999, ...)
+        return numberPart.chars().distinct().count() == 1;// Hợp lệ
     }
 
 }

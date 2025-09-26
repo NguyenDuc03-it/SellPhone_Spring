@@ -42,7 +42,7 @@ public class DashboardService {
 
     // Đếm số lượng đơn hàng đang chờ xử lý
     public int countPendingOrders() {
-        return orderRepository.countByOrderStatus("Đang chờ xử lý");
+        return orderRepository.countByOrderStatus("Chờ xử lý");
     }
 
     // Đếm số lượng đơn hàng đang xử lý

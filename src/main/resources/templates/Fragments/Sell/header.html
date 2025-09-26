@@ -19,7 +19,7 @@
   <nav class="header-nav">
     <div class="container">
       <div class="logo">
-        <h1 class="mb-0"><a href="/">TD Mobile</a></h1>
+        <h1 class="mb-0"><a href="/">TĐ Mobile</a></h1>
       </div>
       <div class="menu-toggle">
         <i class="fas fa-bars"></i>
@@ -27,8 +27,16 @@
       <ul class="nav-menu mb-0">
         <li><a href="/">Trang chủ</a></li>
         <li><a href="/product-search">Điện thoại</a></li>
-        <li><a href="#">Phụ kiện</a></li>
-        <li><a href="#">Liên hệ</a></li>
+        <li><a href="/accessory">Phụ kiện</a></li>
+        <li><a href="/contact">Liên hệ</a></li>
+        <li>
+          <form th:action="@{/product-search/find}" method="get">
+            <div class="search-bar search-bar-menu" id="searchBarMenu">
+              <input type="text" name="searchQuery" placeholder="Tìm kiếm...">
+              <button><i class="fas fa-search"></i></button>
+            </div>
+          </form>
+        </li>
       </ul>
       <div class="right-section">
         <form th:action="@{/product-search/find}" method="get">

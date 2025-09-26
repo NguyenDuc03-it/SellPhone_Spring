@@ -682,7 +682,7 @@ ul.breadcrumbs {
     display: block;
     font-size: 14px;
     font-weight: 400;
-    color: #7801ff;
+    color: inherit;
     letter-spacing: 0;
     margin-right: 16px;
     position: relative;
@@ -698,7 +698,7 @@ ul.breadcrumbs {
 
 .breadcrumbs li span {
     margin-right: 0;
-    color: #768387;
+    color: #2563eb;
     text-transform: capitalize;
 }
 

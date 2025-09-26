@@ -23,7 +23,7 @@ public class UserCreationRequest {
     private String phone;
 
     @NotBlank(message = "CCCD không được để trống")
-    @Pattern(regexp = "^[0-9]{12}$", message = "CCCD chỉ được nhập số và giới hạn 12 số")
+    @Pattern(regexp = "^[0-9]{12}$", message = "CCCD không hợp lệ. Vui lòng kiểm tra lại!")
     private String CCCD;
 
     @NotBlank(message = "Mật khẩu không được để trống")
