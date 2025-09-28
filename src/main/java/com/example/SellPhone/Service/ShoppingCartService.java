@@ -27,7 +27,16 @@ public class ShoppingCartService {
         ShoppingCart cart = shoppingCartRepository.findByUser_UserId(userId);
         if (cart == null || cart.getItems() == null) return 0;
 
-        return cart.getItems().size();
+        // Lọc bỏ các CartItem mà sản phẩm có category status = 'Không hoạt động'
+        long count = cart.getItems().stream()
+                .filter(item -> {
+                    Product product = item.getProduct();
+                    Category category = product.getCategory();
+                    return category != null && !"Không hoạt động".equalsIgnoreCase(category.getStatus());
+                })
+                .count();
+
+        return (int) count;
     }
 
     // Thêm sản phẩm vào giỏ hàng
@@ -75,6 +84,13 @@ public class ShoppingCartService {
 
         for (CartItem item : items) {
             Product product = item.getProduct();
+            Category category = product.getCategory();
+
+            // Bỏ qua sản phẩm có category bị khóa
+            if (category == null || "Không hoạt động".equalsIgnoreCase(category.getStatus())) {
+                continue;
+            }
+
             Specification spec = product.getSpecification();
 
             // Tìm variant phù hợp rom + specificationId

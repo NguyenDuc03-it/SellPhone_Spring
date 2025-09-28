@@ -9,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +37,12 @@ public class AdminProfileController {
 
     @GetMapping
     public String viewProfile(Model model, Principal principal) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         if (principal == null) {
             return "redirect:/login?redirect=/user/profile"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
         }
@@ -55,6 +63,7 @@ public class AdminProfileController {
         // Cập nhật ngày sinh với định dạng đúng
         user.setDob(formattedDob);
         model.addAttribute("user", user);
+        model.addAttribute("userRole", role);
         return "DashBoard/admin-profile";
     }
 

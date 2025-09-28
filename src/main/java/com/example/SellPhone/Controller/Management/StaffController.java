@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,14 +38,27 @@ public class StaffController {
     //Mở trang thêm nhân viên
     @GetMapping("/op_add")
     String opAddStaff(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         model.addAttribute("staff", new User());
         model.addAttribute("currentPage", "staff");
+        model.addAttribute("userRole", role);
         return "DashBoard/add-staff";
     }
 
     //Mở trang cập nhật thông tin khách hàng
     @PostMapping("/op_update")
     String opUpdateStaff(@RequestParam Long userId, Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         User user = staffService.getStaffById(userId);
 
         // Chuyển đổi ngày sinh từ định dạng dd/MM/yyyy sang yyyy-MM-dd
@@ -62,6 +78,7 @@ public class StaffController {
 
         model.addAttribute("staff", user);
         model.addAttribute("currentPage", "staff");
+        model.addAttribute("userRole", role);
         return "DashBoard/edit-staff";
     }
 
@@ -178,6 +195,12 @@ public class StaffController {
     // Hiển thị danh sách nhân viên và phân trang
     @GetMapping
     String StaffManagement(Model model, @RequestParam(required = false) String searchQuery, @RequestParam(defaultValue = "0") int page) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         Pageable pageable = PageRequest.of(page, 10);  // 10 dòng trên mỗi trang
 
         Page<User> staff;
@@ -208,6 +231,7 @@ public class StaffController {
         model.addAttribute("userMap", userMap);
         model.addAttribute("staff", staff);
         model.addAttribute("currentPage", "staff");
+        model.addAttribute("userRole", role);
         return "DashBoard/staff-management";
     }
 

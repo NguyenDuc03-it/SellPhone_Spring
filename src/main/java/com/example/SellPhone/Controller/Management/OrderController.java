@@ -13,6 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,6 +43,12 @@ public class OrderController {
                            @RequestParam(required = false) String statusFilter,
                            @RequestParam(required = false) String action,
                            @RequestParam(defaultValue = "0") int page){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         Pageable pageable = PageRequest.of(page, 10);  // 10 dòng trên mỗi trang
         Page<Order> orders;
         if ("search".equals(action)) {
@@ -70,6 +79,7 @@ public class OrderController {
         model.addAttribute("statusFilter", statusFilter);
         model.addAttribute("request", new OrderUpdateRequest());
         model.addAttribute("currentPage", "orders");
+        model.addAttribute("userRole", role);
         return "DashBoard/order-management";
     }
 
@@ -91,14 +101,26 @@ public class OrderController {
             orderDTO.setPaymentMethod(order.getPaymentMethod());
             orderDTO.setTotalPrice(order.getTotalPrice());
 
-            List<ProductInfoInOrderResponse> productInfoDTOs = order.getOrderItems().stream().map(
-                    productInfo -> ProductInfoInOrderResponse.builder()
-                            .name(productInfo.getProduct().getName())
-                            .rom(productInfo.getRom())
-                            .color(productInfo.getProduct().getColor())
-                            .price(productInfo.getPrice())
-                            .quantity(productInfo.getQuantity())
-                            .build()).toList();
+            List<ProductInfoInOrderResponse> productInfoDTOs = order.getOrderItems().stream().map(orderItem -> {
+                if (orderItem.getProduct() != null) {
+                    return ProductInfoInOrderResponse.builder()
+                            .name(orderItem.getProduct().getName())
+                            .rom(orderItem.getRom())
+                            .color(orderItem.getProduct().getColor())
+                            .price(orderItem.getPrice())
+                            .quantity(orderItem.getQuantity())
+                            .build();
+                } else {
+                    // Nếu product == null thì trả về 1 DTO với thông báo thay thế
+                    return ProductInfoInOrderResponse.builder()
+                            .name("Sản phẩm không còn tồn tại")
+                            .rom(orderItem.getRom())
+                            .color("-")
+                            .price(orderItem.getPrice())
+                            .quantity(orderItem.getQuantity())
+                            .build();
+                }
+            }).toList();
             orderDTO.setProductInfos(productInfoDTOs);
             model.addAttribute("currentPage", "orders");
             return ResponseEntity.ok(orderDTO);

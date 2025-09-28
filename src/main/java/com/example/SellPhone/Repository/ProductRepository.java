@@ -70,7 +70,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             FROM products pd
             JOIN specifications spe ON spe.specification_id = pd.specification_id
             JOIN specification_variants spv ON spv.specification_id = spe.specification_id
+            JOIN categories c ON c.category_id = pd.category_id
             WHERE pd.product_id <> :excludedProductId AND pd.name <> :productName
+                                    AND c.status != 'Không hoạt động'
         )
         SELECT
             product_id AS productId,
@@ -102,6 +104,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             FROM products pd
             JOIN specifications spe ON spe.specification_id = pd.specification_id
             JOIN specification_variants spv ON spv.specification_id = spe.specification_id
+            JOIN categories c ON c.category_id = pd.category_id
+            WHERE c.status != 'Không hoạt động'
         )
         SELECT
             product_id as productId,
@@ -120,6 +124,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             FROM products pd
             JOIN specifications spe ON spe.specification_id = pd.specification_id
             JOIN specification_variants spv ON spv.specification_id = spe.specification_id
+            JOIN categories c ON c.category_id = pd.category_id
+            WHERE c.status != 'Không hoạt động'
             GROUP BY pd.name
         ) AS counted
         """,
@@ -172,6 +178,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
           AND (:storages IS NULL OR sv.rom IN :storages)
           AND (:minPrice IS NULL OR sv.sellingPrice >= :minPrice)
           AND (:maxPrice IS NULL OR sv.sellingPrice <= :maxPrice)
+          AND c.status != 'Không hoạt động'
         GROUP BY p.name
         ORDER BY MIN(sv.sellingPrice) DESC
     """)
@@ -203,6 +210,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
           AND (:storages IS NULL OR sv.rom IN :storages)
           AND (:minPrice IS NULL OR sv.sellingPrice >= :minPrice)
           AND (:maxPrice IS NULL OR sv.sellingPrice <= :maxPrice)
+          AND c.status != 'Không hoạt động'
         GROUP BY p.name
         ORDER BY MIN(sv.sellingPrice) ASC
     """)
@@ -234,6 +242,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
           AND (:storages IS NULL OR sv.rom IN :storages)
           AND (:minPrice IS NULL OR sv.sellingPrice >= :minPrice)
           AND (:maxPrice IS NULL OR sv.sellingPrice <= :maxPrice)
+          AND c.status != 'Không hoạt động'
         GROUP BY p.name
     """)
     Page<ProductSummaryRespone> searchProductsWithFilters(

@@ -205,15 +205,13 @@
               <span class="product-price" th:text="${#numbers.formatDecimal(item.price, 0, 'POINT', 0, 'POINT') + 'đ'}">29.990.000₫</span>
             </div>
           </div>
-          <!-- Add more product items as needed -->
         </div>
       </div>
     </div>
 
     <!-- Action Buttons -->
     <div class="order-actions-footer">
-      <button class="btn btn-primary"><i class="fas fa-headset"></i> Liên hệ hỗ trợ</button>
-      <button class="btn btn-outline-primary"><i class="fas fa-shopping-bag"></i> Mua lại</button>
+      <button class="btn btn-outline-primary" onclick="history.back()"><i class="fas fa-long-arrow-left"></i> Quay lại</button>
     </div>
   </div>
 </div>

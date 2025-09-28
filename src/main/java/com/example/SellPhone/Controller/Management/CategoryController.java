@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,6 +29,12 @@ public class CategoryController {
     // Hiển thị danh sách danh mục và phân trang
     @GetMapping
     String categoryManagement(Model model, @RequestParam(required = false) String searchQuery, @RequestParam(defaultValue = "0") int page){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         Pageable pageable = PageRequest.of(page, 10);  // 10 dòng trên mỗi trang
         Page<Category> categories;
         if (searchQuery != null && !searchQuery.isEmpty()) {
@@ -42,6 +51,7 @@ public class CategoryController {
         model.addAttribute("category", new CategoryCreationRequest());
         model.addAttribute("updateCategory", new CategoryUpdateRequest());
         model.addAttribute("currentPage", "categories");
+        model.addAttribute("userRole", role);
         return "DashBoard/category-management";
     }
 

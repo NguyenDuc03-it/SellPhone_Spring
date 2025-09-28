@@ -68,7 +68,8 @@ function showErrorNotification(message) {
 
 // Cập nhật số lượng
 document.querySelectorAll('.qty-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (e) {
+        e.stopPropagation();
         const cartItem = this.closest('.cart-item');
         const cartItemId = cartItem.getAttribute('data-cart-item-id');
         const qtyInput = cartItem.querySelector('.qty-input');

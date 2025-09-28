@@ -20,6 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,6 +45,12 @@ public class ProductController {
     // Hiển thị danh sách sản phẩm và phân trang
     @GetMapping
     String productManagement(Model model, @RequestParam(required = false) String searchQuery, @RequestParam(defaultValue = "0") int page){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         Pageable pageable = PageRequest.of(page, 10);  // 10 dòng trên mỗi trang
         Page<Product> products;
         if (searchQuery != null && !searchQuery.isEmpty()) {
@@ -56,21 +65,35 @@ public class ProductController {
         // Truyền các URL vào model
         model.addAttribute("products", products);
         model.addAttribute("currentPage", "products");
+        model.addAttribute("userRole", role);
         return "DashBoard/product-management";
     }
 
     //Mở trang thêm sản phẩm
     @GetMapping("/op_add")
     String opAddProduct(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         model.addAttribute("request", new ProductCreationRequest());
         model.addAttribute("categories", categoryService.findAll()); // Trả về List<Category>
         model.addAttribute("currentPage", "products");
+        model.addAttribute("userRole", role);
         return  "DashBoard/add-product";
     }
 
     //Mở trang cập nhật thông tin sản phẩm
     @GetMapping("/op_update")
     String opUpdateProduct(@RequestParam Long productId, Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         Product product = productService.getProductById(productId);
 
         if (product.getSpecification() == null) {
@@ -83,6 +106,7 @@ public class ProductController {
         model.addAttribute("request", request);
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("currentPage", "products");
+        model.addAttribute("userRole", role);
         return "DashBoard/edit-product";
     }
 
@@ -226,9 +250,15 @@ public class ProductController {
             return "redirect:/management/products";
         }
 
-        productService.deleteProduct(productId);
-        redirectAttributes.addFlashAttribute("successMessage", "Xóa sản phẩm thành công!");
-        return "redirect:/management/products";
+        try {
+            productService.deleteProduct(productId);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa sản phẩm thành công!");
+            return "redirect:/management/products";
+        } catch (Exception e) {
+            System.out.println("Lỗi khi xóa sản phẩm: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi xóa sản phẩm!");
+            return "redirect:/management/products";
+        }
     }
 
     @PostMapping("/discontinue")

@@ -11,7 +11,7 @@ import lombok.*;
 public class SpecificationCreationRequest {
 
     @NotBlank(message = "Kích thước màn hình không được để trống")
-    @Pattern(regexp = "^\\d+(\\.\\d+)?$", message = "Kích thước màn hình phải là số dương hợp lệ")
+    @Pattern(regexp = "^([1-9]\\d*(\\.\\d+)?|0*\\.\\d*[1-9]\\d*)$", message = "Kích thước màn hình phải là số dương hợp lệ (ví dụ: 6, 6.5)")
     private String screenSizeInput;
 
     @Positive(message = "Kích thước màn hình phải lớn hơn 0")

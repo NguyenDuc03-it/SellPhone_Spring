@@ -218,17 +218,31 @@ public class ProfileController {
         List<Order> orders = orderService.findOrdersByUserId(userId); // cần thêm method này
 
         List<OrderResponse> orderResponses = orders.stream().map(order -> {
-            List<ProductInfoInOrderResponse> productInfos = order.getOrderItems().stream().map(item ->
-                    ProductInfoInOrderResponse.builder()
-                            .name(item.getProduct().getName())
-                            .rom(item.getRom())
-                            .color(item.getProduct().getColor())
-                            .price(item.getPrice())
-                            .quantity(item.getQuantity())
-                            .imageUrl(item.getProduct().getImageUrl())
-                            .productId(item.getProduct().getProductId())
-                            .build()
-            ).toList();
+            List<ProductInfoInOrderResponse> productInfos = order.getOrderItems().stream()
+                    .map(item -> {
+                        if (item.getProduct() == null) {
+                            // Trả về một DTO báo product đã bị xóa, hoặc null để lọc ra sau
+                            return ProductInfoInOrderResponse.builder()
+                                    .name("[Sản phẩm không còn tồn tại]")
+                                    .color("")
+                                    .rom(item.getRom())
+                                    .price(item.getPrice())
+                                    .quantity(item.getQuantity())
+                                    .imageUrl("/images/no-product.png")
+                                    .productId(null)
+                                    .build();
+                        }
+                        // Nếu product còn tồn tại thì trả về bình thường
+                        return ProductInfoInOrderResponse.builder()
+                                .name(item.getProduct().getName())
+                                .rom(item.getRom())
+                                .color(item.getProduct().getColor())
+                                .price(item.getPrice())
+                                .quantity(item.getQuantity())
+                                .imageUrl(item.getProduct().getImageUrl())
+                                .productId(item.getProduct().getProductId())
+                                .build();
+                    }).toList();
 
             OrderResponse response = new OrderResponse();
             response.setOrderId(order.getOrderId());

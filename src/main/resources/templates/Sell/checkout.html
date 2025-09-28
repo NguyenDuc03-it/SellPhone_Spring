@@ -68,7 +68,7 @@
           <div class="col-name" th:text="${item.productName}">iPhone 14 Pro 128GB - Đen</div>
           <div class="col-rom" th:text="${item.rom >= 1000 ? (item.rom % 1000 == 0 ? (item.rom / 1000) + 'TB' : (item.rom / 1000.0) + 'TB') : item.rom + 'GB'}">256GB</div>
           <div class="col-color" th:text="${item.color}">Đỏ</div>
-          <div class="col-price" th:text="${item.price}">20.000.000₫</div>
+          <div class="col-price" th:text="${#numbers.formatInteger(item.price, 0, 'POINT') + '₫'}">20.000.000₫</div>
           <div class="col-quantity" th:text="${item.quantity}">2</div>
           <div class="col-total" th:text="${#numbers.formatInteger(item.quantity * item.price, 0, 'POINT') + '₫'}">40.000.000₫</div>
         </div>

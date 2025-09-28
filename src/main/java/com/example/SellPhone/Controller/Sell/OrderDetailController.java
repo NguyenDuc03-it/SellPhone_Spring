@@ -43,16 +43,29 @@ public class OrderDetailController {
             orderDTO.setPaymentMethod(order.getPaymentMethod());
             orderDTO.setTotalPrice(order.getTotalPrice());
 
-            List<ProductInfoInOrderResponse> productInfoDTOs = order.getOrderItems().stream().map(
-                    productInfo -> ProductInfoInOrderResponse.builder()
-                            .productId(productInfo.getProduct().getProductId())
-                            .name(productInfo.getProduct().getName())
-                            .rom(productInfo.getRom())
-                            .color(productInfo.getProduct().getColor())
-                            .price(productInfo.getPrice())
-                            .quantity(productInfo.getQuantity())
-                            .imageUrl(productInfo.getProduct().getImageUrl())
-                            .build()).toList();
+            List<ProductInfoInOrderResponse> productInfoDTOs = order.getOrderItems().stream()
+                    .map(productInfo -> {
+                        if (productInfo.getProduct() == null) {
+                            return ProductInfoInOrderResponse.builder()
+                                    .productId(null)
+                                    .name("[Sản phẩm không còn tồn tại]")
+                                    .rom(productInfo.getRom())
+                                    .color("")
+                                    .price(productInfo.getPrice())
+                                    .quantity(productInfo.getQuantity())
+                                    .imageUrl("/images/no-product.png") // ảnh placeholder nếu muốn
+                                    .build();
+                        }
+                        return ProductInfoInOrderResponse.builder()
+                                .productId(productInfo.getProduct().getProductId())
+                                .name(productInfo.getProduct().getName())
+                                .rom(productInfo.getRom())
+                                .color(productInfo.getProduct().getColor())
+                                .price(productInfo.getPrice())
+                                .quantity(productInfo.getQuantity())
+                                .imageUrl(productInfo.getProduct().getImageUrl())
+                                .build();
+                    }).toList();
             orderDTO.setProductInfos(productInfoDTOs);
             model.addAttribute("order", orderDTO);
             return "Sell/order-detail";

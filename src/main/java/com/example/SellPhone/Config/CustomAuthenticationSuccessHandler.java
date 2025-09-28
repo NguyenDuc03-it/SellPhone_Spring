@@ -20,8 +20,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
-        boolean isEmployee = authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_EMPLOYEE"));
+        boolean isStaff = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_STAFF"));
 
         boolean isCustomer = authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_CUSTOMER"));
@@ -31,7 +31,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             response.sendRedirect(redirectUrl);
         }
         // Nếu là admin hoặc nhân viên, chuyển đến trang quản trị
-        else if (isAdmin || isEmployee) {
+        else if (isAdmin || isStaff) {
             response.sendRedirect("/management/dashboard");
         }
         // Nếu không rõ vai trò hoặc không có redirect, đưa về home

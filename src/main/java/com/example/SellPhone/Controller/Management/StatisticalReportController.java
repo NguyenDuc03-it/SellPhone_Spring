@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,8 +34,15 @@ public class StatisticalReportController {
 
     @GetMapping
     public String managementStatisticalReport(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         // Trả về trang báo cáo thống kê của quản trị viên
         model.addAttribute("currentPage", "statisticals");
+        model.addAttribute("userRole", role);
         model.addAttribute("filter", new ReportFilterRequest());
         model.addAttribute("selectedReportType", "revenue");
         return "DashBoard/statistical-report";

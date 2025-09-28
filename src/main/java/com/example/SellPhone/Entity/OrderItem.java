@@ -24,7 +24,7 @@ public class OrderItem {
     private Order order;  // Mỗi mục hàng thuộc về một đơn hàng
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @Column(name = "quantity")

@@ -32,9 +32,11 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
         JOIN products pd ON oi.product_id = pd.product_id
         JOIN specifications spe ON pd.specification_id = spe.specification_id
         JOIN specification_variants spv ON spe.specification_id = spv.specification_id AND oi.rom = spv.rom
+        JOIN categories c ON c.category_id = pd.category_id
         WHERE (o.order_status = 'Đã hoàn thành' OR o.order_status = 'Đang giao hàng')
           AND MONTH(STR_TO_DATE(o.order_time, '%d/%m/%Y')) = MONTH(CURRENT_DATE)
           AND YEAR(STR_TO_DATE(o.order_time, '%d/%m/%Y')) = YEAR(CURRENT_DATE)
+          AND c.status != 'Không hoạt động'
         GROUP BY pd.product_id, oi.rom, pd.image_url, pd.name, pd.color, oi.price
         ORDER BY totalQuantity DESC
         LIMIT 10

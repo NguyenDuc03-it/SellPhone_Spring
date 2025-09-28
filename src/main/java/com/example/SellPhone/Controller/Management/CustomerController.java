@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,6 +40,13 @@ public class CustomerController {
     //Mở trang thêm khách hàng
     @GetMapping("/op_add")
     String opAddCustomer(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
+        model.addAttribute("userRole", role);
         model.addAttribute("customer", new User());
         model.addAttribute("currentPage", "customers");
         return "DashBoard/add-customer";
@@ -45,6 +55,12 @@ public class CustomerController {
     //Mở trang cập nhật thông tin khách hàng
     @PostMapping("/op_update")
     String opUpdateCustomer(@RequestParam Long userId, Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         User user = customerService.getCustomerById(userId);
 
         // Chuyển đổi ngày sinh từ định dạng dd/MM/yyyy sang yyyy-MM-dd
@@ -64,6 +80,7 @@ public class CustomerController {
 
         model.addAttribute("customer", user);
         model.addAttribute("currentPage", "customers");
+        model.addAttribute("userRole", role);
         return "DashBoard/edit-customer";
     }
 
@@ -172,6 +189,12 @@ public class CustomerController {
     // Hiển thị danh sách khách hàng và phân trang
     @GetMapping
     String customerManagement(Model model, @RequestParam(required = false) String searchQuery, @RequestParam(defaultValue = "0") int page){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
         Pageable pageable = PageRequest.of(page, 10);  // 10 dòng trên mỗi trang
         Page<User> customers;
         if (searchQuery != null && !searchQuery.isEmpty()) {
@@ -202,6 +225,7 @@ public class CustomerController {
         model.addAttribute("userMap", userMap);
         model.addAttribute("customers", customers);
         model.addAttribute("currentPage", "customers");
+        model.addAttribute("userRole", role);
         return "DashBoard/customer-management";
     }
 

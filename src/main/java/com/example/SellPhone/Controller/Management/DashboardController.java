@@ -9,6 +9,9 @@ import com.example.SellPhone.Service.DashboardService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,13 @@ public class DashboardController {
 
     @GetMapping
     public String managementDashboard(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
+        model.addAttribute("userRole", role);
         long totalStaff = dashboardService.countStaff();
         long totalCustomers = dashboardService.countCustomers();
         long totalProducts = dashboardService.countProducts();
@@ -55,6 +65,7 @@ public class DashboardController {
         model.addAttribute("getRecentlySoldProducts", getRecentlySoldProducts);
 
         model.addAttribute("currentPage", "dashboard");
+        model.addAttribute("userRole", role);
         return "DashBoard/dashboard";  // Trả về trang dashboard của admin
     }
 }

@@ -29,7 +29,7 @@
                     <li th:classappend="${currentPage} == 'dashboard' ? 'active'">
                         <a href="/management/dashboard"><i class="ti-dashboard"></i><span>Trang chủ</span></a>
                     </li>
-                    <li th:classappend="${currentPage} == 'staff' ? 'active'">
+                    <li th:if="${userRole == 'ROLE_ADMIN'}" th:classappend="${currentPage} == 'staff' ? 'active'">
                         <a href="/management/staff"><i class="fa fa-users"></i><span>Quản lý nhân viên</span></a>
                     </li>
                     <li th:classappend="${currentPage} == 'customers' ? 'active'">
@@ -51,7 +51,7 @@
                     <li th:classappend="${currentPage} == 'categories' ? 'active'">
                         <a href="/management/categories"><i class="fa fa-list"></i><span>Quản lý danh mục</span></a>
                     </li>
-                    <li th:classappend="${currentPage} == 'statisticals' ? 'active'">
+                    <li th:if="${userRole == 'ROLE_ADMIN'}" th:classappend="${currentPage} == 'statisticals' ? 'active'">
                         <a href="/management/statistical-report"><i class="ti-bar-chart"></i><span>Báo cáo thống kê</span></a>
                     </li>
                 </ul>
