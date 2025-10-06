@@ -64,9 +64,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         SELECT COALESCE(SUM(total_price), 0)
         FROM orders
         WHERE order_status = 'Đã hoàn thành'
-          AND order_time IS NOT NULL
-          AND MONTH(STR_TO_DATE(order_time, '%d/%m/%Y')) = MONTH(CURRENT_DATE)
-          AND YEAR(STR_TO_DATE(order_time, '%d/%m/%Y')) = YEAR(CURRENT_DATE)
+          AND delivery_time_end IS NOT NULL
+          AND MONTH(STR_TO_DATE(delivery_time_end, '%d/%m/%Y')) = MONTH(CURRENT_DATE)
+          AND YEAR(STR_TO_DATE(delivery_time_end, '%d/%m/%Y')) = YEAR(CURRENT_DATE)
         """, nativeQuery = true)
     long calculateTotalorderAmount();
 
@@ -81,21 +81,21 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             ON sv.specification_id = s.specification_id
             AND sv.rom = oi.rom
         WHERE o.order_status = 'Đã hoàn thành'
-          AND o.order_time IS NOT NULL
-          AND MONTH(STR_TO_DATE(o.order_time, '%d/%m/%Y')) = MONTH(CURRENT_DATE)
-          AND YEAR(STR_TO_DATE(o.order_time, '%d/%m/%Y')) = YEAR(CURRENT_DATE)
+          AND o.delivery_time_end IS NOT NULL
+          AND MONTH(STR_TO_DATE(o.delivery_time_end, '%d/%m/%Y')) = MONTH(CURRENT_DATE)
+          AND YEAR(STR_TO_DATE(o.delivery_time_end, '%d/%m/%Y')) = YEAR(CURRENT_DATE)
         """, nativeQuery = true)
     long calculateTotalImportCostProductsInOrder();
 
     // Lấy doanh thu trong 6 tháng gần đây
     @Query(value = """
     SELECT
-        DATE_FORMAT(STR_TO_DATE(order_time, '%d/%m/%Y'), '%m/%Y') AS monthYear,
+        DATE_FORMAT(STR_TO_DATE(delivery_time_end, '%d/%m/%Y'), '%m/%Y') AS monthYear,
         COALESCE(SUM(total_price), 0) AS totalRevenue
     FROM orders
     WHERE order_status = 'Đã hoàn thành'
-      AND order_time IS NOT NULL
-      AND STR_TO_DATE(order_time, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+      AND delivery_time_end IS NOT NULL
+      AND STR_TO_DATE(delivery_time_end, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
     GROUP BY monthYear
     ORDER BY STR_TO_DATE(CONCAT('01/', monthYear), '%d/%m/%Y')
     """, nativeQuery = true)
@@ -104,7 +104,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // Tính tổng chi phí nhập hàng trong 6 tháng gần đây
     @Query(value = """
     SELECT
-        DATE_FORMAT(STR_TO_DATE(o.order_time, '%d/%m/%Y'), '%m/%Y') AS monthYear,
+        DATE_FORMAT(STR_TO_DATE(o.delivery_time_end, '%d/%m/%Y'), '%m/%Y') AS monthYear,
         COALESCE(SUM(sv.import_price * oi.quantity), 0) AS totalImportCost
     FROM orders o
     JOIN order_items oi ON o.order_id = oi.order_id
@@ -114,8 +114,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         ON sv.specification_id = s.specification_id
         AND sv.rom = oi.rom
     WHERE o.order_status = 'Đã hoàn thành'
-      AND o.order_time IS NOT NULL
-      AND STR_TO_DATE(o.order_time, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+      AND o.delivery_time_end IS NOT NULL
+      AND STR_TO_DATE(o.delivery_time_end, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
     GROUP BY monthYear
     ORDER BY STR_TO_DATE(CONCAT('01/', monthYear), '%d/%m/%Y')
     """, nativeQuery = true)
@@ -123,7 +123,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // Lấy 10 đơn hàng mới nhất
     @Query(value = """
-        SELECT * FROM orders ORDER BY order_time DESC LIMIT 10
+        SELECT * FROM orders ORDER BY STR_TO_DATE(order_time, '%d/%m/%Y') DESC LIMIT 10
     """, nativeQuery = true)
     List<Order> get10LatestOrders();
 
@@ -155,6 +155,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
         WHERE o.delivery_time_end IS NOT NULL
         AND STR_TO_DATE(o.delivery_time_end, '%d/%m/%Y') BETWEEN STR_TO_DATE(:startDate, '%d/%m/%Y')
         AND STR_TO_DATE(:endDate, '%d/%m/%Y')
+        AND o.order_status = 'Đã hoàn thành'
         """, nativeQuery = true)
     int countByDeliveryTimeEndBetween(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
@@ -174,7 +175,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = """
         SELECT payment_method AS paymentMethod, COUNT(*) AS total
         FROM orders
-        WHERE STR_TO_DATE(order_time, '%d/%m/%Y') BETWEEN STR_TO_DATE(:startDate, '%d/%m/%Y') AND STR_TO_DATE(:endDate, '%d/%m/%Y')
+        WHERE STR_TO_DATE(delivery_time_end, '%d/%m/%Y') BETWEEN STR_TO_DATE(:startDate, '%d/%m/%Y') AND STR_TO_DATE(:endDate, '%d/%m/%Y')
+        AND order_status = 'Đã hoàn thành'
         GROUP BY payment_method
     """, nativeQuery = true)
     List<Object[]> countOrdersByPaymentMethod(String startDate, String endDate);

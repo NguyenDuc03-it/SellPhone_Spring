@@ -79,8 +79,10 @@
   </thead>
   <tbody>
   <tr th:each="item : ${order.orderItems}">
-    <td th:text="${item.product.name}"></td>
-    <td th:text="${item.product.color}"></td>
+    <td th:text="${item.product != null && item.product.name != null && !#strings.isEmpty(item.product.name) ? item.product.name : 'Sản phẩm không còn tồn tại'}"
+        th:style="${(item.product == null || item.product.name == null || #strings.isEmpty(item.product.name)) ? 'color:red; font-weight:bold;' : ''}"></td>
+    <td th:text="${item.product != null && item.product.color != null && !#strings.isEmpty(item.product.color) ? item.product.color : '-'}"
+        th:style="${(item.product == null || item.product.color == null || #strings.isEmpty(item.product.color)) ? 'color:red; font-weight:bold;' : ''}"></td>
     <td th:text="${item.rom >= 1000 ? (item.rom % 1000 == 0 ? (item.rom / 1000) + 'TB' : (item.rom / 1000.0) + 'TB') : item.rom + 'GB'}"></td>
     <td th:text="${#numbers.formatDecimal(item.price, 0, 'POINT', 0, 'POINT') + 'đ'}"></td>
     <td th:text="${item.quantity}"></td>

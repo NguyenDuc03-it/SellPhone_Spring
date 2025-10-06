@@ -389,7 +389,15 @@ public class StatisticalReportService {
         // --- 1. Sheet Sản Phẩm Bán Chạy ---
         Sheet bestSellerSheet = workbook.createSheet("Top Bán Chạy");
 
-        Row bestHeader = bestSellerSheet.createRow(0);
+        Row timeRow = bestSellerSheet.createRow(0);
+        timeRow.createCell(0).setCellValue("Thời gian thống kê:");
+        timeRow.getCell(0).setCellStyle(headerStyle);
+        timeRow.createCell(1).setCellValue("Từ ngày: " + startDate);
+        timeRow.getCell(1).setCellStyle(dataStyleLeft);
+        timeRow.createCell(2).setCellValue("Đến ngày: " + endDate);
+        timeRow.getCell(2).setCellStyle(dataStyleLeft);
+
+        Row bestHeader = bestSellerSheet.createRow(2);
         String[] bestHeaders = {"Tên sản phẩm", "Màu sắc", "ROM", "Giá bán", "Số lượng bán"};
         for (int i = 0; i < bestHeaders.length; i++) {
             Cell cell = bestHeader.createCell(i);
@@ -397,7 +405,7 @@ public class StatisticalReportService {
             cell.setCellStyle(headerStyle);
         }
 
-        int rowIdx = 1;
+        int rowIdx = 3;
         for (BestSellingProductResponse p : bestSellingProducts) {
             Row row = bestSellerSheet.createRow(rowIdx++);
             row.createCell(0).setCellValue(p.getName());

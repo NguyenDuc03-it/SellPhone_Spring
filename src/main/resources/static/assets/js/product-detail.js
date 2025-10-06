@@ -58,6 +58,11 @@ function updatePrice() {
         const priceElement = document.getElementById('price');
         priceElement.textContent = formatCurrency(data.price) + 'đ';
 
+        // Cập nhật giá cho các phần tử color-item đang được chọn
+        document.querySelectorAll('.color-item.selected').forEach((colorItem) => {
+            colorItem.dataset.price = formatCurrency(data.price) + 'đ';
+        });
+
         // Tìm phần tử .color-item đang được chọn
         const selectedColorItem = document.querySelector('.color-item.selected');
 
@@ -106,6 +111,11 @@ fetch(`/product-detail/product-price?productId=${productId}`)
     // Cập nhật giá
     const priceElement = document.getElementById('price');
     priceElement.textContent = formatCurrency(data.price) + 'đ';
+
+    // Cập nhật giá cho các phần tử color-item đang được chọn
+    document.querySelectorAll('.color-item').forEach((colorItem) => {
+        colorItem.dataset.price = formatCurrency(data.price) + 'đ';
+    });
 
     // Cập nhật ảnh
     if (data.imageUrl) {
@@ -270,6 +280,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     // Thêm sản phẩm vào giỏ hàng và hiển thị thông báo thành công end
 });
+
+// Xử lý khi người dùng nhấn nút quay lại trên trình duyệt start
+// Xử lý theo cách này chỉ là tạm thời vì khi quay lại thì cần 1 khoảng thời gian để cập nhật lại giá,
+// trong khoảng thời gian đó người dùng có thể nhấn mua ngay với giá bị sai (vd: sản phẩm 2TB mà giá lại của 256GB)
+// trong tương lai nên tìm cách khác tốt hơn
+window.addEventListener('pageshow', function () {
+    safeUpdatePriceAfterPageShow();
+});
+function safeUpdatePriceAfterPageShow() {
+    setTimeout(() => {
+        updatePrice();
+    }, 1);
+}
+// Xử lý khi người dùng nhấn nút quay lại trên trình duyệt end
 
 function formatRom(rom) {
     if (rom >= 1000) {

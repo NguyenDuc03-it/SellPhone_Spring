@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -51,7 +50,14 @@ public class StatisticalReportController {
     @GetMapping("/filter")
     public String handleFilter(@ModelAttribute("filter") ReportFilterRequest filter, @RequestParam(value = "action", required = false) String action,
             HttpServletResponse response,
-            Model model) throws IOException {
+            Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String role = auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse(null);
+
+        model.addAttribute("userRole", role);
         model.addAttribute("currentPage", "statisticals");
 
         boolean hasError = false;
@@ -95,7 +101,7 @@ public class StatisticalReportController {
 
         // Phân biệt hành động
         if ("export".equals(action)) {
-            // Gọi hàm xuất báo cáo (Excel hoặc PDF)
+            // Gọi hàm xuất báo cáo (Excel)
             switch (filter.getReportType()) {
                 case "revenue" -> reportService.exportRevenueReportToExcel(filter, response);
                 case "products" -> reportService.exportBestSellersReportToExcel(filter, response);
@@ -109,7 +115,7 @@ public class StatisticalReportController {
             case "revenue" -> populateRevenueReport(filter, model);
             case "products" -> {
                 populateBestsellerReport(filter, model);
-                // Đảm bảo các biến doanh thu là object rỗng để JS không lỗi
+                // Truyền các biến doanh thu là object rỗng sang FE để JS không lỗi dữ liệu bị null
                 model.addAttribute("revenueByDay", Map.of());
                 model.addAttribute("paymentMethod", Map.of());
                 model.addAttribute("revenueByCategory", Map.of());
