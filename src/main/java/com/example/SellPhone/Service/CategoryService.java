@@ -78,6 +78,7 @@ public class CategoryService {
         // Cập nhật các trường của danh mục
         category.setNotes(request.getNotes());
         category.setStatus(request.getStatus());
+        category.setName(request.getName());
 
         return categoryRepository.save(category);
     }

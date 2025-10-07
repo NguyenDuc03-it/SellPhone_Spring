@@ -122,7 +122,7 @@
 
         <div class="product-card" th:each="product : ${bestSellingProducts}">
           <a th:href="@{'/product-detail/product/' + ${product.productId}}" class="product-link">
-            <div class="badge">Best Seller</div>
+            <div class="badge">Bán chạy</div>
             <div class="product-thumb">
               <img th:src="${product.imageUrl}" th:alt="${product.name}">
             </div>
@@ -141,7 +141,6 @@
                 <button class="btn btn-primary add-to-cart-btn" th:attr="data-product-id=${product.productId}, data-product-name=${product.name}, data-product-price=${product.sellingPrice}">
                   Xem chi tiết sản phẩm &gt;&gt;
                 </button>
-                <button class="btn btn-outline"><i class="fas fa-heart"></i></button>
               </div>
             </div>
           </a>

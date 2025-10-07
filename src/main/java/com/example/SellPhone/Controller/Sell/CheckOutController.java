@@ -54,7 +54,7 @@ public class CheckOutController {
         // chuyển thành danh sách để dùng chung trong /view
         List<CheckOutRequest> requestList = List.of(request);
 
-        // Có thể lưu vào session hoặc redirect luôn đến trang thanh toán với dữ liệu
+        // Lưu vào session để redirect luôn đến trang thanh toán với dữ liệu
         session.setAttribute("checkoutData", requestList);
         return ResponseEntity.ok(Map.of("redirectUrl", "/user/checkout/view"));
     }

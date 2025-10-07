@@ -321,12 +321,22 @@ function updateMaxQuantity(newMax) {
         quantityInput.value = newMax;
     }
 
-    // Bật/tắt nút tùy theo số lượng
+    // Lấy nút thêm vào giỏ hàng và nút mua ngay ở FE
     const addToCartBtn = document.querySelector('.add-to-cart-btn');
     const buyNowBtn = document.querySelector('.buy-now');
 
-    const shouldDisable = newMax <= 0;
+    // Lấy trạng thái sản phẩm từ màu đang chọn
+    const selectedColor = document.querySelector('.color-item.selected');
+    const status = selectedColor ? selectedColor.dataset.status : '';
 
+    // Lấy thẻ p thông báo sản phẩm ngừng bán
+    const statusEl = document.getElementById('productStatusNotifi');
+
+    // Kiểm tra xem số lượng sản phẩm có <= 0 hoặc trạng thái là 'Ngừng bán' không
+    const shouldDisable = newMax <= 0 || status === 'Ngừng bán';
+
+    // Kiểm tra các đối tượng đã có trên DOM chưa và áp dụng disable cho từng đối tượng
+    if(statusEl) status === 'Ngừng bán' ? statusEl.style.display = 'block' : statusEl.style.display = 'none';
     if (addToCartBtn) addToCartBtn.disabled = shouldDisable;
     if (buyNowBtn) buyNowBtn.disabled = shouldDisable;
 }

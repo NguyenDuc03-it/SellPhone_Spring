@@ -123,6 +123,7 @@
               <div class="color-item selected" th:data-color="${product.color}"
                    th:data-price="${#numbers.formatDecimal(currentPrice, 0, 'POINT', 0, 'POINT') + 'đ'}"
                    th:data-product-id="${product.productId}"
+                   th:data-status="${product.status}"
                    onclick="selectColor(this)">
                 <img th:src="${product.imageUrl}" th:alt="${product.color}" class="color-image">
                 <div class="color-details">
@@ -135,6 +136,7 @@
                      th:data-color="${p.color}"
                      th:data-price="${#numbers.formatDecimal(priceByProductId[p.productId], 0, 'POINT', 0, 'POINT') + 'đ'}"
                      th:data-product-id="${p.productId}"
+                     th:data-status="${p.status}"
                      >
                   <img th:src="${p.imageUrl}" th:alt="${p.color}" class="color-image">
                   <div class="color-details">
@@ -179,10 +181,13 @@
               <button type="button" class="btn-quantity" id="btnIncrease">+</button>
             </div>
           </div>
-
+          <p style="color: red; font-weight: bold;" id="productStatusNotifi">Sản phẩm này hiện đang ngừng bán!</p>
           <!-- Nút hành động -->
           <div class="product-actions mb-4">
-            <button class="btn btn-primary btn-lg me-3 add-to-cart-btn" th:data-product-id="${product.productId}" th:data-product-name="${product.name}" th:data-product-price="${currentPrice}">
+            <button class="btn btn-primary btn-lg me-3 add-to-cart-btn"
+                    th:data-product-id="${product.productId}"
+                    th:data-product-name="${product.name}"
+                    th:data-product-price="${currentPrice}">
               <i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ hàng
             </button>
             <button class="btn btn-outline-primary btn-lg me-3 buy-now" id="buyNowBtn">

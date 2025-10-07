@@ -211,6 +211,12 @@
 
     <!-- Action Buttons -->
     <div class="order-actions-footer">
+      <button class="btn btn-primary"
+              th:if="${order.orderStatus == 'Chờ thanh toán'}"
+              th:onclick="'location.href=\'/user/checkout/create?orderId=' + ${order.orderId} + '&amount=' + ${order.totalPrice} + '\';'"
+      >
+        <i class="fas fa-credit-card"></i> Thanh toán
+      </button>
       <button class="btn btn-outline-primary" onclick="history.back()"><i class="fas fa-long-arrow-left"></i> Quay lại</button>
     </div>
   </div>

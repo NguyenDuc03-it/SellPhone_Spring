@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -49,7 +50,7 @@ public class OrderController {
                 .findFirst()
                 .orElse(null);
 
-        Pageable pageable = PageRequest.of(page, 10);  // 10 dòng trên mỗi trang
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("orderId").descending());  // 10 dòng trên mỗi trang
         Page<Order> orders;
         if ("search".equals(action)) {
             // Chỉ tìm kiếm theo searchQuery

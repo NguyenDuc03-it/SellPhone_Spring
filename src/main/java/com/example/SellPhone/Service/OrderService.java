@@ -99,9 +99,11 @@ public class OrderService {
                     .filter(v -> product.getColor().equals(product.getColor()))
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy variant cho sản phẩm: " + product.getName()));
 
-            // Cộng lại số lượng
-            variant.setQuantity(variant.getQuantity() + item.getQuantity());
-            variantRepository.save(variant);
+            if (!order.getOrderStatus().equals("Chờ thanh toán")) {
+                // Cộng lại số lượng
+                variant.setQuantity(variant.getQuantity() + item.getQuantity());
+                variantRepository.save(variant);
+            }
 
             // Chuyển trạng thái đơn hàng
             order.setOrderStatus("Đã hủy");

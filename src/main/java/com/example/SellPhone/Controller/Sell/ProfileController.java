@@ -215,47 +215,49 @@ public class ProfileController {
 
         Long userId = ((CustomUserDetails) ((Authentication) principal).getPrincipal()).getUserId();
 
-        List<Order> orders = orderService.findOrdersByUserId(userId); // cần thêm method này
+        List<Order> orders = orderService.findOrdersByUserId(userId);
 
-        List<OrderResponse> orderResponses = orders.stream().map(order -> {
-            List<ProductInfoInOrderResponse> productInfos = order.getOrderItems().stream()
-                    .map(item -> {
-                        if (item.getProduct() == null) {
-                            // Trả về một DTO báo product đã bị xóa, hoặc null để lọc ra sau
+        List<OrderResponse> orderResponses = orders.stream()
+            .sorted(Comparator.comparing(Order::getOrderId).reversed()) // Sắp xếp giảm dần theo id đơn hàng (mới nhất trước)
+            .map(order -> {
+                List<ProductInfoInOrderResponse> productInfos = order.getOrderItems().stream()
+                        .map(item -> {
+                            if (item.getProduct() == null) {
+                                // Trả về một DTO báo product đã bị xóa, hoặc null để lọc ra sau
+                                return ProductInfoInOrderResponse.builder()
+                                        .name("[Sản phẩm không còn tồn tại]")
+                                        .color("")
+                                        .rom(item.getRom())
+                                        .price(item.getPrice())
+                                        .quantity(item.getQuantity())
+                                        .imageUrl("/images/no-product.png")
+                                        .productId(null)
+                                        .build();
+                            }
+                            // Nếu product còn tồn tại thì trả về bình thường
                             return ProductInfoInOrderResponse.builder()
-                                    .name("[Sản phẩm không còn tồn tại]")
-                                    .color("")
+                                    .name(item.getProduct().getName())
                                     .rom(item.getRom())
+                                    .color(item.getProduct().getColor())
                                     .price(item.getPrice())
                                     .quantity(item.getQuantity())
-                                    .imageUrl("/images/no-product.png")
-                                    .productId(null)
+                                    .imageUrl(item.getProduct().getImageUrl())
+                                    .productId(item.getProduct().getProductId())
                                     .build();
-                        }
-                        // Nếu product còn tồn tại thì trả về bình thường
-                        return ProductInfoInOrderResponse.builder()
-                                .name(item.getProduct().getName())
-                                .rom(item.getRom())
-                                .color(item.getProduct().getColor())
-                                .price(item.getPrice())
-                                .quantity(item.getQuantity())
-                                .imageUrl(item.getProduct().getImageUrl())
-                                .productId(item.getProduct().getProductId())
-                                .build();
-                    }).toList();
+                        }).toList();
 
-            OrderResponse response = new OrderResponse();
-            response.setOrderId(order.getOrderId());
-            response.setFullname(order.getUser().getFullname());
-            response.setPhone(order.getUser().getPhone());
-            response.setAddress(order.getUser().getAddress());
-            response.setOrderTime(order.getOrderTime());
-            response.setOrderStatus(order.getOrderStatus());
-            response.setPaymentMethod(order.getPaymentMethod());
-            response.setTotalPrice(order.getTotalPrice());
-            response.setProductInfos(productInfos);
+                OrderResponse response = new OrderResponse();
+                response.setOrderId(order.getOrderId());
+                response.setFullname(order.getUser().getFullname());
+                response.setPhone(order.getUser().getPhone());
+                response.setAddress(order.getUser().getAddress());
+                response.setOrderTime(order.getOrderTime());
+                response.setOrderStatus(order.getOrderStatus());
+                response.setPaymentMethod(order.getPaymentMethod());
+                response.setTotalPrice(order.getTotalPrice());
+                response.setProductInfos(productInfos);
 
-            return response;
+                return response;
         }).toList();
 
         return ResponseEntity.ok(orderResponses);
