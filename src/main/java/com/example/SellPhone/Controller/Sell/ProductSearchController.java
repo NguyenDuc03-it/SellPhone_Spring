@@ -113,11 +113,11 @@ public class ProductSearchController {
 
 
     private Sort getSort(String sort) {
-        if (sort == null || sort.equals("default")) return Sort.by("name").ascending();
+        if (sort == null || sort.equals("default")) return Sort.unsorted();
         return switch (sort) {
             case "name-asc" -> Sort.by("name").ascending();
             case "name-desc" -> Sort.by("name").descending();
-            case "newest" -> Sort.by("productId").descending(); // mới nhất theo ID
+            case "newest" -> Sort.by("productId").descending(); // mới nhất theo ID (hiện tại đang bị lỗi vì câu truy vấn (ở repo) GROUP BY theo name còn câu sắp xếp này tạo ra OrderBy theo id và mysql đang yêu cầu only_full_group_by)
             default -> Sort.unsorted();
         };
     }

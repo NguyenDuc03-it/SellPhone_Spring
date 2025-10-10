@@ -180,7 +180,7 @@ function triggerSearch(page = 0, isModal = false) {
         sort
     };
 
-    const url = `product-search/search?page=${page}` +
+    const url = `/product-search/search?page=${page}` +
             `&searchQuery=${encodeURIComponent(filters.searchQuery)}` +
             `&category=${encodeURIComponent(filters.selectedCategories)}` +
             `&minPrice=${filters.minPrice}` +

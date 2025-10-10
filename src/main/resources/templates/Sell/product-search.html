@@ -66,7 +66,7 @@
             <div class="filter-section">
                 <h4>Tìm kiếm</h4>
                 <div class="search-box">
-                    <input type="text" class="form-control search-input" placeholder="Nhập tên sản phẩm...">
+                    <input type="text" class="form-control search-input" placeholder="Nhập tên sản phẩm..." id="search-input">
                     <button type="button" id="search-btn">
                         <i class="fas fa-search"></i>
                     </button>
@@ -149,7 +149,7 @@
                         <option value="name-desc">Tên Z-A</option>
                         <option value="price-asc">Giá thấp đến cao</option>
                         <option value="price-desc">Giá cao đến thấp</option>
-                        <option value="newest">Mới nhất</option>
+                        <option value="newest" th:if="1!=1">Mới nhất</option>
                     </select>
                 </div>
 
