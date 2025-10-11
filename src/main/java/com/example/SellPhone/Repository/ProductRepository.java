@@ -1,6 +1,7 @@
 package com.example.SellPhone.Repository;
 
 import com.example.SellPhone.DTO.Respone.Product.BestSellingProductResponse;
+import com.example.SellPhone.DTO.Respone.Product.LowSellingProductResponse;
 import com.example.SellPhone.DTO.Respone.Product.ProductSummaryRespone;
 import com.example.SellPhone.Entity.Product;
 import org.springframework.data.domain.Page;
@@ -45,8 +46,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             JOIN specifications spe ON pd.specification_id = spe.specification_id
             JOIN specification_variants spv ON spe.specification_id = spv.specification_id AND oi.rom = spv.rom
             WHERE (o.order_status = 'Đã hoàn thành' OR o.order_status = 'Đang giao hàng')
-                AND o.delivery_time_end IS NOT NULL
-                AND DATE(STR_TO_DATE(o.delivery_time_end, '%d/%m/%Y'))
+                AND o.order_time IS NOT NULL
+                AND DATE(STR_TO_DATE(o.order_time, '%d/%m/%Y'))
                     BETWEEN STR_TO_DATE(:startDate, '%d/%m/%Y') AND STR_TO_DATE(:endDate, '%d/%m/%Y')
             GROUP BY pd.product_id, pd.name, pd.color, oi.rom, spv.selling_price
         ) ranked
@@ -54,7 +55,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         ORDER BY ranked.totalQuantity ASC
         LIMIT 10
     """, nativeQuery = true)
-    List<BestSellingProductResponse> getLowSellingProductsInPeriod(@Param("startDate") String startDate, @Param("endDate") String endDate);
+    List<LowSellingProductResponse> getLowSellingProductsInPeriod(@Param("startDate") String startDate, @Param("endDate") String endDate);
 
     @Query(value = """
         WITH ranked_products AS (

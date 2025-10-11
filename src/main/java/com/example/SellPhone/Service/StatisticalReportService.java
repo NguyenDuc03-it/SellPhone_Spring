@@ -2,6 +2,7 @@ package com.example.SellPhone.Service;
 
 import com.example.SellPhone.DTO.Request.StatisticalReport.ReportFilterRequest;
 import com.example.SellPhone.DTO.Respone.Product.BestSellingProductResponse;
+import com.example.SellPhone.DTO.Respone.Product.LowSellingProductResponse;
 import com.example.SellPhone.DTO.Respone.StatisticalReport.TopCustomerSpendingResponse;
 import com.example.SellPhone.Repository.OrderItemRepository;
 import com.example.SellPhone.Repository.OrderRepository;
@@ -127,7 +128,7 @@ public class StatisticalReportService {
     }
 
     // Lấy danh sách sản phẩm số lượng bán ra thấp
-    public List<BestSellingProductResponse> getLowSellingProducts(String startDate, String endDate) {
+    public List<LowSellingProductResponse> getLowSellingProducts(String startDate, String endDate) {
         return productRepository.getLowSellingProductsInPeriod(startDate, endDate);
     }
     // Báo cáo sản phẩm end
@@ -348,7 +349,7 @@ public class StatisticalReportService {
         String endDate = filter.getEndDate();
 
         List<BestSellingProductResponse> bestSellingProducts = getBestSellingProductsCurrentMonth(startDate, endDate);
-        List<BestSellingProductResponse> lowSellingProducts = getLowSellingProducts(startDate, endDate);
+        List<LowSellingProductResponse> lowSellingProducts = getLowSellingProducts(startDate, endDate);
 
         Workbook workbook = new XSSFWorkbook();
 
@@ -439,7 +440,7 @@ public class StatisticalReportService {
         }
 
         rowIdx = 1;
-        for (BestSellingProductResponse p : lowSellingProducts) {
+        for (LowSellingProductResponse p : lowSellingProducts) {
             Row row = lowSellerSheet.createRow(rowIdx++);
             row.createCell(0).setCellValue(p.getName());
             row.getCell(0).setCellStyle(dataStyleLeft);

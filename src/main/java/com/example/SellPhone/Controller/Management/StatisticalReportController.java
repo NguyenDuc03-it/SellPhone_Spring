@@ -2,6 +2,7 @@ package com.example.SellPhone.Controller.Management;
 
 import com.example.SellPhone.DTO.Request.StatisticalReport.ReportFilterRequest;
 import com.example.SellPhone.DTO.Respone.Product.BestSellingProductResponse;
+import com.example.SellPhone.DTO.Respone.Product.LowSellingProductResponse;
 import com.example.SellPhone.DTO.Respone.StatisticalReport.TopCustomerSpendingResponse;
 import com.example.SellPhone.Service.StatisticalReportService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -162,7 +163,7 @@ public class StatisticalReportController {
     // Báo cáo sản phẩm
     private void populateBestsellerReport(ReportFilterRequest filter, Model model) {
         List<BestSellingProductResponse> bestSellingProducts = reportService.getBestSellingProductsCurrentMonth(filter.getStartDate(), filter.getEndDate());
-        List<BestSellingProductResponse> lowSellingProducts = reportService.getLowSellingProducts(filter.getStartDate(), filter.getEndDate());
+        List<LowSellingProductResponse> lowSellingProducts = reportService.getLowSellingProducts(filter.getStartDate(), filter.getEndDate());
 
         model.addAttribute("bestSellingProducts", bestSellingProducts);
         model.addAttribute("lowSellingProducts", lowSellingProducts);
