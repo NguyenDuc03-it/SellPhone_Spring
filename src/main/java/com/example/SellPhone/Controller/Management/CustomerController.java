@@ -172,7 +172,7 @@ public class CustomerController {
 
         // Kiểm tra xem khách hàng có đơn hàng chưa hoàn thành không
         if (orderService.hasPendingOrders(userId)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Khách hàng có đơn hàng chưa hoàn thành, không thể xóa!");
+            redirectAttributes.addFlashAttribute("errorMessage", "Khách hàng có dữ liệu đơn hàng, không thể xóa!");
             return "redirect:/management/customers"; // Quay lại trang danh sách khách hàng
         }
 

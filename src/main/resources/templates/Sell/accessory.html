@@ -13,7 +13,9 @@
   <link rel="stylesheet" href="assets/css/styles.css" th:href="@{/assets/css/styles.css}">
   <link rel="stylesheet" href="assets/css/headerSell.css" th:href="@{/assets/css/headerSell.css}">
   <link rel="stylesheet" href="assets/css/footerSell.css" th:href="@{/assets/css/footerSell.css}">
+  <link rel="stylesheet" href="assets/css/chat-ai.css" th:href="@{/assets/css/chat-ai.css}">
   <script th:src="@{/assets/js/headerSell.js}" src="assets/js/headerSell.js" defer></script>
+  <script th:src="@{/assets/js/chat-ai.js}" defer></script>
 
   <style>
     .announcement-box {
@@ -34,6 +36,8 @@
 
 <!-- Gọi fragment vào file index.html -->
 <div th:replace="~{Fragments/Sell/header :: headerSellFragment}"></div>
+
+<div th:replace="~{Fragments/Chat/chat-ai :: chatAI}"></div>
 
 <section class="announcement-section py-5">
   <div class="container text-center">

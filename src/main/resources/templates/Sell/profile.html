@@ -11,16 +11,20 @@
     <link rel="stylesheet" href="assets/css/profile.css" th:href="@{/assets/css/profile.css}">
     <link rel="stylesheet" href="assets/css/headerSell.css" th:href="@{/assets/css/headerSell.css}">
     <link rel="stylesheet" href="assets/css/footerSell.css" th:href="@{/assets/css/footerSell.css}">
+    <link rel="stylesheet" href="assets/css/chat-ai.css" th:href="@{/assets/css/chat-ai.css}">
     <!-- Bootstrap JS -->
     <script src="assets/js/profile.js" th:src="@{/assets/js/profile.js}" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
     <script th:src="@{/assets/js/headerSell.js}" src="assets/js/headerSell.js" defer></script>
+    <script th:src="@{/assets/js/chat-ai.js}" defer></script>
 </head>
 <body>
 
 <!-- Gọi fragment vào file index.html -->
 <div th:replace="~{Fragments/Sell/header :: headerSellFragment}"></div>
+
+<div th:replace="~{Fragments/Chat/chat-ai :: chatAI}"></div>
 
 <!-- Thông báo thành công với thanh tiến trình -->
 <div id="successNotification" class="alert alert-success" th:if="${successMessage}">

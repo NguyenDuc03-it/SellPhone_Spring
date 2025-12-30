@@ -14,12 +14,16 @@
   <link rel="stylesheet" href="assets/css/headerSell.css" th:href="@{/assets/css/headerSell.css}">
   <link rel="stylesheet" href="assets/css/footerSell.css" th:href="@{/assets/css/footerSell.css}">
   <link rel="stylesheet" href="assets/css/order-detail.css" th:href="@{/assets/css/order-detail.css}">
+  <link rel="stylesheet" href="assets/css/chat-ai.css" th:href="@{/assets/css/chat-ai.css}">
   <script th:src="@{/assets/js/headerSell.js}" src="assets/js/headerSell.js" defer></script>
+  <script th:src="@{/assets/js/chat-ai.js}" defer></script>
 </head>
 <body>
 
 <!-- Gọi fragment vào file index.html -->
 <div th:replace="~{Fragments/Sell/header :: headerSellFragment}"></div>
+
+<div th:replace="~{Fragments/Chat/chat-ai :: chatAI}"></div>
 
 <!-- Breadcrumb -->
 <section class="breadcrumb-section mb-3 mt-3">

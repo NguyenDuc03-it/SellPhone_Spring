@@ -1,0 +1,65 @@
+<th:block th:fragment="chatAI">
+    <!-- Nút mở chat -->
+    <div class="chat-icon position-fixed d-flex align-items-center justify-content-center text-white " id="chatToggle">
+        💬
+    </div>
+
+    <!-- Cửa sổ chat -->
+    <div class="chat-window shadow position-fixed bg-white d-flex flex-column overflow-hidden" id="chatWindow">
+        <div class="chat-header text-white d-flex align-items-center justify-content-between">
+            <h6>Hỗ trợ trực tuyến</h6>
+            <button class="btn btn-sm btn-light" id="closeChat">✕</button>
+        </div>
+        <div class="chat-body overflow-y-auto" id="chatBody">
+            <div class="chat-message bot">
+                <div class="chat-bubble bg-white">Xin chào 👋<br>Tôi là Hiki, chatbot AI của cửa hàng TĐ Mobile.<br>
+                    Tôi có thể cung cấp cho bạn thông tin về sản phẩm của cửa hàng.<br>
+                    Cứ hỏi tôi nếu cần giúp đỡ. Tôi sẵn sàng trả lời các câu hỏi của bạn 😊</div>
+            </div>
+        </div>
+        <div class="chat-footer bg-white">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Nhập tin nhắn..." id="chatInput">
+                <button class="btn btn-primary" id="sendBtn">➤</button>
+            </div>
+        </div>
+    </div>
+    <div id="imageModal" class="image-modal">
+        <span id="imageModalClose">&times;</span>
+        <img id="imageModalContent">
+    </div>
+    <style>
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+        }
+        .image-modal img {
+            max-width: 95%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+        .image-modal span {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+        }
+        p {
+            margin-bottom: 0;
+        }
+        .chat-image {
+            height: 6rem;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</th:block>
