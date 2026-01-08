@@ -20,20 +20,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// Chat bot AI có sử dụng Redis nên phải bật Redis để tránh bị lỗi
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OpenAIService {
     static final int SUMMARY_TRIGGER_TOKENS = 2000; // ngưỡng token
-    static final int MIN_MESSAGES_FOR_SUMMARY = 3;
+    static final int MIN_MESSAGES_FOR_SUMMARY = 4;
     final String apiKey;
     final JdbcTemplate jdbc;
     final ObjectMapper mapper = new ObjectMapper();
     final StringRedisTemplate redisTemplate;
     // Cache schema để chỉ tạo 1 lần
     String schemaCache;
-
-    // Lưu lịch sử chat theo userId
-    final Map<String, List<Map<String, String>>> chatSessions = new HashMap<>();
 
     public OpenAIService(@Value("${openai.api-key}") String apiKey, JdbcTemplate jdbc, StringRedisTemplate redisTemplate) {
         this.apiKey = apiKey;
@@ -92,18 +90,24 @@ public class OpenAIService {
             return Map.of("answer", cachedAnswer + " (from cache)");
         }
 
-        List<Map<String,String>> history = chatSessions.getOrDefault(sessionId, new ArrayList<>());
-
+        List<Map<String,String>> history = loadHistory(sessionId);
         // Thêm câu hỏi vào lịch sử
+        appendHistory(sessionId,
+                Map.of("role","user","content",question));
         history.add(Map.of("role","user","content",question));
 
         // Kiểm tra xem có nên tóm tắt hay không
-        // Nếu không thì cắt và chỉ giữ 4 tin gần nhất
+        // Nếu không thì cắt và chỉ giữ 5 tin gần nhất
         if (shouldSummarize(history)) {
-            history = summarizeHistory(history);
-        }
-        else if (history.size() > 4) {
-            history = new ArrayList<>(history.subList(history.size() - 4, history.size()));
+            List<Map<String,String>> summarized = summarizeHistory(history);
+
+            // lưu tóm tắt vào redis
+            replaceHistoryWithSummary(
+                    sessionId,
+                    summarized.getFirst().get("content")
+            );
+
+            history = summarized;
         }
 
         // Bước 1 — Gọi AI để tạo SQL
@@ -126,8 +130,22 @@ public class OpenAIService {
             if (sql == null || !sql.trim().toLowerCase().startsWith("select")) {
                 answer = "Xin lỗi, tôi không thể thực hiện yêu cầu này.";
             } else {
-                // Thực thi SQL
-                List<Map<String,Object>> rows = jdbc.queryForList(sql);
+                String sqlHash = DigestUtils.sha256Hex(sql);
+                String sqlCacheKey = "sql:result:" + sqlHash;
+
+                String cachedSqlResult = redisTemplate.opsForValue().get(sqlCacheKey);
+
+                List<Map<String, Object>> rows;
+                if (cachedSqlResult != null) {
+                    rows = mapper.readValue(cachedSqlResult, List.class);
+                } else {
+                    // Thực thi SQL
+                    rows = jdbc.queryForList(sql);
+
+                    redisTemplate.opsForValue().set(sqlCacheKey,
+                            mapper.writeValueAsString(rows),
+                            Duration.ofDays(2));
+                }
 
                 if (rows.isEmpty()) {
                     answer = "Không tìm thấy dữ liệu phù hợp.";
@@ -146,8 +164,9 @@ public class OpenAIService {
         }
 
         // Lưu vào lịch sử
+        appendHistory(sessionId,
+                Map.of("role","assistant","content",answer));
         history.add(Map.of("role","assistant","content",answer));
-        chatSessions.put(sessionId, history);
 
         // Lưu vào Redis
         if(fn!= null) redisTemplate.opsForValue().set(key, answer, Duration.ofDays(1));
@@ -184,13 +203,7 @@ public class OpenAIService {
                        - Tự động dùng function queryDatabase khi cần.
                        - Không được thực thi các lệnh ngoài SELECT.
                        Quy tắc khi giới hạn chủ đề:
-                       - Bạn có quyền giải thích kiến thức liên quan đến smartphone:
-                           • chip xử lý \s
-                           • camera \s
-                           • màn hình \s
-                           • sạc pin \s
-                           • hệ điều hành \s
-                           • công nghệ 5G, eSIM, chống nước, v.v.
+                       - Bạn có quyền giải thích kiến thức liên quan đến smartphone
                        - Nếu người dùng hỏi ngoài lĩnh vực điện thoại hoặc mua bán:
                            → Từ chối lịch sự.
                        Quy tắc hình ảnh:
@@ -199,9 +212,6 @@ public class OpenAIService {
                        Quy tắc hội thoại:
                        - Câu trả lời rõ ràng, thân thiện, không quá dài.
                        - Có thể dùng emoji phù hợp nhưng không lạm dụng.
-                       Tên gọi:
-                       - Tự xưng là "Hiki".
-                       - Gọi khách hàng là “bạn”.
                        Dưới đây là schema của 3 bảng được phép truy vấn:
         """ + schemaCache
                 ));
@@ -305,16 +315,8 @@ public class OpenAIService {
 
         int totalTokens = estimateHistoryTokens(history);
 
-        // Nếu history ngắn thì không tóm tắt
-        if (totalTokens < SUMMARY_TRIGGER_TOKENS) return false;
-
-        // Nếu có 1 message rất dài
-        int maxSingle = history.stream()
-                .mapToInt(m -> estimateTokens(m.get("content")))
-                .max()
-                .orElse(0);
-
-        return maxSingle > 300;
+        // Nếu nội dung vượt quá số lượng token quy định thì sẽ tóm tắt
+        return totalTokens >= SUMMARY_TRIGGER_TOKENS;
     }
 
     private List<Map<String,String>> summarizeHistory(
@@ -352,7 +354,7 @@ public class OpenAIService {
         );
     }
 
-    // callOpenAI không thêm schema + function, chỉ dùng cho tóm tắt
+    // callOpenAI không thêm schema + function, chỉ dùng cho tóm tắt(không dùng hàm callOpenAi ở trên vì hàm đó gửi schema)
     private Map<String,Object> callRaw(Map<String,Object> request) throws Exception {
 
         URL url = new URL("https://api.openai.com/v1/chat/completions");
@@ -376,5 +378,59 @@ public class OpenAIService {
             return mapper.readValue(iss, Map.class);
         }
     }
+
+    private String toJson(Map<String,String> msg) throws Exception {
+        return mapper.writeValueAsString(msg);
+    }
+
+    private Map<String,String> fromJson(String json) throws Exception {
+        return mapper.readValue(json, Map.class);
+    }
+
+    // Lấy history từ Redis (history giúp bot nhớ được người dùng đang chat gì trước đó)
+    private List<Map<String,String>> loadHistory(String sessionId) throws Exception {
+        String key = "chat:session:" + sessionId + ":history";
+
+        List<String> raw = redisTemplate.opsForList().range(key, 0, -1);
+        if (raw == null || raw.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Map<String,String>> history = new ArrayList<>();
+        for (String s : raw) {
+            history.add(fromJson(s));
+        }
+        return history;
+    }
+
+    // Ghi message vào Redis
+    private void appendHistory(String sessionId, Map<String,String> msg) throws Exception {
+        String key = "chat:session:" + sessionId + ":history";
+
+        redisTemplate.opsForList().rightPush(key, toJson(msg));
+
+        // Giữ tối đa 10 message gần nhất
+        redisTemplate.opsForList().trim(key, -10, -1);
+
+        // Reset TTL mỗi lần user chat
+        // Dọn message sau 8h nếu không có message nào được add vào với key đó nữa
+        redisTemplate.expire(key, Duration.ofHours(8));
+    }
+
+    // Lưu tóm tắt vào Redis
+    private void replaceHistoryWithSummary(
+            String sessionId,
+            String summary
+    ) throws Exception {
+
+        String key = "chat:session:" + sessionId + ":history";
+
+        redisTemplate.delete(key);
+        redisTemplate.opsForList().rightPush(key,
+                toJson(Map.of("role","system","content", summary))
+        );
+        redisTemplate.expire(key, Duration.ofHours(8));
+    }
+
 }
 
