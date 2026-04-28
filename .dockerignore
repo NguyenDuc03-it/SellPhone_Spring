@@ -1,0 +1,12 @@
+.git
+.gitignore
+.vscode
+.idea
+
+target/test*
+target/*.log
+
+node_modules
+uploads
+*.md
+db_sellphone.sql

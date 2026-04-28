@@ -23,10 +23,10 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             pd.name AS name,
             pd.color AS color,
             CAST(oi.rom AS UNSIGNED) AS rom,
-            CAST(spv.selling_price AS UNSIGNED) AS sellingPrice,
+            CAST(ANY_VALUE(spv.selling_price) AS UNSIGNED) AS sellingPrice,
             CAST(SUM(oi.quantity) AS UNSIGNED) AS totalQuantity,
-            spe.chipset AS chipset,
-            spe.operating_system AS operatingSystem
+            ANY_VALUE(spe.chipset) AS chipset,
+            ANY_VALUE(spe.operating_system) AS operatingSystem
         FROM order_items oi
         JOIN orders o ON oi.order_id = o.order_id
         JOIN products pd ON oi.product_id = pd.product_id
@@ -37,7 +37,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
           AND MONTH(STR_TO_DATE(o.order_time, '%d/%m/%Y')) = MONTH(CURRENT_DATE)
           AND YEAR(STR_TO_DATE(o.order_time, '%d/%m/%Y')) = YEAR(CURRENT_DATE)
           AND c.status != 'Không hoạt động'
-        GROUP BY pd.product_id, oi.rom, pd.image_url, pd.name, pd.color, oi.price
+        GROUP BY pd.product_id, oi.rom, pd.image_url, pd.name, pd.color, oi.price, spe.chipset, spe.operating_system, spv.selling_price
         ORDER BY totalQuantity DESC
         LIMIT 10
         """, nativeQuery = true)

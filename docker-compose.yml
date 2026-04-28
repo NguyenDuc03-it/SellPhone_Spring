@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    container_name: sellphone-app
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./uploads:/app/uploads
+    restart: always
+
+#POWERSHELL
+#$VERSION = git rev-parse --short HEAD
+#docker compose build
+#docker tag sellphone-app:latest ducnt212/sellphone-app:$VERSION
+#docker tag sellphone-app:latest ducnt212/sellphone-app:latest
+#docker push ducnt212/sellphone-app:latest
+#docker push ducnt212/sellphone-app:$VERSION
