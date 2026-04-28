@@ -2,6 +2,9 @@
 .gitignore
 .vscode
 .idea
+.env
+.env-local
+.env-docker
 
 target/test*
 target/*.log
